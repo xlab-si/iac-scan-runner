@@ -1,0 +1,5 @@
+---
+quiet: false
+verbosity: 1
+use_default_rules: true
+skip_list: []

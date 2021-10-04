@@ -1,0 +1,68 @@
+{
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true,
+    "mocha": true,
+    "jasmine": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    /*
+     *  Plugin documentation available at:
+     *  https://github.com/typescript-eslint/typescript-eslint
+     */
+    "@typescript-eslint"
+  ],
+  "extends": [
+    /*
+     *  All rules available at: 
+     *  https://github.com/eslint/eslint/blob/master/conf/eslint-recommended.js
+     */
+    "eslint:recommended",
+    /*
+     *  All rules available at: 
+     *  https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/src/configs/eslint-recommended.ts
+     */
+    "plugin:@typescript-eslint/eslint-recommended"
+  ],
+  "rules": {
+    "no-console": [
+      "error",
+      {
+        "allow": [
+          "warn",
+          "error"
+        ]
+      }
+    ],
+    "indent": [
+      "warn",
+      2,
+      {
+        "SwitchCase": 1
+      }
+    ],
+    "max-len": [
+      "error",
+      {
+        "code": 120
+      }
+    ],
+    "eqeqeq": [
+      "error",
+      "always"
+    ],
+    "semi": [
+      "error",
+      "always"
+    ],
+    "no-multiple-empty-lines": [
+      "warn",
+      {
+        "max": 2,
+        "maxEOF": 0
+      }
+    ]
+  }
+}
