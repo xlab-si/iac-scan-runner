@@ -1,4 +1,4 @@
-name: Build and publish Docker image
+name: Build and publish
 
 on:
   push:
@@ -33,7 +33,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push (for main branch)
-        if: github.ref == 'refs/heads/main'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         id: docker_build_main
         uses: docker/build-push-action@v2
         with:
@@ -44,7 +44,7 @@ jobs:
             xscanner/runner:latest
 
       - name: Build and push (for tags)
-        if: startsWith(github.ref, 'refs/tags/')
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
         id: docker_build_tag
         uses: docker/build-push-action@v2
         with:
@@ -52,3 +52,29 @@ jobs:
           push: true
           tags: |
             xscanner/runner:${{ steps.vars.outputs.tag }}
+
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.9
+
+      - name: Install pypa/build
+        run: python -m pip install build --user
+
+      - name: Build a binary wheel and a source tarball
+        run: python -m build --sdist --wheel --outdir dist/ .
+
+      - name: Publish package to TestPyPI
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: ${{ secrets.TEST_PYPI_USERNAME }}
+          password: ${{ secrets.TEST_PYPI_TOKEN }}
+          repository_url: https://test.pypi.org/legacy/
+
+      - name: Publish CLI package to PyPI
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: ${{ secrets.PYPI_USERNAME }}
+          password: ${{ secrets.PYPI_TOKEN }}
