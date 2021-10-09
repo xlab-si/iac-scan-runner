@@ -15,7 +15,7 @@ app = FastAPI(
     docs_url="/swagger",
     title="IaC Scan Runner REST API",
     description="Service that checks your IaC for issues and vulnerabilities",
-    version="0.0.2",
+    version="0.0.3",
 )
 
 # limit maximum size for file uploads to 50 MB

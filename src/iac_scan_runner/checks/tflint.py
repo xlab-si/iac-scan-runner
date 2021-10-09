@@ -1,11 +1,11 @@
 from typing import Optional
 
-import xscanner_runner.vars as env
+import iac_scan_runner.vars as env
+from iac_scan_runner.check import Check
+from iac_scan_runner.check_output import CheckOutput
+from iac_scan_runner.check_target_entity_type import CheckTargetEntityType
+from iac_scan_runner.utils import run_command
 from pydantic import SecretStr
-from xscanner_runner.check import Check
-from xscanner_runner.check_output import CheckOutput
-from xscanner_runner.check_target_entity_type import CheckTargetEntityType
-from xscanner_runner.utils import run_command
 
 
 class TFLintCheck(Check):

@@ -66,6 +66,7 @@ jobs:
           user: ${{ secrets.TEST_PYPI_USERNAME }}
           password: ${{ secrets.TEST_PYPI_TOKEN }}
           repository_url: https://test.pypi.org/legacy/
+          skip_existing: true
 
       - name: Publish CLI package to PyPI (for tags)
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
