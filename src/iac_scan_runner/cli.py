@@ -69,3 +69,7 @@ def run():
     except Exception as e:
         typer.echo(e)
         raise typer.Exit(code=1)
+
+
+# this object is needed to get docs for sphinx-click Sphinx documentation module
+typer_click_object = typer.main.get_command(cli)
