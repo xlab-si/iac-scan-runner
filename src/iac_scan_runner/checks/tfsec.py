@@ -8,11 +8,9 @@ from xscanner_runner.check_target_entity_type import CheckTargetEntityType
 from xscanner_runner.utils import run_command
 
 
-class AnsibleLintCheck(Check):
+class TfsecCheck(Check):
     def __init__(self):
-        super().__init__("ansible-lint", "Ansible Lint is a command-line tool for linting playbooks, roles and "
-                                         "collections aimed towards any Ansible users", CheckTargetEntityType.iac)
-        self.counter = 0
+        super().__init__("tfsec", "Security scanner for your Terraform code", CheckTargetEntityType.iac)
 
     def configure(self, config_filename: Optional[str], secret: Optional[SecretStr]) -> CheckOutput:
         if config_filename:
@@ -23,6 +21,6 @@ class AnsibleLintCheck(Check):
 
     def run(self, directory: str) -> CheckOutput:
         if self._config_filename:
-            return run_command(f'ansible-lint -p -c {env.CONFIG_DIR}/{self._config_filename}', directory)
+            return run_command(f'{env.TF_SEC_PATH} --config-file {env.CONFIG_DIR}/{self._config_filename} .', directory)
         else:
-            return run_command("ansible-lint -p", directory)
+            return run_command(f'{env.TF_SEC_PATH} .', directory)

@@ -7,16 +7,15 @@ from content_size_limit_asgi import ContentSizeLimitMiddleware
 from fastapi import FastAPI, File, Form, UploadFile, status
 from fastapi.responses import JSONResponse
 from fastapi.responses import Response
-from pydantic import SecretStr
-
 from iac_scan_runner.check_target_entity_type import CheckTargetEntityType
 from iac_scan_runner.scan_runner import ScanRunner
+from pydantic import SecretStr
 
 app = FastAPI(
     docs_url="/swagger",
     title="IaC Scan Runner REST API",
-    description="This is a REST API for IaC Scan Runner - a service for scanning IaC (Infrastructure as Code)",
-    version="0.0.1",
+    description="Service that checks your IaC for issues and vulnerabilities",
+    version="0.0.2",
 )
 
 # limit maximum size for file uploads to 50 MB

@@ -1,10 +1,9 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 
-from pydantic import SecretStr
-
 from iac_scan_runner.check_output import CheckOutput
 from iac_scan_runner.check_target_entity_type import CheckTargetEntityType
+from pydantic import SecretStr
 
 
 class Check(ABC):
