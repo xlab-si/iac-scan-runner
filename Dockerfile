@@ -19,4 +19,4 @@ RUN apt-get update \
     && ./install-checks.sh
 
 # start the API
-CMD ["uvicorn", "src.iac-scan-runner.api:app", "--host", "0.0.0.0", "--port", "80"]
+CMD ["uvicorn", "src.iac_scan_runner.api:app", "--host", "0.0.0.0", "--port", "80"]
