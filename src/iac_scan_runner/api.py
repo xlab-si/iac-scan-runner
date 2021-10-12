@@ -1,5 +1,6 @@
 import functools
 import io
+import os
 import yaml
 from content_size_limit_asgi import ContentSizeLimitMiddleware
 from fastapi import FastAPI, File, Form, UploadFile, status
@@ -16,6 +17,7 @@ app = FastAPI(
     title="IaC Scan Runner REST API",
     description="Service that checks your IaC for issues and vulnerabilities",
     version="0.0.5",
+    root_path=os.getenv('ROOT_PATH', "/")
 )
 
 # limit maximum size for file uploads to 50 MB
