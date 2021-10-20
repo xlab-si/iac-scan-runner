@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
-from pydantic import SecretStr
 from typing import Optional
 
+from pydantic import SecretStr
 from src.iac_scan_runner.check_output import CheckOutput
 from src.iac_scan_runner.check_target_entity_type import CheckTargetEntityType
 

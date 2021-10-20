@@ -1,14 +1,15 @@
-from fastapi import UploadFile
 from os import remove
-from pydantic import SecretStr
 from shutil import rmtree
 from typing import Optional, List
 
 import src.iac_scan_runner.vars as env
+from fastapi import UploadFile
+from pydantic import SecretStr
 from src.iac_scan_runner.checks.ansible_lint import AnsibleLintCheck
 from src.iac_scan_runner.checks.terrascan import TerrascanCheck
 from src.iac_scan_runner.checks.tflint import TFLintCheck
 from src.iac_scan_runner.checks.tfsec import TfsecCheck
+from src.iac_scan_runner.checks.yamllint import YamlLintCheck
 from src.iac_scan_runner.utils import generate_random_pathname, unpack_archive_to_dir
 
 
@@ -24,12 +25,14 @@ class ScanRunner:
         tflint = TFLintCheck()
         tfsec = TfsecCheck()
         terrascan = TerrascanCheck()
+        yamllint = YamlLintCheck()
 
         self.iac_checks = {
             ansible_lint.name: ansible_lint,
             tflint.name: tflint,
             tfsec.name: tfsec,
-            terrascan.name: terrascan
+            terrascan.name: terrascan,
+            yamllint.name: yamllint
         }
 
     def _init_iac_dir(self, iac_file: UploadFile):

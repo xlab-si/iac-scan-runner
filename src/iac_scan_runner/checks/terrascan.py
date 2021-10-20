@@ -1,7 +1,7 @@
-from pydantic import SecretStr
 from typing import Optional
 
 import src.iac_scan_runner.vars as env
+from pydantic import SecretStr
 from src.iac_scan_runner.check import Check
 from src.iac_scan_runner.check_output import CheckOutput
 from src.iac_scan_runner.check_target_entity_type import CheckTargetEntityType

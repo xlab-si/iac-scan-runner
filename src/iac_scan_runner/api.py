@@ -1,14 +1,14 @@
 import functools
 import io
 import os
+from typing import Optional, List
+
 import yaml
 from content_size_limit_asgi import ContentSizeLimitMiddleware
 from fastapi import FastAPI, File, Form, UploadFile, status
 from fastapi.responses import JSONResponse
 from fastapi.responses import Response
 from pydantic import SecretStr
-from typing import Optional, List
-
 from src.iac_scan_runner.check_target_entity_type import CheckTargetEntityType
 from src.iac_scan_runner.scan_runner import ScanRunner
 
@@ -16,7 +16,7 @@ app = FastAPI(
     docs_url="/swagger",
     title="IaC Scan Runner REST API",
     description="Service that checks your IaC for issues and vulnerabilities",
-    version="0.0.5",
+    version="0.0.6",
     root_path=os.getenv('ROOT_PATH', "/")
 )
 
