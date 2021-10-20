@@ -8,9 +8,11 @@ from src.iac_scan_runner.check_target_entity_type import CheckTargetEntityType
 from src.iac_scan_runner.utils import run_command
 
 
-class TFLintCheck(Check):
+class YamlLintCheck(Check):
     def __init__(self):
-        super().__init__("tflint", "A Pluggable Terraform Linter", CheckTargetEntityType.iac)
+        super().__init__("yamllint", "A linter for YAML files that checks for syntax validity, key repetition and "
+                                     "cosmetic problems such as lines length, trailing spaces, indentation, etc.",
+                         CheckTargetEntityType.iac)
 
     def configure(self, config_filename: Optional[str], secret: Optional[SecretStr]) -> CheckOutput:
         if config_filename:
@@ -21,6 +23,6 @@ class TFLintCheck(Check):
 
     def run(self, directory: str) -> CheckOutput:
         if self._config_filename:
-            return run_command(f'tflint -c {env.CONFIG_DIR}/{self._config_filename} .', directory)
+            return run_command(f'yamllint -c {env.CONFIG_DIR}/{self._config_filename} .', directory)
         else:
-            return run_command("tflint .", directory)
+            return run_command(f'yamllint .', directory)

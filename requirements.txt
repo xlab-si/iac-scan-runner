@@ -3,5 +3,5 @@ uvicorn[standard]==0.15.0
 python-multipart==0.0.5
 pydantic==1.8.2
 content-size-limit-asgi==0.1.5
-PyYAML==5.4.1
+PyYAML==6.0
 typer==0.4.0
