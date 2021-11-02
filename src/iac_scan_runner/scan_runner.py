@@ -6,6 +6,9 @@ import src.iac_scan_runner.vars as env
 from fastapi import UploadFile
 from pydantic import SecretStr
 from src.iac_scan_runner.checks.ansible_lint import AnsibleLintCheck
+from src.iac_scan_runner.checks.bandit import BanditCheck
+from src.iac_scan_runner.checks.pylint import PylintCheck
+from src.iac_scan_runner.checks.pyup_safety import PyUpSafetyCheck
 from src.iac_scan_runner.checks.terrascan import TerrascanCheck
 from src.iac_scan_runner.checks.tflint import TFLintCheck
 from src.iac_scan_runner.checks.tfsec import TfsecCheck
@@ -26,13 +29,19 @@ class ScanRunner:
         tfsec = TfsecCheck()
         terrascan = TerrascanCheck()
         yamllint = YamlLintCheck()
+        pylint = PylintCheck()
+        bandit = BanditCheck()
+        pyup_safety = PyUpSafetyCheck()
 
         self.iac_checks = {
             ansible_lint.name: ansible_lint,
             tflint.name: tflint,
             tfsec.name: tfsec,
             terrascan.name: terrascan,
-            yamllint.name: yamllint
+            yamllint.name: yamllint,
+            pylint.name: pylint,
+            bandit.name: bandit,
+            pyup_safety.name: pyup_safety
         }
 
     def _init_iac_dir(self, iac_file: UploadFile):
