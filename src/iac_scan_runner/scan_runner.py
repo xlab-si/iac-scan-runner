@@ -7,6 +7,9 @@ from fastapi import UploadFile
 from pydantic import SecretStr
 from src.iac_scan_runner.checks.ansible_lint import AnsibleLintCheck
 from src.iac_scan_runner.checks.bandit import BanditCheck
+from src.iac_scan_runner.checks.git_leaks import GitLeaksCheck
+from src.iac_scan_runner.checks.git_secrets import GitSecretsCheck
+from src.iac_scan_runner.checks.markdown_lint import MarkdownLintCheck
 from src.iac_scan_runner.checks.pylint import PylintCheck
 from src.iac_scan_runner.checks.pyup_safety import PyUpSafetyCheck
 from src.iac_scan_runner.checks.terrascan import TerrascanCheck
@@ -32,6 +35,9 @@ class ScanRunner:
         pylint = PylintCheck()
         bandit = BanditCheck()
         pyup_safety = PyUpSafetyCheck()
+        git_leaks = GitLeaksCheck()
+        git_secrets = GitSecretsCheck()
+        markdown_lint = MarkdownLintCheck()
 
         self.iac_checks = {
             ansible_lint.name: ansible_lint,
@@ -41,7 +47,10 @@ class ScanRunner:
             yamllint.name: yamllint,
             pylint.name: pylint,
             bandit.name: bandit,
-            pyup_safety.name: pyup_safety
+            pyup_safety.name: pyup_safety,
+            git_leaks.name: git_leaks,
+            git_secrets.name: git_secrets,
+            markdown_lint.name: markdown_lint
         }
 
     def _init_iac_dir(self, iac_file: UploadFile):
