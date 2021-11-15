@@ -12,6 +12,7 @@ Service that checks your IaC for issues and vulnerabilities.
 | Docker image      | [xscanner/runner]    |
 | PyPI package      | [iac-scan-runner]    |
 | Documentation     | [docs]               |
+| Contact us        | [xopera@xlab.si]     |
 
 ## Table of Contents
   - [Description](#purpose-and-description)
@@ -19,6 +20,9 @@ Service that checks your IaC for issues and vulnerabilities.
       - [Run with Docker](#run-with-docker)
       - [Run from CLI](#run-from-cli)
       - [Run from source](#run-from-source)
+  - [License](#license)
+  - [Contact](#contact)
+  - [Acknowledgement](#acknowledgement)
 
 ## Purpose and description
 The **IaC Scan Runner** is a REST API service used to scan IaC (Infrastructure as Code) package and perform various 
@@ -74,7 +78,20 @@ $ python3 -m venv .venv && . .venv/bin/activate
 (.venv) $ uvicorn src.iac_scan_runner.api:app
 ```
 
+## License
+This work is licensed under the [Apache License 2.0].
+
+## Contact
+You can contact the xOpera team by sending an email to [xopera@xlab.si].
+
+## Acknowledgement
+This project has received funding from the European Union’s Horizon 2020 research and innovation programme under Grant 
+Agreement No. 101000162 ([PIACERE]).
+
 [xscanner/runner]: https://hub.docker.com/r/xscanner/runner
 [iac-scan-runner]: https://pypi.org/project/iac-scan-runner/
 [Documentation]: https://xlab-si.github.io/iac-scanner-docs/02-runner.html
 [docs]: https://xlab-si.github.io/iac-scanner-docs/02-runner.html
+[xopera@xlab.si]: mailto:xopera@xlab.si
+[Apache License 2.0]: https://www.apache.org/licenses/LICENSE-2.0
+[PIACERE]: https://www.piacere-project.eu/
