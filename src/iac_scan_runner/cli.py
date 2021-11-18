@@ -5,7 +5,7 @@ from enum import Enum
 import typer
 import uvicorn
 import yaml
-from src.iac_scan_runner.api import app, openapi_yaml
+from iac_scan_runner.api import app, openapi_yaml
 
 cli = typer.Typer(help="IaC Scan Runner CLI", context_settings={"help_option_names": ["-h", "--help"]})
 

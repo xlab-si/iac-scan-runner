@@ -2,21 +2,21 @@ from os import remove
 from shutil import rmtree
 from typing import Optional, List
 
-import src.iac_scan_runner.vars as env
+import iac_scan_runner.vars as env
 from fastapi import UploadFile
+from iac_scan_runner.checks.ansible_lint import AnsibleLintCheck
+from iac_scan_runner.checks.bandit import BanditCheck
+from iac_scan_runner.checks.git_leaks import GitLeaksCheck
+from iac_scan_runner.checks.git_secrets import GitSecretsCheck
+from iac_scan_runner.checks.markdown_lint import MarkdownLintCheck
+from iac_scan_runner.checks.pylint import PylintCheck
+from iac_scan_runner.checks.pyup_safety import PyUpSafetyCheck
+from iac_scan_runner.checks.terrascan import TerrascanCheck
+from iac_scan_runner.checks.tflint import TFLintCheck
+from iac_scan_runner.checks.tfsec import TfsecCheck
+from iac_scan_runner.checks.yamllint import YamlLintCheck
+from iac_scan_runner.utils import generate_random_pathname, unpack_archive_to_dir
 from pydantic import SecretStr
-from src.iac_scan_runner.checks.ansible_lint import AnsibleLintCheck
-from src.iac_scan_runner.checks.bandit import BanditCheck
-from src.iac_scan_runner.checks.git_leaks import GitLeaksCheck
-from src.iac_scan_runner.checks.git_secrets import GitSecretsCheck
-from src.iac_scan_runner.checks.markdown_lint import MarkdownLintCheck
-from src.iac_scan_runner.checks.pylint import PylintCheck
-from src.iac_scan_runner.checks.pyup_safety import PyUpSafetyCheck
-from src.iac_scan_runner.checks.terrascan import TerrascanCheck
-from src.iac_scan_runner.checks.tflint import TFLintCheck
-from src.iac_scan_runner.checks.tfsec import TfsecCheck
-from src.iac_scan_runner.checks.yamllint import YamlLintCheck
-from src.iac_scan_runner.utils import generate_random_pathname, unpack_archive_to_dir
 
 
 class ScanRunner:

@@ -1,11 +1,11 @@
 from typing import Optional
 
-import src.iac_scan_runner.vars as env
+import iac_scan_runner.vars as env
+from iac_scan_runner.check import Check
+from iac_scan_runner.check_output import CheckOutput
+from iac_scan_runner.check_target_entity_type import CheckTargetEntityType
+from iac_scan_runner.utils import run_command
 from pydantic import SecretStr
-from src.iac_scan_runner.check import Check
-from src.iac_scan_runner.check_output import CheckOutput
-from src.iac_scan_runner.check_target_entity_type import CheckTargetEntityType
-from src.iac_scan_runner.utils import run_command
 
 
 class GitLeaksCheck(Check):

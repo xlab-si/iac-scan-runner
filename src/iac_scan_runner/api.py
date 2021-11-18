@@ -8,9 +8,9 @@ from content_size_limit_asgi import ContentSizeLimitMiddleware
 from fastapi import FastAPI, File, Form, UploadFile, status
 from fastapi.responses import JSONResponse
 from fastapi.responses import Response
+from iac_scan_runner.check_target_entity_type import CheckTargetEntityType
+from iac_scan_runner.scan_runner import ScanRunner
 from pydantic import SecretStr
-from src.iac_scan_runner.check_target_entity_type import CheckTargetEntityType
-from src.iac_scan_runner.scan_runner import ScanRunner
 
 app = FastAPI(
     docs_url="/swagger",
