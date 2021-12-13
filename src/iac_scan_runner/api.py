@@ -16,7 +16,7 @@ app = FastAPI(
     docs_url="/swagger",
     title="IaC Scan Runner REST API",
     description="Service that checks your IaC for issues and vulnerabilities",
-    version="0.0.9",
+    version="0.1.1",
     root_path=os.getenv('ROOT_PATH', "/")
 )
 

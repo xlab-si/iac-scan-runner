@@ -8,9 +8,12 @@ from iac_scan_runner.checks.ansible_lint import AnsibleLintCheck
 from iac_scan_runner.checks.bandit import BanditCheck
 from iac_scan_runner.checks.git_leaks import GitLeaksCheck
 from iac_scan_runner.checks.git_secrets import GitSecretsCheck
+from iac_scan_runner.checks.gixy import GixyCheck
+from iac_scan_runner.checks.hadolint import HadolintCheck
 from iac_scan_runner.checks.markdown_lint import MarkdownLintCheck
 from iac_scan_runner.checks.pylint import PylintCheck
 from iac_scan_runner.checks.pyup_safety import PyUpSafetyCheck
+from iac_scan_runner.checks.shellcheck import ShellCheck
 from iac_scan_runner.checks.terrascan import TerrascanCheck
 from iac_scan_runner.checks.tflint import TFLintCheck
 from iac_scan_runner.checks.tfsec import TfsecCheck
@@ -38,6 +41,9 @@ class ScanRunner:
         git_leaks = GitLeaksCheck()
         git_secrets = GitSecretsCheck()
         markdown_lint = MarkdownLintCheck()
+        hadolint = HadolintCheck()
+        gixy = GixyCheck()
+        shellcheck = ShellCheck()
 
         self.iac_checks = {
             ansible_lint.name: ansible_lint,
@@ -50,7 +56,10 @@ class ScanRunner:
             pyup_safety.name: pyup_safety,
             git_leaks.name: git_leaks,
             git_secrets.name: git_secrets,
-            markdown_lint.name: markdown_lint
+            markdown_lint.name: markdown_lint,
+            hadolint.name: hadolint,
+            gixy.name: gixy,
+            shellcheck.name: shellcheck
         }
 
     def _init_iac_dir(self, iac_file: UploadFile):
