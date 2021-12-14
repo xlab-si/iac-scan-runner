@@ -18,5 +18,7 @@ RUN apt-get update \
     && pip install -r requirements.txt \
     && ./install-checks.sh
 
+WORKDIR /iac-scan-runner/src
+
 # start the API
-CMD ["uvicorn", "src.iac_scan_runner.api:app", "--host", "0.0.0.0", "--port", "80"]
+CMD ["uvicorn", "iac_scan_runner.api:app", "--host", "0.0.0.0", "--port", "80"]
