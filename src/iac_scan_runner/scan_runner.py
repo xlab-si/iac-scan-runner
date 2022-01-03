@@ -6,17 +6,21 @@ import iac_scan_runner.vars as env
 from fastapi import UploadFile
 from iac_scan_runner.checks.ansible_lint import AnsibleLintCheck
 from iac_scan_runner.checks.bandit import BanditCheck
+from iac_scan_runner.checks.es_lint import ESLintCheck
 from iac_scan_runner.checks.git_leaks import GitLeaksCheck
 from iac_scan_runner.checks.git_secrets import GitSecretsCheck
 from iac_scan_runner.checks.gixy import GixyCheck
 from iac_scan_runner.checks.hadolint import HadolintCheck
+from iac_scan_runner.checks.htmlhint import HtmlHintCheck
 from iac_scan_runner.checks.markdown_lint import MarkdownLintCheck
 from iac_scan_runner.checks.pylint import PylintCheck
 from iac_scan_runner.checks.pyup_safety import PyUpSafetyCheck
 from iac_scan_runner.checks.shellcheck import ShellCheck
+from iac_scan_runner.checks.stylelint import StyleLintCheck
 from iac_scan_runner.checks.terrascan import TerrascanCheck
 from iac_scan_runner.checks.tflint import TFLintCheck
 from iac_scan_runner.checks.tfsec import TfsecCheck
+from iac_scan_runner.checks.ts_lint import TSLintCheck
 from iac_scan_runner.checks.yamllint import YamlLintCheck
 from iac_scan_runner.utils import generate_random_pathname, unpack_archive_to_dir
 from pydantic import SecretStr
@@ -44,6 +48,10 @@ class ScanRunner:
         hadolint = HadolintCheck()
         gixy = GixyCheck()
         shellcheck = ShellCheck()
+        es_lint = ESLintCheck()
+        ts_lint = TSLintCheck()
+        htmlhint = HtmlHintCheck()
+        stylelint = StyleLintCheck()
 
         self.iac_checks = {
             ansible_lint.name: ansible_lint,
@@ -59,7 +67,11 @@ class ScanRunner:
             markdown_lint.name: markdown_lint,
             hadolint.name: hadolint,
             gixy.name: gixy,
-            shellcheck.name: shellcheck
+            shellcheck.name: shellcheck,
+            es_lint.name: es_lint,
+            ts_lint.name: ts_lint,
+            htmlhint.name: htmlhint,
+            stylelint.name: stylelint
         }
 
     def _init_iac_dir(self, iac_file: UploadFile):
