@@ -10,10 +10,11 @@ from iac_scan_runner.check_output import CheckOutput
 
 
 def run_command(command: str, directory: str = ".") -> CheckOutput:
-    """Run command with arguments in directory and return the output and return code
-
-    :param command: A command to run
-    :param directory: Target directory where the command will be executed (default is current dir)
+    """
+    Run command with arguments in directory and return the output and return code
+    @param command: A command to run
+    @param directory: Target directory where the command will be executed (default is current dir)
+    @return: CheckOutput object
     """
     try:
         return CheckOutput(check_output(command, cwd=directory, shell=True, stderr=STDOUT).decode('utf-8'), 0)
@@ -22,9 +23,10 @@ def run_command(command: str, directory: str = ".") -> CheckOutput:
 
 
 def determine_archive_format(archive_path: str) -> str:
-    """Figures out the format of the supplied archive file
-    
-    :param archive_path: Path to the archive file
+    """
+    Figures out the format of the supplied archive file
+    @param archive_path: Path to the archive file
+    @return: string with archive format (zip or tar)
     """
     if is_zipfile(archive_path):
         return "zip"
@@ -37,10 +39,11 @@ def determine_archive_format(archive_path: str) -> str:
 
 
 def generate_random_pathname(prefix: str = "", suffix: str = "") -> str:
-    """creates a unique random pathname and select last 6 characters
-
-    :param prefix: Pathname prefix
-    :param suffix: Pathname suffix
+    """
+    Creates a unique random pathname and select last 6 characters
+    @param prefix: Pathname prefix
+    @param suffix: Pathname suffix
+    @return: string with random pathname
     """
     pathname = prefix + str(uuid4().hex)[-6:] + suffix
     if path.exists(pathname):
@@ -50,10 +53,11 @@ def generate_random_pathname(prefix: str = "", suffix: str = "") -> str:
 
 
 def unpack_archive_to_dir(archive_path: str, output_dir: Optional[str]) -> str:
-    """Unpacks archive to a specified directory
-
-    :param archive_path: Path to the archive file
-    :param output_dir: Directory where IaC will be unpacked to
+    """
+    Unpacks archive to a specified directory
+    @param archive_path: Path to the archive file
+    @param output_dir: Directory where IaC will be unpacked to
+    @return: string output dir name
     """
     try:
         if not output_dir:

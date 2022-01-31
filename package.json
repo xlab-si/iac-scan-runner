@@ -40,8 +40,5 @@
     "snyk": "^1.683.0",
     "stylelint": "^13.13.1",
     "typescript": "^4.1.3"
-  },
-  "devDependencies": {
-    "mega-linter-runner": "^4.41.0"
   }
 }

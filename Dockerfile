@@ -1,4 +1,4 @@
-FROM python:3.9.6-slim-buster
+FROM python:3.9.10-slim-buster
 
 # copy files
 COPY . /iac-scan-runner
@@ -13,7 +13,6 @@ RUN apt-get update \
     && mkdir -p /usr/share/man/man1 \
     && apt -y install default-jdk nodejs \
     && pip3 install --upgrade pip \
-    && pip3 install cryptography==2.2.2 \
     && npm i npm@latest -g \
     && pip install -r requirements.txt \
     && ./install-checks.sh

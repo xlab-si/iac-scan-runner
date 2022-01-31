@@ -22,9 +22,8 @@ def openapi(
         output: str = typer.Option(None, "--output", "-o", help="Output file path")):
     """
     Get OpenAPI specification
-
-    :param output_format: OpenAPI output format (JSON or YAML)
-    :param output: Output file path name, where OpenAPI specification will be written to
+    @param output_format: OpenAPI output format (JSON or YAML)
+    @param output: Output file path name, where OpenAPI specification will be written to
     """
     try:
         if output_format == OpenApiFormat.json:
@@ -47,9 +46,7 @@ def openapi(
 
 @cli.command(help="Install prerequisites for IaC Scan Runner")
 def install():
-    """
-    Install prerequisites for IaC Scan Runner
-    """
+    """Install prerequisites for IaC Scan Runner"""
     try:
         rc = subprocess.call('./install-checks.sh')
         if rc != 0:
@@ -61,9 +58,7 @@ def install():
 
 @cli.command(help="Run REST API for IaC Scan Runner")
 def run():
-    """
-    Run REST API for IaC Scan Runner
-    """
+    """Run REST API for IaC Scan Runner"""
     try:
         uvicorn.run(app)
     except Exception as e:

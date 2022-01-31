@@ -75,9 +75,9 @@ class ScanRunner:
         }
 
     def _init_iac_dir(self, iac_file: UploadFile):
-        """Initiate new unique IaC directory for scanning
-
-         :param iac_file: IaC file
+        """
+        Initiate new unique IaC directory for scanning
+        @param iac_file: IaC file
         """
         try:
             iac_filename_local = generate_random_pathname(iac_file.filename)
@@ -97,9 +97,10 @@ class ScanRunner:
             raise Exception(f'Error when cleaning IaC directory: {str(e)}.')
 
     def _run_checks(self, selected_checks: Optional[List]) -> dict:
-        """Run the specified IaC checks
-
-         :param selected_checks: List of selected checks to be executed on IaC
+        """
+        Run the specified IaC checks
+        @param selected_checks: List of selected checks to be executed on IaC
+        @return: dict with output for running checks
         """
         scan_output = {}
         if selected_checks:
@@ -115,9 +116,10 @@ class ScanRunner:
         return scan_output
 
     def enable_check(self, check_name: str) -> str:
-        """Enables the specified check and makes it available to be used
-
-         :param check_name: Name of the check
+        """
+        Enables the specified check and makes it available to be used
+        @param check_name: Name of the check
+        @return: string with result for enabling check
         """
         if check_name in self.iac_checks.keys():
             check = self.iac_checks[check_name]
@@ -130,9 +132,10 @@ class ScanRunner:
             raise Exception(f'Nonexistent check: {check_name}')
 
     def disable_check(self, check_name: str) -> str:
-        """Disables the specified check and makes it unavailable to be used
-
-         :param check_name: Name of the check
+        """
+        Disables the specified check and makes it unavailable to be used
+        @param check_name: Name of the check
+        @return: string with result for disabling check
         """
         if check_name in self.iac_checks.keys():
             check = self.iac_checks[check_name]
@@ -145,11 +148,12 @@ class ScanRunner:
             raise Exception(f'Nonexistent check: {check_name}')
 
     def configure_check(self, check_name: str, config_file: Optional[UploadFile], secret: Optional[SecretStr]) -> str:
-        """Configures the selected check with the supplied optional configuration file or/and secret
-
-         :param check_name: Name of the check
-         :param config_file: Check configuration file
-         :param secret: Secret needed for configuration (e.g. API key, token, password etc.)
+        """
+        Configures the selected check with the supplied optional configuration file or/and secret
+        @param check_name: Name of the check
+        @param config_file: Check configuration file
+        @param secret: Secret needed for configuration (e.g. API key, token, password etc.)
+        @return: string with check configuration output
         """
         if check_name in self.iac_checks.keys():
             check = self.iac_checks[check_name]
@@ -169,10 +173,11 @@ class ScanRunner:
             raise Exception(f'Nonexistent check: {check_name}')
 
     def scan_iac(self, iac_file: UploadFile, checks: List) -> dict:
-        """Run IaC scanning process (initiate IaC dir, run checks and cleanup IaC dir)
-
-         :param iac_file: IaC file that will be scanned
-         :param checks: List of selected checks to be executed on IaC
+        """
+        Run IaC scanning process (initiate IaC dir, run checks and cleanup IaC dir)
+        @param iac_file: IaC file that will be scanned
+        @param checks: List of selected checks to be executed on IaC
+        @return: dict with scan result
         """
         nonexistent_checks = list(set(checks) - set(
             map(lambda check: check.name,

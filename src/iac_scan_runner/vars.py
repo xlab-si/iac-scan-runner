@@ -1,6 +1,6 @@
 import os
 
-ROOT_DIR = os.getenv("ROOT_DIR", os.getcwd())
+ROOT_DIR = os.getenv("ROOT_DIR", os.path.normpath(os.getcwd() + os.sep + os.pardir))
 TOOLS_DIR = os.getenv("TOOLS_DIR", f'{ROOT_DIR}/tools')
 CONFIG_DIR = os.getenv("CONFIG_DIR", f'{ROOT_DIR}/config')
 NODE_MODULES_DIR = os.getenv("NODE_MODULES_DIR", f'{ROOT_DIR}/node_modules')
