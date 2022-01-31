@@ -6,6 +6,7 @@ import iac_scan_runner.vars as env
 from fastapi import UploadFile
 from iac_scan_runner.checks.ansible_lint import AnsibleLintCheck
 from iac_scan_runner.checks.bandit import BanditCheck
+from iac_scan_runner.checks.checkstyle import CheckStyle
 from iac_scan_runner.checks.es_lint import ESLintCheck
 from iac_scan_runner.checks.git_leaks import GitLeaksCheck
 from iac_scan_runner.checks.git_secrets import GitSecretsCheck
@@ -21,6 +22,7 @@ from iac_scan_runner.checks.terrascan import TerrascanCheck
 from iac_scan_runner.checks.tflint import TFLintCheck
 from iac_scan_runner.checks.tfsec import TfsecCheck
 from iac_scan_runner.checks.ts_lint import TSLintCheck
+from iac_scan_runner.checks.xopera import OperaToscaCheck
 from iac_scan_runner.checks.yamllint import YamlLintCheck
 from iac_scan_runner.utils import generate_random_pathname, unpack_archive_to_dir
 from pydantic import SecretStr
@@ -34,6 +36,7 @@ class ScanRunner:
 
     def init_checks(self):
         """Initiate predefined check objects"""
+        xopera = OperaToscaCheck()
         ansible_lint = AnsibleLintCheck()
         tflint = TFLintCheck()
         tfsec = TfsecCheck()
@@ -52,8 +55,10 @@ class ScanRunner:
         ts_lint = TSLintCheck()
         htmlhint = HtmlHintCheck()
         stylelint = StyleLintCheck()
+        checkstyle = CheckStyle()
 
         self.iac_checks = {
+            xopera.name: xopera,
             ansible_lint.name: ansible_lint,
             tflint.name: tflint,
             tfsec.name: tfsec,
@@ -71,7 +76,8 @@ class ScanRunner:
             es_lint.name: es_lint,
             ts_lint.name: ts_lint,
             htmlhint.name: htmlhint,
-            stylelint.name: stylelint
+            stylelint.name: stylelint,
+            checkstyle.name: checkstyle
         }
 
     def _init_iac_dir(self, iac_file: UploadFile):

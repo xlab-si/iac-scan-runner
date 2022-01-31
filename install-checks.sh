@@ -69,10 +69,10 @@ installRequiredNpmModules() {
 }
 
 installPythonModules() {
+  pip install opera==0.6.8
   pip install pylint==2.9.6
   pip install gixy==0.1.20
   pip install ansible-lint==5.1.2
-  pip install ansible==4.3.0
   pip install yamllint==1.26.1
   pip install bandit==1.7.0
   pip install safety==1.10.3
