@@ -1,6 +1,7 @@
+wheel==0.37.1
 cryptography==2.2.2
 fastapi==0.73.0
-uvicorn[standard]==0.17.1
+uvicorn[standard]==0.17.4
 python-multipart==0.0.5
 pydantic==1.9.0
 content-size-limit-asgi==0.1.5
