@@ -26,7 +26,7 @@ def determine_archive_format(archive_path: str) -> str:
     """
     Figures out the format of the supplied archive file
     @param archive_path: Path to the archive file
-    @return: string with archive format (zip or tar)
+    @return: String with archive format (zip or tar)
     """
     if is_zipfile(archive_path):
         return "zip"
@@ -43,7 +43,7 @@ def generate_random_pathname(prefix: str = "", suffix: str = "") -> str:
     Creates a unique random pathname and select last 6 characters
     @param prefix: Pathname prefix
     @param suffix: Pathname suffix
-    @return: string with random pathname
+    @return: String with random pathname
     """
     pathname = prefix + str(uuid4().hex)[-6:] + suffix
     if path.exists(pathname):
@@ -57,7 +57,7 @@ def unpack_archive_to_dir(archive_path: str, output_dir: Optional[str]) -> str:
     Unpacks archive to a specified directory
     @param archive_path: Path to the archive file
     @param output_dir: Directory where IaC will be unpacked to
-    @return: string output dir name
+    @return: String output dir name
     """
     try:
         if not output_dir:

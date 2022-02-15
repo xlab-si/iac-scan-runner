@@ -1,6 +1,6 @@
 from os import remove
 from shutil import rmtree
-from typing import Optional, List
+from typing import Optional, List, Union
 
 import iac_scan_runner.vars as env
 from fastapi import UploadFile
@@ -25,6 +25,7 @@ from iac_scan_runner.checks.ts_lint import TSLintCheck
 from iac_scan_runner.checks.xopera import OperaToscaCheck
 from iac_scan_runner.checks.yamllint import YamlLintCheck
 from iac_scan_runner.utils import generate_random_pathname, unpack_archive_to_dir
+from iac_scan_runner.scan_response_type import ScanResponseType
 from pydantic import SecretStr
 
 
@@ -77,7 +78,7 @@ class ScanRunner:
             ts_lint.name: ts_lint,
             htmlhint.name: htmlhint,
             stylelint.name: stylelint,
-            checkstyle.name: checkstyle
+            checkstyle.name: checkstyle,
         }
 
     def _init_iac_dir(self, iac_file: UploadFile):
@@ -102,22 +103,34 @@ class ScanRunner:
         except Exception as e:
             raise Exception(f'Error when cleaning IaC directory: {str(e)}.')
 
-    def _run_checks(self, selected_checks: Optional[List]) -> dict:
+    def _run_checks(self, selected_checks: Optional[List], scan_response_type: ScanResponseType) -> Union[dict, str]:
         """
         Run the specified IaC checks
         @param selected_checks: List of selected checks to be executed on IaC
-        @return: dict with output for running checks
+        @param scan_response_type: Scan response type (JSON or HTML)
+        @return: Dict or string with output for running checks
         """
-        scan_output = {}
+        if scan_response_type == ScanResponseType.json:
+            scan_output = {}
+        else:
+            scan_output = ""
         if selected_checks:
             for selected_check in selected_checks:
                 check = self.iac_checks[selected_check]
                 if check.enabled:
-                    scan_output[selected_check] = check.run(self.iac_dir).to_dict()
+                    check_output = check.run(self.iac_dir)
+                    if scan_response_type == ScanResponseType.json:
+                        scan_output[selected_check] = check_output.to_dict()
+                    else:
+                        scan_output += f'### {selected_check} ###\n{check_output.to_string()}\n\n'
         else:
             for iac_check in self.iac_checks.values():
                 if iac_check.enabled:
-                    scan_output[iac_check.name] = iac_check.run(self.iac_dir).to_dict()
+                    check_output = iac_check.run(self.iac_dir)
+                    if scan_response_type == ScanResponseType.json:
+                        scan_output[iac_check.name] = check_output.to_dict()
+                    else:
+                        scan_output += f'### {iac_check.name} ###\n{check_output.to_string()}\n\n'
 
         return scan_output
 
@@ -125,7 +138,7 @@ class ScanRunner:
         """
         Enables the specified check and makes it available to be used
         @param check_name: Name of the check
-        @return: string with result for enabling check
+        @return: String with result for enabling check
         """
         if check_name in self.iac_checks.keys():
             check = self.iac_checks[check_name]
@@ -141,7 +154,7 @@ class ScanRunner:
         """
         Disables the specified check and makes it unavailable to be used
         @param check_name: Name of the check
-        @return: string with result for disabling check
+        @return: String with result for disabling check
         """
         if check_name in self.iac_checks.keys():
             check = self.iac_checks[check_name]
@@ -159,7 +172,7 @@ class ScanRunner:
         @param check_name: Name of the check
         @param config_file: Check configuration file
         @param secret: Secret needed for configuration (e.g. API key, token, password etc.)
-        @return: string with check configuration output
+        @return: String with check configuration output
         """
         if check_name in self.iac_checks.keys():
             check = self.iac_checks[check_name]
@@ -178,12 +191,13 @@ class ScanRunner:
         else:
             raise Exception(f'Nonexistent check: {check_name}')
 
-    def scan_iac(self, iac_file: UploadFile, checks: List) -> dict:
+    def scan_iac(self, iac_file: UploadFile, checks: List, scan_response_type: ScanResponseType) -> Union[dict, str]:
         """
         Run IaC scanning process (initiate IaC dir, run checks and cleanup IaC dir)
         @param iac_file: IaC file that will be scanned
         @param checks: List of selected checks to be executed on IaC
-        @return: dict with scan result
+        @param scan_response_type: Scan response type (JSON or HTML)
+        @return: Dict or string with scan result
         """
         nonexistent_checks = list(set(checks) - set(
             map(lambda check: check.name,
@@ -192,6 +206,6 @@ class ScanRunner:
             raise Exception(f'Nonexistent, disabled or un-configured checks: {nonexistent_checks}.')
 
         self._init_iac_dir(iac_file)
-        scan_output = self._run_checks(checks)
+        scan_output = self._run_checks(checks, scan_response_type)
         self._cleanup_iac_dir()
         return scan_output

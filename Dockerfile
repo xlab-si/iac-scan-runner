@@ -6,7 +6,7 @@ WORKDIR /iac-scan-runner
 
 # install system and API requirements
 RUN apt-get update \
-    && apt-get -y install build-essential bash gcc git perl openssh-client ruby-full curl wget \
+    && apt-get -y install build-essential bash gcc git openssh-client curl wget \
     && curl -sL https://deb.nodesource.com/setup_12.x -o nodesource_setup.sh \
     && bash nodesource_setup.sh \
     && apt-get update \
@@ -17,6 +17,7 @@ RUN apt-get update \
     && pip install -r requirements.txt \
     && ./install-checks.sh
 
+# set working directory
 WORKDIR /iac-scan-runner/src
 
 # start the API

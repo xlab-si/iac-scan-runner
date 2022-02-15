@@ -1,22 +1,23 @@
 import functools
 import io
 import os
-from typing import Optional, List
+from typing import Optional, List, Union
 
 import yaml
 from content_size_limit_asgi import ContentSizeLimitMiddleware
 from fastapi import FastAPI, File, Form, UploadFile, status
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, HTMLResponse
 from fastapi.responses import Response
 from iac_scan_runner.check_target_entity_type import CheckTargetEntityType
+from iac_scan_runner.scan_response_type import ScanResponseType
 from iac_scan_runner.scan_runner import ScanRunner
 from pydantic import SecretStr
 
 app = FastAPI(
     docs_url="/swagger",
     title="IaC Scan Runner REST API",
-    description="Service that checks your IaC for security vulnerabilities",
-    version="0.1.4",
+    description="Service that scans your IaC for security vulnerabilities",
+    version="0.1.5",
     root_path=os.getenv('ROOT_PATH', "/")
 )
 
@@ -90,7 +91,7 @@ async def get_checks(keyword: Optional[str] = None, enabled: Optional[bool] = No
 
 
 @app.patch("/checks/{check_name}/enable", summary="Enable check for running", responses={200: {}, 400: {"model": str}})
-async def patch_enable_checks(check_name: str):
+async def patch_enable_checks(check_name: str) -> JSONResponse:
     """
     Enable check for running (PATCH method)
     @param check_name: Unique name of check to be enabled
@@ -104,7 +105,7 @@ async def patch_enable_checks(check_name: str):
 
 @app.patch("/checks/{check_name}/disable", summary="Disable check for running",
            responses={200: {}, 400: {"model": str}})
-async def patch_disable_checks(check_name: str):
+async def patch_disable_checks(check_name: str) -> JSONResponse:
     """
     Disable check for running (PATCH method)
     @param check_name: Unique name of check to be disabled
@@ -120,9 +121,10 @@ async def patch_disable_checks(check_name: str):
            responses={200: {}, 400: {"model": str}})
 async def patch_configure_check(check_name: str,
                                 config_file: Optional[UploadFile] = File(None, description='Check configuration file'),
-                                secret: Optional[SecretStr] = Form(None,
-                                                                   description='Secret needed for configuration (e.g., '
-                                                                               'API key, token, password etc.)')):
+                                secret: Optional[SecretStr] = Form(None, description='Secret needed for configuration '
+                                                                                     '(e.g., ''API key, token, '
+                                                                                     'password, cloud credentials, '
+                                                                                     'etc.)')) -> JSONResponse:
     """
     Configure check for running (PATCH method)
     @param check_name: Unique name of check to be configured
@@ -140,19 +142,24 @@ async def patch_configure_check(check_name: str,
 @app.post("/scan", summary="Initiate IaC scan", responses={200: {}, 400: {"model": str}})
 async def post_scan(iac: UploadFile = File(..., description='IaC file (zip or tar compressed) that will be scanned'),
                     checks: Optional[List[str]] = Form(None,
-                                                       description='List of selected checks to be executed on IaC')):
+                                                       description='List of selected checks (by their unique names) to '
+                                                                   'be executed on IaC'),
+                    scan_response_type: ScanResponseType = ScanResponseType.json) -> Union[JSONResponse, HTMLResponse]:
     """
     Run IaC scan (POST method)
     @param iac: IaC file (zip or tar compressed) that will be scanned'
     @param checks: List of selected checks to be executed on IaC
-    @return: JSONResponse object (with status code 200 or 400)
+    @param scan_response_type: Scan response type (JSON or HTML)
+    @return: JSONResponse or HTMLResponse object (with status code 200 or 400)
     """
     try:
         if not checks or checks == ['']:
             checks = []
         else:
             checks = list(set(checks[0].split(",")))
-        check_output = scan_runner.scan_iac(iac, checks)
-        return JSONResponse(status_code=status.HTTP_200_OK, content=check_output)
+        scan_output = scan_runner.scan_iac(iac, checks, scan_response_type)
+        if scan_response_type == ScanResponseType.html:
+            return HTMLResponse(status_code=status.HTTP_200_OK, content=scan_output)
+        return JSONResponse(status_code=status.HTTP_200_OK, content=scan_output)
     except Exception as e:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))

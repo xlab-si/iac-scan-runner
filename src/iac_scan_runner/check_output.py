@@ -10,7 +10,14 @@ class CheckOutput:
 
     def to_dict(self) -> dict:
         """
-        Transform CheckOutput object to dict
-        @return: string with result for check output
+        Transform CheckOutput object to dict (for JSON response)
+        @return: dict with check output and return code
         """
         return {"output": self.output, "rc": self.rc}
+
+    def to_string(self) -> str:
+        """
+        Transform CheckOutput object to string (for HTML response)
+        @return: string with result for check output
+        """
+        return f'Return code: {self.rc}\nOutput: {self.output}'
