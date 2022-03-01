@@ -90,10 +90,10 @@ async def get_checks(keyword: Optional[str] = None, enabled: Optional[bool] = No
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))
 
 
-@app.patch("/checks/{check_name}/enable", summary="Enable check for running", responses={200: {}, 400: {"model": str}})
-async def patch_enable_checks(check_name: str) -> JSONResponse:
+@app.put("/checks/{check_name}/enable", summary="Enable check for running", responses={200: {}, 400: {"model": str}})
+async def put_enable_checks(check_name: str) -> JSONResponse:
     """
-    Enable check for running (PATCH method)
+    Enable check for running (PUT method)
     @param check_name: Unique name of check to be enabled
     @return: JSONResponse object (with status code 200 or 400)
     """
@@ -103,11 +103,11 @@ async def patch_enable_checks(check_name: str) -> JSONResponse:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))
 
 
-@app.patch("/checks/{check_name}/disable", summary="Disable check for running",
-           responses={200: {}, 400: {"model": str}})
-async def patch_disable_checks(check_name: str) -> JSONResponse:
+@app.put("/checks/{check_name}/disable", summary="Disable check for running",
+         responses={200: {}, 400: {"model": str}})
+async def put_disable_checks(check_name: str) -> JSONResponse:
     """
-    Disable check for running (PATCH method)
+    Disable check for running (PUT method)
     @param check_name: Unique name of check to be disabled
     @return: JSONResponse object (with status code 200 or 400)
     """
@@ -117,16 +117,16 @@ async def patch_disable_checks(check_name: str) -> JSONResponse:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))
 
 
-@app.patch("/checks/{check_name}/configure", summary="Configure check for running",
-           responses={200: {}, 400: {"model": str}})
-async def patch_configure_check(check_name: str,
-                                config_file: Optional[UploadFile] = File(None, description='Check configuration file'),
-                                secret: Optional[SecretStr] = Form(None, description='Secret needed for configuration '
-                                                                                     '(e.g., ''API key, token, '
-                                                                                     'password, cloud credentials, '
-                                                                                     'etc.)')) -> JSONResponse:
+@app.put("/checks/{check_name}/configure", summary="Configure check for running",
+         responses={200: {}, 400: {"model": str}})
+async def put_configure_check(check_name: str,
+                              config_file: Optional[UploadFile] = File(None, description='Check configuration file'),
+                              secret: Optional[SecretStr] = Form(None, description='Secret needed for configuration '
+                                                                                   '(e.g., ''API key, token, '
+                                                                                   'password, cloud credentials, '
+                                                                                   'etc.)')) -> JSONResponse:
     """
-    Configure check for running (PATCH method)
+    Configure check for running (PUT method)
     @param check_name: Unique name of check to be configured
     @param config_file: Check configuration file
     @param secret: Secret needed for configuration (e.g., API key, token, password, cloud credentials, etc.)
