@@ -24,7 +24,8 @@ class GixyCheck(Check):
         for filename in listdir(directory):
             if filename == "nginx.conf":
                 if self._config_filename:
-                    return run_command(f'gixy -c {env.CONFIG_DIR}/{self._config_filename} {filename}', directory)
+                    return run_command(f'{env.GIXY_CHECK_PATH} -c {env.CONFIG_DIR}/{self._config_filename} {filename}',
+                                       directory)
                 else:
-                    return run_command(f'gixy {filename}', directory)
+                    return run_command(f'{env.GIXY_CHECK_PATH} {filename}', directory)
         return CheckOutput("There is no nginx.conf file to check.", 0)

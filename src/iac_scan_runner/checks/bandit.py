@@ -22,6 +22,6 @@ class BanditCheck(Check):
 
     def run(self, directory: str) -> CheckOutput:
         if self._config_filename:
-            return run_command(f'bandit -c {env.CONFIG_DIR}/{self._config_filename} -r .', directory)
+            return run_command(f'{env.BANDIT_CHECK_PATH} -c {env.CONFIG_DIR}/{self._config_filename} -r .', directory)
         else:
-            return run_command("bandit -r .", directory)
+            return run_command(f'{env.BANDIT_CHECK_PATH} -r .', directory)

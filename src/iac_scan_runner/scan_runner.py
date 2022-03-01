@@ -14,18 +14,20 @@ from iac_scan_runner.checks.gixy import GixyCheck
 from iac_scan_runner.checks.hadolint import HadolintCheck
 from iac_scan_runner.checks.htmlhint import HtmlHintCheck
 from iac_scan_runner.checks.markdown_lint import MarkdownLintCheck
+from iac_scan_runner.checks.opera import OperaToscaCheck
 from iac_scan_runner.checks.pylint import PylintCheck
 from iac_scan_runner.checks.pyup_safety import PyUpSafetyCheck
 from iac_scan_runner.checks.shellcheck import ShellCheck
+from iac_scan_runner.checks.snyk import SnykCheck
+from iac_scan_runner.checks.sonar_scanner import SonarScannerCheck
 from iac_scan_runner.checks.stylelint import StyleLintCheck
 from iac_scan_runner.checks.terrascan import TerrascanCheck
 from iac_scan_runner.checks.tflint import TFLintCheck
 from iac_scan_runner.checks.tfsec import TfsecCheck
 from iac_scan_runner.checks.ts_lint import TSLintCheck
-from iac_scan_runner.checks.xopera import OperaToscaCheck
 from iac_scan_runner.checks.yamllint import YamlLintCheck
-from iac_scan_runner.utils import generate_random_pathname, unpack_archive_to_dir
 from iac_scan_runner.scan_response_type import ScanResponseType
+from iac_scan_runner.utils import generate_random_pathname, unpack_archive_to_dir
 from pydantic import SecretStr
 
 
@@ -57,6 +59,8 @@ class ScanRunner:
         htmlhint = HtmlHintCheck()
         stylelint = StyleLintCheck()
         checkstyle = CheckStyle()
+        snyk = SnykCheck()
+        sonar_scanner = SonarScannerCheck()
 
         self.iac_checks = {
             xopera.name: xopera,
@@ -79,6 +83,8 @@ class ScanRunner:
             htmlhint.name: htmlhint,
             stylelint.name: stylelint,
             checkstyle.name: checkstyle,
+            snyk.name: snyk,
+            sonar_scanner.name: sonar_scanner
         }
 
     def _init_iac_dir(self, iac_file: UploadFile):

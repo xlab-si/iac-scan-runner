@@ -23,10 +23,10 @@ class TSLintCheck(Check):
     def run(self, directory: str) -> CheckOutput:
         if self._config_filename:
             return run_command(
-                f'{env.NODE_MODULES_DIR}/.bin/eslint -c {env.CONFIG_DIR}/{self._config_filename} '
+                f'{env.ES_LINT_CHECK_PATH} -c {env.CONFIG_DIR}/{self._config_filename} '
                 f'--no-error-on-unmatched-pattern --ext .ts .', directory
             )
         else:
             return run_command(
-                f'{env.NODE_MODULES_DIR}/.bin/eslint --no-error-on-unmatched-pattern --ext .ts .', directory
+                f'{env.ES_LINT_CHECK_PATH} --no-error-on-unmatched-pattern --ext .ts .', directory
             )

@@ -1,5 +1,6 @@
 from os import listdir
 
+import iac_scan_runner.vars as env
 from iac_scan_runner.check import Check
 from iac_scan_runner.check_output import CheckOutput
 from iac_scan_runner.check_target_entity_type import CheckTargetEntityType
@@ -14,5 +15,5 @@ class PyUpSafetyCheck(Check):
     def run(self, directory: str) -> CheckOutput:
         for filename in listdir(directory):
             if filename == "requirements.txt":
-                return run_command("safety check -r requirements.txt", directory)
+                return run_command(f'{env.SAFETY_CHECK_PATH} check -r requirements.txt', directory)
         return CheckOutput("There is no requirements.txt to check.", 0)

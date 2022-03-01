@@ -21,6 +21,7 @@ class TfsecCheck(Check):
 
     def run(self, directory: str) -> CheckOutput:
         if self._config_filename:
-            return run_command(f'{env.TF_SEC_PATH} --config-file {env.CONFIG_DIR}/{self._config_filename} .', directory)
+            return run_command(f'{env.TFSEC_CHECK_PATH} --config-file {env.CONFIG_DIR}/{self._config_filename} .',
+                               directory)
         else:
-            return run_command(f'{env.TF_SEC_PATH} .', directory)
+            return run_command(f'{env.TFSEC_CHECK_PATH} .', directory)

@@ -25,8 +25,9 @@ class HadolintCheck(Check):
         for filename in listdir(directory):
             if filename == "Dockerfile":
                 if self._config_filename:
-                    return run_command(f'{env.HADOLINT_PATH} -c {env.CONFIG_DIR}/{self._config_filename} Dockerfile',
-                                       directory)
+                    return run_command(
+                        f'{env.HADOLINT_CHECK_PATH} -c {env.CONFIG_DIR}/{self._config_filename} Dockerfile',
+                        directory)
                 else:
-                    return run_command(f'{env.HADOLINT_PATH} Dockerfile', directory)
+                    return run_command(f'{env.HADOLINT_CHECK_PATH} Dockerfile', directory)
         return CheckOutput("There is no Dockerfile to check.", 0)

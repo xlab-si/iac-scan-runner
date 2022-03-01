@@ -21,6 +21,6 @@ class TFLintCheck(Check):
 
     def run(self, directory: str) -> CheckOutput:
         if self._config_filename:
-            return run_command(f'tflint -c {env.CONFIG_DIR}/{self._config_filename} .', directory)
+            return run_command(f'{env.TFLINT_CHECK_PATH} -c {env.CONFIG_DIR}/{self._config_filename} .', directory)
         else:
-            return run_command("tflint .", directory)
+            return run_command(f'{env.TFLINT_CHECK_PATH} .', directory)

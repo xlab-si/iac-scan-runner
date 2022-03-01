@@ -22,6 +22,6 @@ class HtmlHintCheck(Check):
 
     def run(self, directory: str) -> CheckOutput:
         if self._config_filename:
-            return run_command(f'npx htmlhint -c {env.CONFIG_DIR}/{self._config_filename}', directory)
+            return run_command(f'{env.HTMLHINT_CHECK_PATH} -c {env.CONFIG_DIR}/{self._config_filename}', directory)
         else:
-            return run_command(f'npx htmlhint', directory)
+            return run_command(f'{env.HTMLHINT_CHECK_PATH}', directory)

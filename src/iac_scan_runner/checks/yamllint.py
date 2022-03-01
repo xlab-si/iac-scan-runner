@@ -23,6 +23,6 @@ class YamlLintCheck(Check):
 
     def run(self, directory: str) -> CheckOutput:
         if self._config_filename:
-            return run_command(f'yamllint -c {env.CONFIG_DIR}/{self._config_filename} .', directory)
+            return run_command(f'{env.YAMLLINT_CHECK_PATH} -c {env.CONFIG_DIR}/{self._config_filename} .', directory)
         else:
-            return run_command(f'yamllint .', directory)
+            return run_command(f'{env.YAMLLINT_CHECK_PATH} .', directory)

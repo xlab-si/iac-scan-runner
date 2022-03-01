@@ -23,6 +23,7 @@ class AnsibleLintCheck(Check):
 
     def run(self, directory: str) -> CheckOutput:
         if self._config_filename:
-            return run_command(f'ansible-lint -p -c {env.CONFIG_DIR}/{self._config_filename}', directory)
+            return run_command(f'{env.ANSIBLE_LINT_CHECK_PATH} -p -c {env.CONFIG_DIR}/{self._config_filename}',
+                               directory)
         else:
-            return run_command("ansible-lint -p", directory)
+            return run_command(f'{env.ANSIBLE_LINT_CHECK_PATH} -p', directory)

@@ -17,7 +17,7 @@ class ShellCheck(Check):
         rc = 0
         for filename in listdir(directory):
             if filename.endswith(".sh"):
-                check_output = run_command(f'{env.CHECK_SHELL_PATH} .', directory)
+                check_output = run_command(f'{env.SHELL_CHECK_PATH} .', directory)
                 output += check_output.output + "\n"
                 rc += check_output.rc
         if not output:

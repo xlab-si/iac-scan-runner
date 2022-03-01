@@ -22,6 +22,7 @@ class TerrascanCheck(Check):
 
     def run(self, directory: str) -> CheckOutput:
         if self._config_filename:
-            return run_command(f'{env.TERRASCAN_PATH} -c {env.CONFIG_DIR}/{self._config_filename} scan', directory)
+            return run_command(f'{env.TERRASCAN_CHECK_PATH} -c {env.CONFIG_DIR}/{self._config_filename} scan',
+                               directory)
         else:
-            return run_command(f'{env.TERRASCAN_PATH} scan', directory)
+            return run_command(f'{env.TERRASCAN_CHECK_PATH} scan', directory)

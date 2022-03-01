@@ -29,7 +29,7 @@ class CheckStyle(Check):
         for filename in listdir(directory):
             if filename.endswith(".java"):
                 check_output = run_command(
-                    f'java -jar {env.CHECK_STYLE_PATH} -c {env.CONFIG_DIR}/{self._config_filename} {filename}',
+                    f'java -jar {env.CHECKSTYLE_CHECK_PATH} -c {env.CONFIG_DIR}/{self._config_filename} {filename}',
                     directory
                 )
                 output += check_output.output + "\n"

@@ -1,3 +1,4 @@
+import iac_scan_runner.vars as env
 from iac_scan_runner.check import Check
 from iac_scan_runner.check_output import CheckOutput
 from iac_scan_runner.check_target_entity_type import CheckTargetEntityType
@@ -10,4 +11,4 @@ class GitSecretsCheck(Check):
                          CheckTargetEntityType.iac)
 
     def run(self, directory: str) -> CheckOutput:
-        return run_command("git secrets --scan -r .", directory)
+        return run_command(f'{env.GIT_SECRETS_CHECK_PATH} --scan -r .', directory)

@@ -22,6 +22,7 @@ class MarkdownLintCheck(Check):
 
     def run(self, directory: str) -> CheckOutput:
         if self._config_filename:
-            return run_command(f'{env.MDL_PATH} -c {env.CONFIG_DIR}/{self._config_filename} -v .', directory)
+            return run_command(f'{env.MARKDOWN_LINT_CHECK_PATH} -c {env.CONFIG_DIR}/{self._config_filename} -v .',
+                               directory)
         else:
-            return run_command(f'{env.MDL_PATH} -v .', directory)
+            return run_command(f'{env.MARKDOWN_LINT_CHECK_PATH} -v .', directory)

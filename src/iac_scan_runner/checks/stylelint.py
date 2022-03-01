@@ -28,12 +28,12 @@ class StyleLintCheck(Check):
             if filename.endswith((".scss", ".sas", ".js", ".css")):
                 if self._config_filename:
                     check_output = run_command(
-                        f'{env.NODE_MODULES_DIR}/.bin/stylelint --config {env.CONFIG_DIR}/{self._config_filename} '
+                        f'{env.STYLELINT_CHECK_PATH} --config {env.CONFIG_DIR}/{self._config_filename} '
                         f'--no-error-on-unmatched-pattern --ext .js .', directory
                     )
                 else:
                     check_output = run_command(
-                        f'{env.NODE_MODULES_DIR}/.bin/stylelint --no-error-on-unmatched-pattern --ext .js .', directory)
+                        f'{env.STYLELINT_CHECK_PATH} --no-error-on-unmatched-pattern --ext .js .', directory)
                 output += check_output.output + "\n"
                 rc += check_output.rc
         if not output:
