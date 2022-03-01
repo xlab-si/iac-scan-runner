@@ -16,7 +16,7 @@ from pydantic import SecretStr
 app = FastAPI(
     docs_url="/swagger",
     title="IaC Scan Runner REST API",
-    description="Service that scans your IaC for security vulnerabilities",
+    description="Service that scans your Infrastructure as Code for common vulnerabilities",
     version="0.1.5",
     root_path=os.getenv('ROOT_PATH', "/")
 )
