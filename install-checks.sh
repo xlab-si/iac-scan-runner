@@ -88,11 +88,13 @@ installMarkdownLintIfNot() {
   fi
 }
 
-installRequiredNpmModules() {
-  cp package.json "${TOOLS_DIR}/package.json"
-  cp package-lock.json "${TOOLS_DIR}/package-lock.json"
-  npm i --prefix "${TOOLS_DIR}" --force
-  rm "${TOOLS_DIR}/package.json" "${TOOLS_DIR}/package-lock.json"
+installRequiredNpmModulesIfNot() {
+  if [ ! -f "$NODE_MODULES_DIR" ]; then
+    cp package.json "${TOOLS_DIR}/package.json"
+    cp package-lock.json "${TOOLS_DIR}/package-lock.json"
+    npm i --prefix "${TOOLS_DIR}" --force
+    rm "${TOOLS_DIR}/package.json" "${TOOLS_DIR}/package-lock.json"
+  fi
 }
 
 installPythonModules() {
@@ -100,36 +102,36 @@ installPythonModules() {
 }
 
 installGitLeaksIfNot() {
-  if [ ! -f "${GIT_LEAKS_CHECK_PATH}" ]; then
+  if [ ! -f "$GIT_LEAKS_CHECK_PATH" ]; then
     wget ${gitLeaksUrl} -O "${GIT_LEAKS_CHECK_PATH}"
     chmod +x "${GIT_LEAKS_CHECK_PATH}"
   fi
 }
 
 installGitSecretsIfNot() {
-  if [ ! -d "$GIT_SECRETS_CHECK_PATH" ]; then
+  if [ ! -f "$GIT_SECRETS_CHECK_PATH" ]; then
     git clone ${gitSecretsUrl} "${TMP_DIR}/git-secrets"
     cd "${TMP_DIR}/git-secrets" || exit
-    PREFIX="${GIT_SECRETS_CHECK_PATH}" make install
+    PREFIX="${TOOLS_DIR}/git-secrets" make install
   fi
 }
 
 installTFLintIfNot() {
-  if ! [ -x "$(command -v tflint)" ]; then
+  if [ ! -f "$TFLINT_CHECK_PATH" ]; then
     export TFLINT_INSTALL_PATH="$TOOLS_DIR"
     curl -fsSL ${tflintUrl} | bash
   fi
 }
 
 installTfsecIfNot() {
-  if [ ! -f "${TFSEC_CHECK_PATH}" ]; then
+  if [ ! -f "$TFSEC_CHECK_PATH" ]; then
     wget ${tfsecUrl} -O "${TFSEC_CHECK_PATH}"
     chmod +x "${TFSEC_CHECK_PATH}"
   fi
 }
 
 installTerrascanIfNot() {
-  if [ ! -f "${TERRASCAN_CHECK_PATH}" ]; then
+  if [ ! -f "$TERRASCAN_CHECK_PATH" ]; then
     curl -L "$(curl -s ${terrascanUrl} | grep -o -E "https://.+?_Linux_i386.tar.gz")" >"${TMP_DIR}/terrascan.tar.gz"
     tar -xf "${TMP_DIR}/terrascan.tar.gz" terrascan
     install terrascan "${TOOLS_DIR}"
@@ -138,7 +140,7 @@ installTerrascanIfNot() {
 }
 
 installSonarScannerIfNot() {
-  if [ ! -f "${SONAR_SCANNER_CHECK_PATH}" ]; then
+  if [ ! -f "$SONAR_SCANNER_CHECK_PATH" ]; then
     wget ${sonarScannerUrl} -O "${TMP_DIR}/sonar-scanner"
     unzip "${TMP_DIR}/sonar-scanner" -d "${TOOLS_DIR}"
     mv "${TOOLS_DIR}/sonar-scanner-4.6.2.2472-linux" "${TOOLS_DIR}/sonar-scanner"
@@ -152,7 +154,7 @@ createDirIfNot "${TMP_DIR}"
 createDirIfNot "${NODE_MODULES_DIR}"
 createDirIfNot "${CONFIG_DIR}"
 installPythonModules
-installRequiredNpmModules
+installRequiredNpmModulesIfNot
 downloadCheckStyleJarIfNot
 installShellCheckIfNot
 installHadolintlIfNot
