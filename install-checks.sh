@@ -6,7 +6,7 @@ export ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export VIRTUALENV_DIR="${ROOT_DIR}/.venv"
 export TOOLS_DIR="${ROOT_DIR}/tools"
 export TMP_DIR="${TOOLS_DIR}/tmp"
-export NODE_MODULES_DIR="${TOOLS_DIR}/node_modules"
+export NODE_MODULES_DIR="${ROOT_DIR}/node_modules"
 export CONFIG_DIR="${ROOT_DIR}/config"
 # env vars for check executables
 export OPERA_CHECK_PATH="${VIRTUALENV_DIR}/bin/opera/"
@@ -90,10 +90,7 @@ installMarkdownLintIfNot() {
 
 installRequiredNpmModulesIfNot() {
   if [ ! -f "$NODE_MODULES_DIR" ]; then
-    cp package.json "${TOOLS_DIR}/package.json"
-    cp package-lock.json "${TOOLS_DIR}/package-lock.json"
-    npm i --prefix "${TOOLS_DIR}" --force
-    rm "${TOOLS_DIR}/package.json" "${TOOLS_DIR}/package-lock.json"
+    npm install --force
   fi
 }
 
