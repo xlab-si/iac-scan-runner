@@ -27,6 +27,7 @@ export SHELL_CHECK_PATH="${TOOLS_DIR}/shellcheck"
 export ES_LINT_CHECK_PATH="${NODE_MODULES_DIR}/.bin/eslint"
 export HTMLHINT_CHECK_PATH="${NODE_MODULES_DIR}/.bin/htmlhint"
 export STYLELINT_CHECK_PATH="${NODE_MODULES_DIR}/.bin/stylelint"
+export CLOC_CHECK_PATH="${NODE_MODULES_DIR}/.bin/cloc"
 export CHECKSTYLE_CHECK_PATH="${TOOLS_DIR}/checkstyle.jar"
 export SONAR_SCANNER_CHECK_PATH="${TOOLS_DIR}/sonar-scanner/bin/sonar-scanner"
 export SNYK_CHECK_PATH="${NODE_MODULES_DIR}/.bin/snyk"
@@ -40,7 +41,7 @@ gitSecretsUrl='https://github.com/awslabs/git-secrets.git'
 tflintUrl='https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh'
 tfsecUrl='https://github.com/tfsec/tfsec/releases/download/v0.51.1/tfsec-linux-amd64'
 terrascanUrl='https://api.github.com/repos/accurics/terrascan/releases/latest'
-sonarScannerUrl='https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip'
+sonarScannerUrl='https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.7.0.2747.zip'
 
 # functions below are used to install the check tools
 createAndActivateVenvDirIfNot() {
@@ -140,7 +141,7 @@ installSonarScannerIfNot() {
   if [ ! -f "$SONAR_SCANNER_CHECK_PATH" ]; then
     wget ${sonarScannerUrl} -O "${TMP_DIR}/sonar-scanner"
     unzip "${TMP_DIR}/sonar-scanner" -d "${TOOLS_DIR}"
-    mv "${TOOLS_DIR}/sonar-scanner-4.6.2.2472-linux" "${TOOLS_DIR}/sonar-scanner"
+    mv "${TOOLS_DIR}/sonar-scanner-cli-4.7.0.2747" "${TOOLS_DIR}/sonar-scanner"
   fi
 }
 

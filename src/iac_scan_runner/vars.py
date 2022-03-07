@@ -5,7 +5,7 @@ ROOT_DIR = os.getenv("ROOT_DIR", os.path.normpath(os.getcwd() + os.sep + os.pard
 VIRTUALENV_DIR = os.getenv("VIRTUALENV_DIR", f'{ROOT_DIR}/.venv')
 TOOLS_DIR = os.getenv("TOOLS_DIR", f'{ROOT_DIR}/tools')
 CONFIG_DIR = os.getenv("CONFIG_DIR", f'{ROOT_DIR}/config')
-NODE_MODULES_DIR = os.getenv("NODE_MODULES_DIR", f'{TOOLS_DIR}/node_modules')
+NODE_MODULES_DIR = os.getenv("NODE_MODULES_DIR", f'{ROOT_DIR}/node_modules')
 TMP_DIR = os.getenv("TMP_DIR", f'{TOOLS_DIR}/tmp')
 
 # vars for paths to check executables
@@ -24,9 +24,10 @@ MARKDOWN_LINT_CHECK_PATH = os.getenv("MARKDOWN_LINT_CHECK_PATH", f'{TOOLS_DIR}/m
 HADOLINT_CHECK_PATH = os.getenv("HADOLINT_CHECK_PATH", f'{TOOLS_DIR}/hadolint')
 GIXY_CHECK_PATH = os.getenv("GIXY_CHECK_PATH", f'{VIRTUALENV_DIR}/bin/gixy')
 SHELL_CHECK_PATH = os.getenv("SHELL_CHECK_PATH", f'{TOOLS_DIR}/shellcheck')
-CHECKSTYLE_CHECK_PATH = os.getenv("CHECKSTYLE_CHECK_PATH", f'{TOOLS_DIR}/checkstyle.jar')
 ES_LINT_CHECK_PATH = os.getenv("ES_LINT_CHECK_PATH", f'{NODE_MODULES_DIR}/.bin/eslint')
 HTMLHINT_CHECK_PATH = os.getenv("HTMLHINT_CHECK_PATH", f'{NODE_MODULES_DIR}/.bin/htmlhint')
 STYLELINT_CHECK_PATH = os.getenv("STYLELINT_CHECK_PATH", f'{NODE_MODULES_DIR}/.bin/stylelint')
+CLOC_CHECK_PATH = os.getenv("CLOC_CHECK_PATH", f'{NODE_MODULES_DIR}/.bin/cloc')
+CHECKSTYLE_CHECK_PATH = os.getenv("CHECKSTYLE_CHECK_PATH", f'{TOOLS_DIR}/checkstyle.jar')
 SONAR_SCANNER_CHECK_PATH = os.getenv("SONAR_SCANNER_CHECK_PATH", f'{TOOLS_DIR}/sonar-scanner/bin/sonar-scanner')
 SNYK_CHECK_PATH = os.getenv("SNYK_CHECK_PATH", f'{NODE_MODULES_DIR}/.bin/snyk')
