@@ -93,7 +93,7 @@ class ScanRunner:
     def _init_iac_dir(self, iac_file: UploadFile):
         """
         Initiate new unique IaC directory for scanning
-        @param iac_file: IaC file
+        :param iac_file: IaC file
         """
         try:
             iac_filename_local = generate_random_pathname(iac_file.filename)
@@ -115,9 +115,9 @@ class ScanRunner:
     def _run_checks(self, selected_checks: Optional[List], scan_response_type: ScanResponseType) -> Union[dict, str]:
         """
         Run the specified IaC checks
-        @param selected_checks: List of selected checks to be executed on IaC
-        @param scan_response_type: Scan response type (JSON or HTML)
-        @return: Dict or string with output for running checks
+        :param selected_checks: List of selected checks to be executed on IaC
+        :param scan_response_type: Scan response type (JSON or HTML)
+        :return: Dict or string with output for running checks
         """
         if scan_response_type == ScanResponseType.json:
             scan_output = {}
@@ -146,8 +146,8 @@ class ScanRunner:
     def enable_check(self, check_name: str) -> str:
         """
         Enables the specified check and makes it available to be used
-        @param check_name: Name of the check
-        @return: String with result for enabling check
+        :param check_name: Name of the check
+        :return: String with result for enabling check
         """
         if check_name in self.iac_checks.keys():
             check = self.iac_checks[check_name]
@@ -162,8 +162,8 @@ class ScanRunner:
     def disable_check(self, check_name: str) -> str:
         """
         Disables the specified check and makes it unavailable to be used
-        @param check_name: Name of the check
-        @return: String with result for disabling check
+        :param check_name: Name of the check
+        :return: String with result for disabling check
         """
         if check_name in self.iac_checks.keys():
             check = self.iac_checks[check_name]
@@ -178,10 +178,10 @@ class ScanRunner:
     def configure_check(self, check_name: str, config_file: Optional[UploadFile], secret: Optional[SecretStr]) -> str:
         """
         Configures the selected check with the supplied optional configuration file or/and secret
-        @param check_name: Name of the check
-        @param config_file: Check configuration file
-        @param secret: Secret needed for configuration (e.g. API key, token, password etc.)
-        @return: String with check configuration output
+        :param check_name: Name of the check
+        :param config_file: Check configuration file
+        :param secret: Secret needed for configuration (e.g. API key, token, password etc.)
+        :return: String with check configuration output
         """
         if check_name in self.iac_checks.keys():
             check = self.iac_checks[check_name]
@@ -203,10 +203,10 @@ class ScanRunner:
     def scan_iac(self, iac_file: UploadFile, checks: List, scan_response_type: ScanResponseType) -> Union[dict, str]:
         """
         Run IaC scanning process (initiate IaC dir, run checks and cleanup IaC dir)
-        @param iac_file: IaC file that will be scanned
-        @param checks: List of selected checks to be executed on IaC
-        @param scan_response_type: Scan response type (JSON or HTML)
-        @return: Dict or string with scan result
+        :param iac_file: IaC file that will be scanned
+        :param checks: List of selected checks to be executed on IaC
+        :param scan_response_type: Scan response type (JSON or HTML)
+        :return: Dict or string with scan result
         """
         nonexistent_checks = list(set(checks) - set(
             map(lambda check: check.name,

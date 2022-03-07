@@ -11,9 +11,9 @@ class Check(ABC):
                  target_entity_type: Optional[CheckTargetEntityType] = None):
         """
         Initialize new IaC check
-        @param name: Name of the check
-        @param description: Check description
-        @param target_entity_type: CheckTargetEntityType object - IaC, component or both
+        :param name: Name of the check
+        :param description: Check description
+        :param target_entity_type: CheckTargetEntityType object - IaC, component or both
         """
         self.name = name
         self.description = description
@@ -25,8 +25,8 @@ class Check(ABC):
     def configure(self, config_filename: Optional[str], secret: Optional[SecretStr]):
         """
         Initiate check configuration (override this method if configuration is needed)
-        @param config_filename: Name of the check configuration file
-        @param secret: Secret needed for configuration (e.g. API key, token, password, cloud credentials, etc.)
+        :param config_filename: Name of the check configuration file
+        :param secret: Secret needed for configuration (e.g. API key, token, password, cloud credentials, etc.)
         """
         pass
 
@@ -34,7 +34,7 @@ class Check(ABC):
     def run(self, directory: str) -> CheckOutput:
         """
         Initiate check run (this method has to be implemented for every subclass)
-        @param directory: Target directory where the check will be executed
-        @return: CheckOutput object
+        :param directory: Target directory where the check will be executed
+        :return: CheckOutput object
         """
         pass

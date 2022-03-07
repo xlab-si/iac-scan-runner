@@ -22,8 +22,8 @@ def openapi(
         output: str = typer.Option(None, "--output", "-o", help="Output file path")):
     """
     Get OpenAPI specification
-    @param output_format: OpenAPI output format (JSON or YAML)
-    @param output: Output file path name, where OpenAPI specification will be written to
+    :param output_format: OpenAPI output format (JSON or YAML)
+    :param output: Output file path name, where OpenAPI specification will be written to
     """
     try:
         if output_format == OpenApiFormat.json:

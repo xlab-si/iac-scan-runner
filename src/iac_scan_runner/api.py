@@ -13,6 +13,7 @@ from iac_scan_runner.scan_response_type import ScanResponseType
 from iac_scan_runner.scan_runner import ScanRunner
 from pydantic import SecretStr
 
+# create an API instance
 app = FastAPI(
     docs_url="/swagger",
     title="IaC Scan Runner REST API",
@@ -31,7 +32,7 @@ scan_runner.init_checks()
 def openapi_yaml() -> str:
     """
     Return OpenAPI specification as YAML string
-    @return: string with YAML
+    :return: string with YAML
     """
     openapi_json = app.openapi()
     yaml_str = io.StringIO()
@@ -44,7 +45,7 @@ def openapi_yaml() -> str:
 def get_openapi_yml() -> Response:
     """
     GET OpenAPI specification in YAML format (.yml)
-    @return: Response object
+    :return: Response object
     """
     return Response(openapi_yaml(), media_type='text/yml')
 
@@ -54,7 +55,7 @@ def get_openapi_yml() -> Response:
 def get_openapi_yaml() -> Response:
     """
     GET OpenAPI specification in YAML format (.yaml)
-    @return: Response object
+    :return: Response object
     """
     return Response(openapi_yaml(), media_type='text/yaml')
 
@@ -64,11 +65,11 @@ async def get_checks(keyword: Optional[str] = None, enabled: Optional[bool] = No
                      target_entity_type: Optional[CheckTargetEntityType] = None) -> JSONResponse:
     """
     Retrieve and filter checks (GET method)
-    @param keyword: substring for filtering
-    @param enabled: bool saying whether check is enabled or disabled
-    @param configured: bool saying whether check is configured or not
-    @param target_entity_type: CheckTargetEntityType object - IaC, component or both
-    @return: JSONResponse object (with status code 200 or 400)
+    :param keyword: substring for filtering
+    :param enabled: bool saying whether check is enabled or disabled
+    :param configured: bool saying whether check is configured or not
+    :param target_entity_type: CheckTargetEntityType object - IaC, component or both
+    :return: JSONResponse object (with status code 200 or 400)
     """
     try:
         filtered_checks = scan_runner.iac_checks.values()
@@ -94,8 +95,8 @@ async def get_checks(keyword: Optional[str] = None, enabled: Optional[bool] = No
 async def put_enable_checks(check_name: str) -> JSONResponse:
     """
     Enable check for running (PUT method)
-    @param check_name: Unique name of check to be enabled
-    @return: JSONResponse object (with status code 200 or 400)
+    :param check_name: Unique name of check to be enabled
+    :return: JSONResponse object (with status code 200 or 400)
     """
     try:
         return JSONResponse(status_code=status.HTTP_200_OK, content=scan_runner.enable_check(check_name))
@@ -108,8 +109,8 @@ async def put_enable_checks(check_name: str) -> JSONResponse:
 async def put_disable_checks(check_name: str) -> JSONResponse:
     """
     Disable check for running (PUT method)
-    @param check_name: Unique name of check to be disabled
-    @return: JSONResponse object (with status code 200 or 400)
+    :param check_name: Unique name of check to be disabled
+    :return: JSONResponse object (with status code 200 or 400)
     """
     try:
         return JSONResponse(status_code=status.HTTP_200_OK, content=scan_runner.disable_check(check_name))
@@ -127,10 +128,10 @@ async def put_configure_check(check_name: str,
                                                                                    'etc.)')) -> JSONResponse:
     """
     Configure check for running (PUT method)
-    @param check_name: Unique name of check to be configured
-    @param config_file: Check configuration file
-    @param secret: Secret needed for configuration (e.g., API key, token, password, cloud credentials, etc.)
-    @return: JSONResponse object (with status code 200 or 400)
+    :param check_name: Unique name of check to be configured
+    :param config_file: Check configuration file
+    :param secret: Secret needed for configuration (e.g., API key, token, password, cloud credentials, etc.)
+    :return: JSONResponse object (with status code 200 or 400)
     """
     try:
         return JSONResponse(status_code=status.HTTP_200_OK,
@@ -147,10 +148,10 @@ async def post_scan(iac: UploadFile = File(..., description='IaC file (zip or ta
                     scan_response_type: ScanResponseType = ScanResponseType.json) -> Union[JSONResponse, HTMLResponse]:
     """
     Run IaC scan (POST method)
-    @param iac: IaC file (zip or tar compressed) that will be scanned'
-    @param checks: List of selected checks to be executed on IaC
-    @param scan_response_type: Scan response type (JSON or HTML)
-    @return: JSONResponse or HTMLResponse object (with status code 200 or 400)
+    :param iac: IaC file (zip or tar compressed) that will be scanned'
+    :param checks: List of selected checks to be executed on IaC
+    :param scan_response_type: Scan response type (JSON or HTML)
+    :return: JSONResponse or HTMLResponse object (with status code 200 or 400)
     """
     try:
         if not checks or checks == ['']:
