@@ -23,8 +23,8 @@ class GitLeaksCheck(Check):
     def run(self, directory: str) -> CheckOutput:
         if self._config_filename:
             return run_command(
-                f'{env.GIT_LEAKS_CHECK_PATH} --config-path {env.CONFIG_DIR}/{self._config_filename} --path=. -v',
+                f'{env.GIT_LEAKS_CHECK_PATH} --config-path {env.CONFIG_DIR}/{self._config_filename} --path=.',
                 directory
             )
         else:
-            return run_command(f'{env.GIT_LEAKS_CHECK_PATH} --path=. -v', directory)
+            return run_command(f'{env.GIT_LEAKS_CHECK_PATH} --path=.', directory)
