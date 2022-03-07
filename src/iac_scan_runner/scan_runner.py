@@ -7,6 +7,7 @@ from fastapi import UploadFile
 from iac_scan_runner.checks.ansible_lint import AnsibleLintCheck
 from iac_scan_runner.checks.bandit import BanditCheck
 from iac_scan_runner.checks.checkstyle import CheckStyle
+from iac_scan_runner.checks.cloc import ClocCheck
 from iac_scan_runner.checks.es_lint import ESLintCheck
 from iac_scan_runner.checks.git_leaks import GitLeaksCheck
 from iac_scan_runner.checks.git_secrets import GitSecretsCheck
@@ -58,6 +59,7 @@ class ScanRunner:
         ts_lint = TSLintCheck()
         htmlhint = HtmlHintCheck()
         stylelint = StyleLintCheck()
+        cloc = ClocCheck()
         checkstyle = CheckStyle()
         snyk = SnykCheck()
         sonar_scanner = SonarScannerCheck()
@@ -82,6 +84,7 @@ class ScanRunner:
             ts_lint.name: ts_lint,
             htmlhint.name: htmlhint,
             stylelint.name: stylelint,
+            cloc.name: cloc,
             checkstyle.name: checkstyle,
             snyk.name: snyk,
             sonar_scanner.name: sonar_scanner
