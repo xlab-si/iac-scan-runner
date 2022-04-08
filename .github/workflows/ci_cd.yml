@@ -11,7 +11,7 @@ jobs:
   ci_cd:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
@@ -50,10 +50,10 @@ jobs:
           push: true
           tags: xscanner/runner:${{ steps.vars.outputs.tag }}
 
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v1
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v3
         with:
-          python-version: 3.9
+          python-version: 3.10.4
 
       - name: Install pypa/build
         run: python -m pip install build --user
@@ -61,7 +61,7 @@ jobs:
       - name: Build a binary wheel and a source tarball
         run: python -m build --sdist --wheel --outdir dist/ .
 
-      - name: Publish package to TestPyPI (for main branch)
+      - name: Publish dev package to TestPyPI (for main branch)
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
@@ -70,7 +70,16 @@ jobs:
           repository_url: https://test.pypi.org/legacy/
           skip_existing: true
 
-      - name: Publish CLI package to PyPI (for tags)
+      - name: Publish production package to TestPyPI (for tags)
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: ${{ secrets.TEST_PYPI_USERNAME }}
+          password: ${{ secrets.TEST_PYPI_TOKEN }}
+          repository_url: https://test.pypi.org/legacy/
+          skip_existing: true
+
+      - name: Publish production package package to PyPI (for tags)
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
