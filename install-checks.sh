@@ -9,7 +9,7 @@ export TMP_DIR="${TOOLS_DIR}/tmp"
 export NODE_MODULES_DIR="${ROOT_DIR}/node_modules"
 export CONFIG_DIR="${ROOT_DIR}/config"
 # env vars for check executables
-export OPERA_CHECK_PATH="${VIRTUALENV_DIR}/bin/opera/"
+export OPERA_TOSCA_PARSER_CHECK_PATH="${VIRTUALENV_DIR}/bin/opera-tosca-parser/"
 export ANSIBLE_LINT_CHECK_PATH="${VIRTUALENV_DIR}/bin/ansible-lint/"
 export TFLINT_CHECK_PATH="${TOOLS_DIR}/tflint"
 export TFSEC_CHECK_PATH="${TOOLS_DIR}/tfsec"
@@ -96,7 +96,7 @@ installRequiredNpmModulesIfNot() {
 }
 
 installPythonModules() {
-  pip install opera==0.6.8 pylint==2.12.2 gixy==0.1.20 ansible-lint==5.4.0 yamllint==1.26.3 bandit==1.7.2 safety==1.10.3
+  pip install opera-tosca-parser==0.1.0 pylint==2.12.2 gixy==0.1.20 ansible-lint==5.4.0 yamllint==1.26.3 bandit==1.7.2 safety==1.10.3
 }
 
 installGitLeaksIfNot() {

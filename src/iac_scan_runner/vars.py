@@ -9,7 +9,7 @@ NODE_MODULES_DIR = os.getenv("NODE_MODULES_DIR", f'{ROOT_DIR}/node_modules')
 TMP_DIR = os.getenv("TMP_DIR", f'{TOOLS_DIR}/tmp')
 
 # vars for paths to check executables
-OPERA_CHECK_PATH = os.getenv("OPERA_CHECK_PATH", f'{VIRTUALENV_DIR}/bin/opera')
+OPERA_TOSCA_PARSER_CHECK_PATH = os.getenv("OPERA_TOSCA_PARSER_CHECK_PATH", f'{VIRTUALENV_DIR}/bin/opera-tosca-parser')
 ANSIBLE_LINT_CHECK_PATH = os.getenv("ANSIBLE_LINT_CHECK_PATH", f'{VIRTUALENV_DIR}/bin/ansible-lint')
 TFLINT_CHECK_PATH = os.getenv("TFLINT_CHECK_PATH", f'{TOOLS_DIR}/tflint')
 TFSEC_CHECK_PATH = os.getenv("TFSEC_CHECK_PATH", f'{TOOLS_DIR}/tfsec')

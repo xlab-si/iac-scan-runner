@@ -15,7 +15,7 @@ from iac_scan_runner.checks.gixy import GixyCheck
 from iac_scan_runner.checks.hadolint import HadolintCheck
 from iac_scan_runner.checks.htmlhint import HtmlHintCheck
 from iac_scan_runner.checks.markdown_lint import MarkdownLintCheck
-from iac_scan_runner.checks.opera import OperaToscaCheck
+from iac_scan_runner.checks.opera_tosca_parser import OperaToscaParserCheck
 from iac_scan_runner.checks.pylint import PylintCheck
 from iac_scan_runner.checks.pyup_safety import PyUpSafetyCheck
 from iac_scan_runner.checks.shellcheck import ShellCheck
@@ -40,7 +40,7 @@ class ScanRunner:
 
     def init_checks(self):
         """Initiate predefined check objects"""
-        xopera = OperaToscaCheck()
+        opera_tosca_parser = OperaToscaParserCheck()
         ansible_lint = AnsibleLintCheck()
         tflint = TFLintCheck()
         tfsec = TfsecCheck()
@@ -65,7 +65,7 @@ class ScanRunner:
         sonar_scanner = SonarScannerCheck()
 
         self.iac_checks = {
-            xopera.name: xopera,
+            opera_tosca_parser.name: opera_tosca_parser,
             ansible_lint.name: ansible_lint,
             tflint.name: tflint,
             tfsec.name: tfsec,
