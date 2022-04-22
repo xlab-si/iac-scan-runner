@@ -97,8 +97,8 @@ installRequiredNpmModulesIfNot() {
 }
 
 installPythonModules() {
-  pip install opera-tosca-parser==0.1.0 pylint==2.12.2 gixy==0.1.20 ansible-lint==5.4.0 yamllint==1.26.3 \
-              bandit==1.7.2 safety==1.10.3 steampunk-scanner==0.3.3
+  pip install opera-tosca-parser==0.1.1 pylint==2.13.7 gixy==0.1.20 ansible-lint==6.0.2 yamllint==1.26.3 \
+              bandit==1.7.4 safety==1.10.3 steampunk-scanner==0.3.3
 }
 
 installGitLeaksIfNot() {
