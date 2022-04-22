@@ -21,6 +21,7 @@ from iac_scan_runner.checks.pyup_safety import PyUpSafetyCheck
 from iac_scan_runner.checks.shellcheck import ShellCheck
 from iac_scan_runner.checks.snyk import SnykCheck
 from iac_scan_runner.checks.sonar_scanner import SonarScannerCheck
+from iac_scan_runner.checks.steampunk_scanner import SteampunkScannerCheck
 from iac_scan_runner.checks.stylelint import StyleLintCheck
 from iac_scan_runner.checks.terrascan import TerrascanCheck
 from iac_scan_runner.checks.tflint import TFLintCheck
@@ -42,6 +43,7 @@ class ScanRunner:
         """Initiate predefined check objects"""
         opera_tosca_parser = OperaToscaParserCheck()
         ansible_lint = AnsibleLintCheck()
+        steampunk_scanner = SteampunkScannerCheck()
         tflint = TFLintCheck()
         tfsec = TfsecCheck()
         terrascan = TerrascanCheck()
@@ -67,6 +69,7 @@ class ScanRunner:
         self.iac_checks = {
             opera_tosca_parser.name: opera_tosca_parser,
             ansible_lint.name: ansible_lint,
+            steampunk_scanner.name: steampunk_scanner,
             tflint.name: tflint,
             tfsec.name: tfsec,
             terrascan.name: terrascan,
