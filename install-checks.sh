@@ -31,6 +31,7 @@ export CLOC_CHECK_PATH="${NODE_MODULES_DIR}/.bin/cloc"
 export CHECKSTYLE_CHECK_PATH="${TOOLS_DIR}/checkstyle.jar"
 export SONAR_SCANNER_CHECK_PATH="${TOOLS_DIR}/sonar-scanner/bin/sonar-scanner"
 export SNYK_CHECK_PATH="${NODE_MODULES_DIR}/.bin/snyk"
+export STEAMPUNK_SCANNER_CHECK_PATH="${VIRTUALENV_DIR}/bin/steampunk-scanner/"
 
 # urls for installation of check tools
 checkStyleUrl='https://github.com/checkstyle/checkstyle/releases/download/checkstyle-8.13/checkstyle-8.13-all.jar'
@@ -96,7 +97,8 @@ installRequiredNpmModulesIfNot() {
 }
 
 installPythonModules() {
-  pip install opera-tosca-parser==0.1.0 pylint==2.12.2 gixy==0.1.20 ansible-lint==5.4.0 yamllint==1.26.3 bandit==1.7.2 safety==1.10.3
+  pip install opera-tosca-parser==0.1.0 pylint==2.12.2 gixy==0.1.20 ansible-lint==5.4.0 yamllint==1.26.3 \
+              bandit==1.7.2 safety==1.10.3 steampunk-scanner==0.3.3
 }
 
 installGitLeaksIfNot() {
@@ -140,8 +142,8 @@ installTerrascanIfNot() {
 installSonarScannerIfNot() {
   if [ ! -f "$SONAR_SCANNER_CHECK_PATH" ]; then
     wget ${sonarScannerUrl} -O "${TMP_DIR}/sonar-scanner"
-    unzip "${TMP_DIR}/sonar-scanner" -d "${TOOLS_DIR}"
-    mv "${TOOLS_DIR}/sonar-scanner-cli-4.7.0.2747" "${TOOLS_DIR}/sonar-scanner"
+    unzip "${TMP_DIR}/sonar-scanner" -d "${TMP_DIR}"
+    cp -r "${TMP_DIR}/sonar-scanner-4.7.0.2747" "${TOOLS_DIR}/sonar-scanner"
   fi
 }
 
