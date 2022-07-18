@@ -116,11 +116,11 @@ installTerrascanIfNot(){
   fi
 }
 
-installSonarScannerIfNot(){
-  if [ ! -f "${TERRASCAN_PATH}" ]; then
-    wget ${sonarScannerUrl} -O "${TMP_DIR}"/sonar-scanner
-    unzip "${TMP_DIR}"/sonar-scanner -d "${TOOLS_DIR}"
-    mv "${TOOLS_DIR}"/sonar-scanner sonar-scanner
+installSonarScannerIfNot() {
+  if [ ! -f "$SONAR_SCANNER_CHECK_PATH" ]; then
+    wget ${sonarScannerUrl} -O "${TMP_DIR}/sonar-scanner"
+    unzip "${TMP_DIR}/sonar-scanner" -d "${TOOLS_DIR}"
+    mv "${TOOLS_DIR}/sonar-scanner-4.6.2.2472-linux" "${TOOLS_DIR}/sonar-scanner"
   fi
 }
 
