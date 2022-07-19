@@ -17,9 +17,14 @@ def run_command(command: str, directory: str = ".") -> CheckOutput:
     :return: CheckOutput object
     """
     try:
-        return CheckOutput(check_output(command, cwd=directory, shell=True, stderr=STDOUT).decode('utf-8'), 0)
+        return CheckOutput(
+            check_output(command, cwd=directory, shell=True, stderr=STDOUT).decode(
+                "utf-8"
+            ),
+            0,
+        )
     except CalledProcessError as e:
-        return CheckOutput(str(e.output.decode('utf-8')), e.returncode)
+        return CheckOutput(str(e.output.decode("utf-8")), e.returncode)
 
 
 def determine_archive_format(archive_path: str) -> str:
@@ -34,7 +39,9 @@ def determine_archive_format(archive_path: str) -> str:
         return "tar"
     else:
         raise Exception(
-            "Unsupported archive format: '{}'. The packaging format should be one of: zip, tar.".format(archive_path)
+            "Unsupported archive format: '{}'. The packaging format should be one of: zip, tar.".format(
+                archive_path
+            )
         )
 
 
@@ -67,4 +74,16 @@ def unpack_archive_to_dir(archive_path: str, output_dir: Optional[str]) -> str:
         unpack_archive(archive_path, output_dir, iac_format)
         return output_dir
     except Exception as e:
-        raise Exception(f'Nonexistent check: {str(e)}')
+        raise Exception(f"Nonexistent check: {str(e)}")
+
+
+def write_string_to_file(check_name: str, dir_name: str, output_value: str):
+    """
+    Writes string to given file inside specified directory
+    :param check_name: Name of the check
+    :param output_dir: Directory where log will be stored
+    :param output_value: Content written to given file
+    """
+    file_name = dir_name + "/" + check_name + ".txt"
+    with open(file_name, "w") as text_file:
+        text_file.write(output_value)
