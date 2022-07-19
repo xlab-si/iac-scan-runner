@@ -33,6 +33,10 @@ from iac_scan_runner.utils import generate_random_pathname, unpack_archive_to_di
 from pydantic import SecretStr
 
 
+from datetime import datetime
+import os
+
+
 class ScanRunner:
     def __init__(self):
         """Initialize new scan runner that can perform IaC scanning with multiple IaC checks"""
@@ -115,6 +119,16 @@ class ScanRunner:
         except Exception as e:
             raise Exception(f'Error when cleaning IaC directory: {str(e)}.')
 
+
+    def _write_out(self, check_name, dir_name, output_value):
+        file_name = dir_name + "/" + check_name + ".txt"
+        with open(file_name, "w") as text_file:
+            text_file.write(output_value)
+
+
+
+
+
     def _run_checks(self, selected_checks: Optional[List], scan_response_type: ScanResponseType) -> Union[dict, str]:
         """
         Run the specified IaC checks
@@ -122,6 +136,13 @@ class ScanRunner:
         :param scan_response_type: Scan response type (JSON or HTML)
         :return: Dict or string with output for running checks
         """
+
+        dt = datetime.now()
+        ts = datetime.timestamp(dt)        
+        dir_name = "scan_run_"+str(ts)
+        
+        os.mkdir(dir_name)
+        
         if scan_response_type == ScanResponseType.json:
             scan_output = {}
         else:
@@ -135,17 +156,28 @@ class ScanRunner:
                         scan_output[selected_check] = check_output.to_dict()
                     else:
                         scan_output += f'### {selected_check} ###\n{check_output.to_string()}\n\n'
+
+              
+                self._write_out(check.name, dir_name, scan_output[check.name]['output'])
         else:
             for iac_check in self.iac_checks.values():
+                print('--------------------------------------------------------IAC-----')
                 if iac_check.enabled:
                     check_output = iac_check.run(self.iac_dir)
                     if scan_response_type == ScanResponseType.json:
                         scan_output[iac_check.name] = check_output.to_dict()
                     else:
                         scan_output += f'### {iac_check.name} ###\n{check_output.to_string()}\n\n'
+                print('-----------------------IAC CHECK NAME')
+                print(iac_check.name)
 
+        
         return scan_output
+        
+        
 
+            
+            
     def enable_check(self, check_name: str) -> str:
         """
         Enables the specified check and makes it available to be used
