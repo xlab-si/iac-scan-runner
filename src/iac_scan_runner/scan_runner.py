@@ -29,7 +29,11 @@ from iac_scan_runner.checks.tfsec import TfsecCheck
 from iac_scan_runner.checks.ts_lint import TSLintCheck
 from iac_scan_runner.checks.yamllint import YamlLintCheck
 from iac_scan_runner.scan_response_type import ScanResponseType
-from iac_scan_runner.utils import generate_random_pathname, unpack_archive_to_dir, write_string_to_file
+from iac_scan_runner.utils import (
+    generate_random_pathname,
+    unpack_archive_to_dir,
+    write_string_to_file,
+)
 from pydantic import SecretStr
 
 
@@ -94,8 +98,25 @@ class ScanRunner:
             cloc.name: cloc,
             checkstyle.name: checkstyle,
             snyk.name: snyk,
-            sonar_scanner.name: sonar_scanner
+            sonar_scanner.name: sonar_scanner,
         }
+
+    def _check_iac_type(self, iac_directory: str):
+        """Check the type of iac archive
+        :param iac_dircetory: Extracted iac archive path"
+        :return: Specific type of iac"
+        """
+
+        type = "unknown"
+        try:
+            for filename in os.listdir(iac_directory):
+                f = os.path.join(iac_directory, filename)
+                if os.path.isfile(f):
+                    if f.find(".tf") > -1:
+                        type = "terraform"
+                        return type
+        except Exception as e:
+            raise Exception(f"Error when checking directory type: {str(e)}.")
 
     def _init_iac_dir(self, iac_file: UploadFile):
         """
@@ -104,23 +125,26 @@ class ScanRunner:
         """
         try:
             iac_filename_local = generate_random_pathname(iac_file.filename)
-            with open(iac_filename_local, 'wb+') as iac_file_local:
+            with open(iac_filename_local, "wb+") as iac_file_local:
                 iac_file_local.write(iac_file.file.read())
                 iac_file_local.close()
+            print("HERE WE GO")
             self.iac_dir = unpack_archive_to_dir(iac_filename_local, None)
+            print(self._check_iac_type(self.iac_dir))
             remove(iac_filename_local)
         except Exception as e:
-            raise Exception(f'Error when initializing IaC directory: {str(e)}.')
+            raise Exception(f"Error when initializing IaC directory: {str(e)}.")
 
     def _cleanup_iac_dir(self):
         """Remove the created IaC directory"""
         try:
             rmtree(self.iac_dir, True)
         except Exception as e:
-            raise Exception(f'Error when cleaning IaC directory: {str(e)}.')
+            raise Exception(f"Error when cleaning IaC directory: {str(e)}.")
 
-
-    def _run_checks(self, selected_checks: Optional[List], scan_response_type: ScanResponseType) -> Union[dict, str]:
+    def _run_checks(
+        self, selected_checks: Optional[List], scan_response_type: ScanResponseType
+    ) -> Union[dict, str]:
         """
         Run the specified IaC checks
         :param selected_checks: List of selected checks to be executed on IaC
@@ -129,11 +153,11 @@ class ScanRunner:
         """
 
         dt = datetime.now()
-        ts = datetime.timestamp(dt)        
-        dir_name = "scan_run_"+str(ts)
-        
+        ts = datetime.timestamp(dt)
+        dir_name = "scan_run_" + str(ts)
+
         os.mkdir(dir_name)
-        
+
         if scan_response_type == ScanResponseType.json:
             scan_output = {}
         else:
@@ -146,9 +170,13 @@ class ScanRunner:
                     if scan_response_type == ScanResponseType.json:
                         scan_output[selected_check] = check_output.to_dict()
                     else:
-                        scan_output += f'### {selected_check} ###\n{check_output.to_string()}\n\n'
+                        scan_output += (
+                            f"### {selected_check} ###\n{check_output.to_string()}\n\n"
+                        )
 
-                write_string_to_file(check.name, dir_name, scan_output[check.name]['output'])
+                write_string_to_file(
+                    check.name, dir_name, scan_output[check.name]["output"]
+                )
         else:
             for iac_check in self.iac_checks.values():
 
@@ -157,16 +185,16 @@ class ScanRunner:
                     if scan_response_type == ScanResponseType.json:
                         scan_output[iac_check.name] = check_output.to_dict()
                     else:
-                        scan_output += f'### {iac_check.name} ###\n{check_output.to_string()}\n\n'
+                        scan_output += (
+                            f"### {iac_check.name} ###\n{check_output.to_string()}\n\n"
+                        )
 
-                write_string_to_file(iac_check.name, dir_name, scan_output[iac_heck.name]['output'])
-        
+                write_string_to_file(
+                    iac_check.name, dir_name, scan_output[iac_heck.name]["output"]
+                )
+
         return scan_output
-        
-        
 
-            
-            
     def enable_check(self, check_name: str) -> str:
         """
         Enables the specified check and makes it available to be used
@@ -177,11 +205,11 @@ class ScanRunner:
             check = self.iac_checks[check_name]
             if not check.enabled:
                 check.enabled = True
-                return f'Check: {check_name} is now enabled and available to use.'
+                return f"Check: {check_name} is now enabled and available to use."
             else:
-                raise Exception(f'Check: {check_name} is already enabled.')
+                raise Exception(f"Check: {check_name} is already enabled.")
         else:
-            raise Exception(f'Nonexistent check: {check_name}')
+            raise Exception(f"Nonexistent check: {check_name}")
 
     def disable_check(self, check_name: str) -> str:
         """
@@ -193,13 +221,18 @@ class ScanRunner:
             check = self.iac_checks[check_name]
             if check.enabled:
                 check.enabled = False
-                return f'Check: {check_name} is now disabled and cannot be used.'
+                return f"Check: {check_name} is now disabled and cannot be used."
             else:
-                raise Exception(f'Check: {check_name} is already disabled.')
+                raise Exception(f"Check: {check_name} is already disabled.")
         else:
-            raise Exception(f'Nonexistent check: {check_name}')
+            raise Exception(f"Nonexistent check: {check_name}")
 
-    def configure_check(self, check_name: str, config_file: Optional[UploadFile], secret: Optional[SecretStr]) -> str:
+    def configure_check(
+        self,
+        check_name: str,
+        config_file: Optional[UploadFile],
+        secret: Optional[SecretStr],
+    ) -> str:
         """
         Configures the selected check with the supplied optional configuration file or/and secret
         :param check_name: Name of the check
@@ -212,19 +245,27 @@ class ScanRunner:
             if check.enabled:
                 config_filename_local = None
                 if config_file:
-                    config_filename_local = generate_random_pathname("", "-" + config_file.filename)
-                    with open(f'{env.CONFIG_DIR}/{config_filename_local}', 'wb+') as config_file_local:
+                    config_filename_local = generate_random_pathname(
+                        "", "-" + config_file.filename
+                    )
+                    with open(
+                        f"{env.CONFIG_DIR}/{config_filename_local}", "wb+"
+                    ) as config_file_local:
                         config_file_local.write(config_file.file.read())
                         config_file_local.close()
                 check_output = check.configure(config_filename_local, secret)
                 check.configured = True
                 return check_output.output
             else:
-                raise Exception(f'Check: {check_name} is disabled. You need to enable it first.')
+                raise Exception(
+                    f"Check: {check_name} is disabled. You need to enable it first."
+                )
         else:
-            raise Exception(f'Nonexistent check: {check_name}')
+            raise Exception(f"Nonexistent check: {check_name}")
 
-    def scan_iac(self, iac_file: UploadFile, checks: List, scan_response_type: ScanResponseType) -> Union[dict, str]:
+    def scan_iac(
+        self, iac_file: UploadFile, checks: List, scan_response_type: ScanResponseType
+    ) -> Union[dict, str]:
         """
         Run IaC scanning process (initiate IaC dir, run checks and cleanup IaC dir)
         :param iac_file: IaC file that will be scanned
@@ -232,11 +273,22 @@ class ScanRunner:
         :param scan_response_type: Scan response type (JSON or HTML)
         :return: Dict or string with scan result
         """
-        nonexistent_checks = list(set(checks) - set(
-            map(lambda check: check.name,
-                filter(lambda check: check.enabled and check.configured, self.iac_checks.values()))))
+        nonexistent_checks = list(
+            set(checks)
+            - set(
+                map(
+                    lambda check: check.name,
+                    filter(
+                        lambda check: check.enabled and check.configured,
+                        self.iac_checks.values(),
+                    ),
+                )
+            )
+        )
         if nonexistent_checks:
-            raise Exception(f'Nonexistent, disabled or un-configured checks: {nonexistent_checks}.')
+            raise Exception(
+                f"Nonexistent, disabled or un-configured checks: {nonexistent_checks}."
+            )
 
         self._init_iac_dir(iac_file)
         scan_output = self._run_checks(checks, scan_response_type)
