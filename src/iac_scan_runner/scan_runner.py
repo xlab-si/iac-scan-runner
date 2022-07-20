@@ -4,6 +4,9 @@ from typing import Optional, List, Union
 
 import iac_scan_runner.vars as env
 from fastapi import UploadFile
+
+from iac_scan_runner.compatibility import Compatibility
+
 from iac_scan_runner.checks.ansible_lint import AnsibleLintCheck
 from iac_scan_runner.checks.bandit import BanditCheck
 from iac_scan_runner.checks.checkstyle import CheckStyle
@@ -74,6 +77,12 @@ class ScanRunner:
         snyk = SnykCheck()
         sonar_scanner = SonarScannerCheck()
 
+        init_dict = {
+            "terraform": ["tfsec", "tflint", "terrascan"],
+            "yaml": ["yamllinter"],
+        }
+        self.checker = Compatibility(init_dict)
+
         self.iac_checks = {
             opera_tosca_parser.name: opera_tosca_parser,
             ansible_lint.name: ansible_lint,
@@ -114,6 +123,8 @@ class ScanRunner:
                 if os.path.isfile(f):
                     if f.find(".tf") > -1:
                         type = "terraform"
+                        print(self.checker.get_check_list(type))
+
                         return type
         except Exception as e:
             raise Exception(f"Error when checking directory type: {str(e)}.")
