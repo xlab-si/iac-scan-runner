@@ -29,7 +29,7 @@ from iac_scan_runner.checks.tfsec import TfsecCheck
 from iac_scan_runner.checks.ts_lint import TSLintCheck
 from iac_scan_runner.checks.yamllint import YamlLintCheck
 from iac_scan_runner.scan_response_type import ScanResponseType
-from iac_scan_runner.utils import generate_random_pathname, unpack_archive_to_dir
+from iac_scan_runner.utils import generate_random_pathname, unpack_archive_to_dir, write_string_to_file
 from pydantic import SecretStr
 
 
@@ -120,15 +120,6 @@ class ScanRunner:
             raise Exception(f'Error when cleaning IaC directory: {str(e)}.')
 
 
-    def _write_out(self, check_name, dir_name, output_value):
-        file_name = dir_name + "/" + check_name + ".txt"
-        with open(file_name, "w") as text_file:
-            text_file.write(output_value)
-
-
-
-
-
     def _run_checks(self, selected_checks: Optional[List], scan_response_type: ScanResponseType) -> Union[dict, str]:
         """
         Run the specified IaC checks
@@ -157,20 +148,18 @@ class ScanRunner:
                     else:
                         scan_output += f'### {selected_check} ###\n{check_output.to_string()}\n\n'
 
-              
-                self._write_out(check.name, dir_name, scan_output[check.name]['output'])
+                write_string_to_file(check.name, dir_name, scan_output[check.name]['output'])
         else:
             for iac_check in self.iac_checks.values():
-                print('--------------------------------------------------------IAC-----')
+
                 if iac_check.enabled:
                     check_output = iac_check.run(self.iac_dir)
                     if scan_response_type == ScanResponseType.json:
                         scan_output[iac_check.name] = check_output.to_dict()
                     else:
                         scan_output += f'### {iac_check.name} ###\n{check_output.to_string()}\n\n'
-                print('-----------------------IAC CHECK NAME')
-                print(iac_check.name)
 
+                write_string_to_file(iac_check.name, dir_name, scan_output[iac_heck.name]['output'])
         
         return scan_output
         

@@ -68,3 +68,14 @@ def unpack_archive_to_dir(archive_path: str, output_dir: Optional[str]) -> str:
         return output_dir
     except Exception as e:
         raise Exception(f'Nonexistent check: {str(e)}')
+        
+def write_string_to_file(check_name: str, dir_name: str, output_value: str):
+    """
+    Writes string to given file inside specified directory
+    :param check_name: Name of the check
+    :param output_dir: Directory where log will be stored
+    :param output_value: Content written to given file
+    """    
+    file_name = dir_name + "/" + check_name + ".txt"
+    with open(file_name, "w") as text_file:
+        text_file.write(output_value)        
