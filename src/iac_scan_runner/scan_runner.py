@@ -78,8 +78,8 @@ class ScanRunner:
         sonar_scanner = SonarScannerCheck()
 
         init_dict = {
-            "terraform": ["tfsec", "tflint", "terrascan", "gitleaks"],
-            "yaml": ["gitleaks", "yamllint"],
+            "terraform": ["tfsec", "tflint", "terrascan", "git-leaks"],
+            "yaml": ["git-leaks", "yamllint"],
             "shell": ["shellcheck"],
             "python": ["pylint"],
         }
@@ -152,7 +152,7 @@ class ScanRunner:
 
         os.mkdir(dir_name)
 
-        self.checker.get_all_compatible_checks(self.iac_dir)
+        compatible_checks = self.checker.get_all_compatible_checks(self.iac_dir)
 
         if scan_response_type == ScanResponseType.json:
             scan_output = {}
@@ -161,19 +161,21 @@ class ScanRunner:
         if selected_checks:
             for selected_check in selected_checks:
                 check = self.iac_checks[selected_check]
+
                 if check.enabled:
+                    if selected_check in compatible_checks:
+                        print("Selected:")
+                        print(selected_check)
+                        check_output = check.run(self.iac_dir)
+                        print("compatible------")
+                        if scan_response_type == ScanResponseType.json:
+                            scan_output[selected_check] = check_output.to_dict()
+                        else:
+                            scan_output += f"### {selected_check} ###\n{check_output.to_string()}\n\n"
 
-                    check_output = check.run(self.iac_dir)
-                    if scan_response_type == ScanResponseType.json:
-                        scan_output[selected_check] = check_output.to_dict()
-                    else:
-                        scan_output += (
-                            f"### {selected_check} ###\n{check_output.to_string()}\n\n"
+                        write_string_to_file(
+                            check.name, dir_name, scan_output[check.name]["output"]
                         )
-
-                write_string_to_file(
-                    check.name, dir_name, scan_output[check.name]["output"]
-                )
         else:
             for iac_check in self.iac_checks.values():
 

@@ -9,11 +9,5 @@ response = requests.post(URL, files=multipart_form_data)
 print(response.json())
 
 scan_result = response.json()
-print("First----------------")
-print(scan_result["tfsec"]["output"])
-print("Second---------------")
-print(scan_result["git-leaks"]["output"])
-print("Third----------------")
-print(scan_result["tflint"]["output"])
-print("Fourth---------------")
-print(scan_result["shellcheck"]["output"])
+
+print(scan_result)
