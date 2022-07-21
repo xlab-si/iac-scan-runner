@@ -78,10 +78,15 @@ class ScanRunner:
         sonar_scanner = SonarScannerCheck()
 
         init_dict = {
-            "terraform": ["tfsec", "tflint", "terrascan", "git-leaks"],
-            "yaml": ["git-leaks", "yamllint"],
-            "shell": ["shellcheck"],
-            "python": ["pylint"],
+            "terraform": ["tfsec", "tflint", "terrascan", "git-leaks", "git-secrets"],
+            "yaml": ["git-leaks", "yamllint", "git-leaks", "git-secrets"],
+            "shell": ["shellcheck", "git-leaks", "git-secrets"],
+            "python": ["pylint", "bandit", "pyup-safety"],
+            "ansible": ["ansible-lint", "steanounk-scanner"],
+            "java": ["checkstyle"],
+            "js": ["es-lint"],
+            "html": ["htmlhint"],
+            "docker": ["hadolint"],
         }
 
         self.checker = Compatibility(init_dict)
