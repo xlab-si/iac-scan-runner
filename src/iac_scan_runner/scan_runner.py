@@ -78,9 +78,12 @@ class ScanRunner:
         sonar_scanner = SonarScannerCheck()
 
         init_dict = {
-            "terraform": ["tfsec", "tflint", "terrascan"],
-            "yaml": ["yamllinter"],
+            "terraform": ["tfsec", "tflint", "terrascan", "gitleaks"],
+            "yaml": ["gitleaks", "yamllint"],
+            "shell": ["shellcheck"],
+            "python": ["pylint"],
         }
+
         self.checker = Compatibility(init_dict)
 
         self.iac_checks = {
@@ -110,25 +113,6 @@ class ScanRunner:
             sonar_scanner.name: sonar_scanner,
         }
 
-    def _check_iac_type(self, iac_directory: str):
-        """Check the type of iac archive
-        :param iac_dircetory: Extracted iac archive path"
-        :return: Specific type of iac"
-        """
-
-        type = "unknown"
-        try:
-            for filename in os.listdir(iac_directory):
-                f = os.path.join(iac_directory, filename)
-                if os.path.isfile(f):
-                    if f.find(".tf") > -1:
-                        type = "terraform"
-                        print(self.checker.get_check_list(type))
-
-                        return type
-        except Exception as e:
-            raise Exception(f"Error when checking directory type: {str(e)}.")
-
     def _init_iac_dir(self, iac_file: UploadFile):
         """
         Initiate new unique IaC directory for scanning
@@ -139,9 +123,8 @@ class ScanRunner:
             with open(iac_filename_local, "wb+") as iac_file_local:
                 iac_file_local.write(iac_file.file.read())
                 iac_file_local.close()
-            print("HERE WE GO")
             self.iac_dir = unpack_archive_to_dir(iac_filename_local, None)
-            print(self._check_iac_type(self.iac_dir))
+            # print(self.compatiblity.check_iac_type(self.iac_dir))
             remove(iac_filename_local)
         except Exception as e:
             raise Exception(f"Error when initializing IaC directory: {str(e)}.")
@@ -169,6 +152,8 @@ class ScanRunner:
 
         os.mkdir(dir_name)
 
+        self.checker.get_all_compatible_checks(self.iac_dir)
+
         if scan_response_type == ScanResponseType.json:
             scan_output = {}
         else:
@@ -177,6 +162,7 @@ class ScanRunner:
             for selected_check in selected_checks:
                 check = self.iac_checks[selected_check]
                 if check.enabled:
+
                     check_output = check.run(self.iac_dir)
                     if scan_response_type == ScanResponseType.json:
                         scan_output[selected_check] = check_output.to_dict()
