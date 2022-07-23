@@ -188,6 +188,7 @@ class ScanRunner:
                             selected_check, scan_output[check.name]["output"]
                         )
                         self.results_summary.show_outcomes()
+                        self.results_summary.dump_outcomes(str(ts))
         else:
             for iac_check in self.iac_checks.values():
 

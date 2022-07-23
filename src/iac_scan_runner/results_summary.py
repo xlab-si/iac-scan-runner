@@ -1,4 +1,5 @@
 import os
+import json
 
 
 class ResultsSummary:
@@ -28,31 +29,35 @@ class ResultsSummary:
         :param check: Name of the considered check of interest
         :return: Whether the check passed (True) or failed (False)
         """
-        if(check == "tfsec"):
-            if(outcome.find("No problems detected!")>-1):
+        if check == "tfsec":
+            if outcome.find("No problems detected!") > -1:
                 self.outcomes[check] = True
                 return True
             else:
                 self.outcomes[check] = False
-                return False  
-                                  
-        if(check == "git-leaks"):
-            if(outcome.find("No leaks found")>-1):
-                self.outcomes[check] = True            
+                return False
+
+        if check == "git-leaks":
+            if outcome.find("No leaks found") > -1:
+                self.outcomes[check] = True
                 return True
             else:
-                self.outcomes[check] = False            
-                return False  
+                self.outcomes[check] = False
+                return False
 
-        if(check == "tflint"):
-            if(outcome==""):
-                self.outcomes[check] = True            
+        if check == "tflint":
+            if outcome == "":
+                self.outcomes[check] = True
                 return True
             else:
-                self.outcomes[check] = False            
-                return False  
-
+                self.outcomes[check] = False
+                return False
 
     def show_outcomes(self):
         print(self.outcomes)
-        
+
+    def dump_outcomes(self, file_name: str):
+        file_path = "json_dumps/" + file_name + ".json"
+
+        with open(file_path, "w") as fp:
+            json.dump(self.outcomes, fp)
