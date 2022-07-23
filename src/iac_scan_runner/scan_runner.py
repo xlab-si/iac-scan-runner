@@ -6,6 +6,7 @@ import iac_scan_runner.vars as env
 from fastapi import UploadFile
 
 from iac_scan_runner.compatibility import Compatibility
+from iac_scan_runner.results_summary import ResultsSummary
 
 from iac_scan_runner.checks.ansible_lint import AnsibleLintCheck
 from iac_scan_runner.checks.bandit import BanditCheck
@@ -90,6 +91,7 @@ class ScanRunner:
         }
 
         self.checker = Compatibility(init_dict)
+        self.results_summary = ResultsSummary()
 
         self.iac_checks = {
             opera_tosca_parser.name: opera_tosca_parser,
@@ -173,6 +175,7 @@ class ScanRunner:
                         print(selected_check)
                         check_output = check.run(self.iac_dir)
                         print("compatible------")
+
                         if scan_response_type == ScanResponseType.json:
                             scan_output[selected_check] = check_output.to_dict()
                         else:
@@ -181,6 +184,11 @@ class ScanRunner:
                         write_string_to_file(
                             check.name, dir_name, scan_output[check.name]["output"]
                         )
+                        self.results_summary.summarize_outcome(
+                            selected_check, scan_output[check.name]["output"]
+                        )
+                        self.results_summary.show_outcomes()
+                        self.results_summary.dump_outcomes(str(ts))
         else:
             for iac_check in self.iac_checks.values():
 
