@@ -2,6 +2,9 @@ import os
 import json
 
 
+from iac_scan_runner.utils import write_html_to_file
+
+
 class ResultsSummary:
     def __init__(self):
         """
@@ -61,3 +64,17 @@ class ResultsSummary:
 
         with open(file_path, "w") as fp:
             json.dump(self.outcomes, fp)
+
+    def generate_html(self, file_name: str):
+
+        html_page = "<!DOCTYPE html> <html> <style> table, th, td { border:1px solid black;}</style> <body> <h2>Scan results</h2> <table style='width:100%'> <tr> <th>Scan</th><th>Outcome</th> </tr>"
+        # parse scans
+        for scan in self.outcomes:
+            html_page = html_page + "<tr>"
+            html_page = html_page + "<td>" + scan + "</td>"
+            html_page = html_page + "<td>" + str(self.outcomes[scan]) + "</td>"
+            html_page = html_page + "</tr>"
+
+        html_page = html_page + "</tr></table></body></html>"
+
+        write_html_to_file(file_name, html_page)
