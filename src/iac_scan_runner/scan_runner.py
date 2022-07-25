@@ -78,12 +78,13 @@ class ScanRunner:
         snyk = SnykCheck()
         sonar_scanner = SonarScannerCheck()
 
+        # This matrix should be revised and extended, it is just a proof of concept here as for now
         init_dict = {
             "terraform": ["tfsec", "tflint", "terrascan", "git-leaks", "git-secrets"],
             "yaml": ["git-leaks", "yamllint", "git-leaks", "git-secrets"],
             "shell": ["shellcheck", "git-leaks", "git-secrets"],
             "python": ["pylint", "bandit", "pyup-safety"],
-            "ansible": ["ansible-lint", "steanounk-scanner"],
+            "ansible": ["ansible-lint", "steampunk-scanner"],
             "java": ["checkstyle"],
             "js": ["es-lint"],
             "html": ["htmlhint"],
@@ -131,7 +132,6 @@ class ScanRunner:
                 iac_file_local.write(iac_file.file.read())
                 iac_file_local.close()
             self.iac_dir = unpack_archive_to_dir(iac_filename_local, None)
-            # print(self.compatiblity.check_iac_type(self.iac_dir))
             remove(iac_filename_local)
         except Exception as e:
             raise Exception(f"Error when initializing IaC directory: {str(e)}.")
@@ -155,11 +155,12 @@ class ScanRunner:
 
         dt = datetime.now()
         ts = datetime.timestamp(dt)
-        dir_name = "scan_run_" + str(ts)
+        dir_name = "../outputs/logs/scan_run_" + str(ts)
 
         os.mkdir(dir_name)
 
         compatible_checks = self.checker.get_all_compatible_checks(self.iac_dir)
+        non_compatible_checks = list()
 
         if scan_response_type == ScanResponseType.json:
             scan_output = {}
@@ -168,13 +169,12 @@ class ScanRunner:
         if selected_checks:
             for selected_check in selected_checks:
                 check = self.iac_checks[selected_check]
-
+                print("NEW CHECK")
+                print(check)
                 if check.enabled:
                     if selected_check in compatible_checks:
-                        print("Selected:")
-                        print(selected_check)
+
                         check_output = check.run(self.iac_dir)
-                        print("compatible------")
 
                         if scan_response_type == ScanResponseType.json:
                             scan_output[selected_check] = check_output.to_dict()
@@ -184,11 +184,30 @@ class ScanRunner:
                         write_string_to_file(
                             check.name, dir_name, scan_output[check.name]["output"]
                         )
+
                         self.results_summary.summarize_outcome(
-                            selected_check, scan_output[check.name]["output"]
+                            selected_check,
+                            scan_output[check.name]["output"],
+                            self.checker.scanned_files,
+                            self.checker.compatibility_matrix,
                         )
-                        self.results_summary.show_outcomes()
-                        self.results_summary.dump_outcomes(str(ts))
+                    else:
+                        non_compatible_checks.append(check.name)
+
+                        write_string_to_file(check.name, dir_name, "No files to scan")
+
+                        print("NO SCAN")
+
+                        self.results_summary.summarize_no_files(check.name)
+
+            print(self.checker.scanned_files)
+            print("Non executed checks")
+            print(non_compatible_checks)
+
+            print(self.results_summary.show_outcomes())
+            self.results_summary.dump_outcomes(str(ts))
+            self.results_summary.generate_html_prioritized(str(ts))
+
         else:
             for iac_check in self.iac_checks.values():
 
@@ -202,7 +221,7 @@ class ScanRunner:
                         )
 
                 write_string_to_file(
-                    iac_check.name, dir_name, scan_output[iac_heck.name]["output"]
+                    iac_check.name, dir_name, scan_output[iac_check.name]["output"]
                 )
 
         return scan_output
