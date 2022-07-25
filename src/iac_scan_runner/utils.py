@@ -87,3 +87,15 @@ def write_string_to_file(check_name: str, dir_name: str, output_value: str):
     file_name = dir_name + "/" + check_name + ".txt"
     with open(file_name, "w") as text_file:
         text_file.write(output_value)
+
+def write_html_to_file(file_name: str, output_value: str):
+    """
+    Writes string to given file inside specified directory
+    :param check_name: Name of the check
+    :param output_dir: Directory where log will be stored
+    :param output_value: Content written to given file
+    """
+    file_name = "../outputs/generated_html/" + file_name + ".html"
+    with open(file_name, "w") as text_file:
+        text_file.write(output_value)
+        
