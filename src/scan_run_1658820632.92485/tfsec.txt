@@ -1,0 +1,27 @@
+[0m
+[0m[0m  [34mtimes[39m
+  ------------------------------------------
+[0m[0m  [34mdisk i/o            [39m 506.607µs
+[0m[0m  [34mparsing HCL         [39m 8.936µs
+[0m[0m  [34mevaluating values   [39m 104.034µs
+[0m[0m  [34mrunning checks      [39m 743.522µs
+[0m[0m
+  [34mcounts[39m
+  ------------------------------------------
+[0m[0m  [34mfiles loaded        [39m 3
+[0m[0m  [34mblocks              [39m 11
+[0m[0m  [34mevaluated blocks    [39m 11
+[0m[0m  [34mmodules             [39m 0
+[0m[0m  [34mmodule blocks       [39m 0
+[0m[0m  [34mignored checks      [39m 0
+[0m[0m
+  [34mresults[39m
+  ------------------------------------------
+[0m[0m  [34mcritical            [39m 0
+[0m[0m  [34mhigh                [39m 0
+[0m[0m  [34mmedium              [39m 0
+[0m[0m  [34mlow                 [39m 0
+[0m[0m[32m[1m
+No problems detected!
+
+[0m
