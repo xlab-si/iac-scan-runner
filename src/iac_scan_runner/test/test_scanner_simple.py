@@ -1,9 +1,11 @@
 import requests
+import sys
 
 URL = "http://127.0.0.1:8000/scan"
+
 multipart_form_data = {
-    "iac": ("hello-world.zip", open("hello-world.zip", "rb")),
-    "checks": (None, "git-leaks,tfsec,tflint,shellcheck"),
+    "iac": (sys.argv[1], open(sys.argv[1], "rb")),
+    "checks": (None, sys.argv[2]),
 }
 response = requests.post(URL, files=multipart_form_data)
 print(response.json())

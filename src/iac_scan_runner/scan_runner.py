@@ -131,7 +131,6 @@ class ScanRunner:
                 iac_file_local.write(iac_file.file.read())
                 iac_file_local.close()
             self.iac_dir = unpack_archive_to_dir(iac_filename_local, None)
-            # print(self.compatiblity.check_iac_type(self.iac_dir))
             remove(iac_filename_local)
         except Exception as e:
             raise Exception(f"Error when initializing IaC directory: {str(e)}.")
@@ -171,10 +170,8 @@ class ScanRunner:
 
                 if check.enabled:
                     if selected_check in compatible_checks:
-                        print("Selected:")
-                        print(selected_check)
+
                         check_output = check.run(self.iac_dir)
-                        print("compatible------")
 
                         if scan_response_type == ScanResponseType.json:
                             scan_output[selected_check] = check_output.to_dict()
@@ -184,12 +181,17 @@ class ScanRunner:
                         write_string_to_file(
                             check.name, dir_name, scan_output[check.name]["output"]
                         )
+
                         self.results_summary.summarize_outcome(
                             selected_check, scan_output[check.name]["output"]
                         )
-                        self.results_summary.show_outcomes()
-                        self.results_summary.dump_outcomes(str(ts))
-                        self.results_summary.generate_html(str(ts))
+
+            print(self.checker.scanned_files)
+            self.results_summary.dump_outcomes(str(ts))
+            self.results_summary.generate_html(
+                str(ts), self.checker.scanned_files, self.checker.compatibility_matrix
+            )
+
         else:
             for iac_check in self.iac_checks.values():
 
