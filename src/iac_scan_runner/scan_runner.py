@@ -78,20 +78,7 @@ class ScanRunner:
         snyk = SnykCheck()
         sonar_scanner = SonarScannerCheck()
 
-        # This matrix should be revised and extended, it is just a proof of concept here as for now
-        init_dict = {
-            "terraform": ["tfsec", "tflint", "terrascan", "git-leaks", "git-secrets"],
-            "yaml": ["git-leaks", "yamllint", "git-leaks", "git-secrets"],
-            "shell": ["shellcheck", "git-leaks", "git-secrets"],
-            "python": ["pylint", "bandit", "pyup-safety"],
-            "ansible": ["ansible-lint", "steampunk-scanner"],
-            "java": ["checkstyle"],
-            "js": ["es-lint"],
-            "html": ["htmlhint"],
-            "docker": ["hadolint"],
-        }
-
-        self.checker = Compatibility(init_dict)
+        self.checker = Compatibility()
         self.results_summary = ResultsSummary()
 
         self.iac_checks = {
@@ -167,8 +154,6 @@ class ScanRunner:
         if selected_checks:
             for selected_check in selected_checks:
                 check = self.iac_checks[selected_check]
-                print("NEW CHECK")
-                print(check)
                 if check.enabled:
                     if selected_check in compatible_checks:
 
@@ -187,22 +172,16 @@ class ScanRunner:
                             selected_check,
                             scan_output[check.name]["output"],
                             self.checker.scanned_files,
-                            self.checker.compatibility_matrix,
+                            Compatibility.compatibility_matrix,
                         )
                     else:
                         non_compatible_checks.append(check.name)
 
                         write_string_to_file(check.name, dir_name, "No files to scan")
 
-                        print("NO SCAN")
-
                         self.results_summary.summarize_no_files(check.name)
 
-            print(self.checker.scanned_files)
-            print("Non executed checks")
-            print(non_compatible_checks)
 
-            print(self.results_summary.show_outcomes())
             self.results_summary.dump_outcomes(random_uuid)
             self.results_summary.generate_html_prioritized(random_uuid)
 

@@ -1,15 +1,11 @@
-import os
 import json
-
-
 from iac_scan_runner.utils import write_html_to_file
-
 
 class ResultsSummary:
     def __init__(self):
         """
         Initialize new IaC Compatibility matrix
-        :param matrix: dictionary of available checks for given Iac type
+        :param matrix: dictionary of available checks for given IaC type
         """
         self.outcomes = dict()
 
@@ -22,12 +18,15 @@ class ResultsSummary:
 
     def set_check_outcome(self, check_name: str, outcome: str, file_list: str):
         """
-        Returns the list of available scanner check tools for given type of IaC archive
-        :return: list object conatining string names of checks 
+        Sets the outcome and list of scanned files for specific scanning tool
+        :param check_name: Name of a scan tool
+        :param outcome: Scan verdict - passed, failed or no files scanned
+        :param file_list: List of files that were scanned using the particular tool        
         """
-        self.outcomes[check] = {}
+        self.outcomes[check_name] = {}
         outcomes[check_name]["status"] = outcome
-
+        outcomes[check_name]["files"] = outcome
+                
     def summarize_outcome(
         self, check: str, outcome: str, scanned_files: dict, compatibility_matrix: dict
     ) -> str:
@@ -44,7 +43,8 @@ class ResultsSummary:
                 file_list = str(scanned_files[t])
 
         self.outcomes[check]["files"] = file_list
-
+        
+        # TODO: This part should be extended to cover all relevant cases
         if check == "tfsec":
             if outcome.find("No problems detected!") > -1:
                 self.outcomes[check]["status"] = "Passed"
@@ -70,21 +70,36 @@ class ResultsSummary:
                 return "Problems"
 
     def summarize_no_files(self, check: str):
+        """
+        Sets the outcome of the selected check to "no files" case
+        :param check: Name of the considered check of interest
+        """    
         self.outcomes[check] = {}
         self.outcomes[check]["status"] = "No files"
         self.outcomes[check]["log"] = ""
         self.outcomes[check]["files"] = ""
 
     def show_outcomes(self):
+        """
+        Prints out current summary of the performed checks containing the log and list of scanned files
+        """        
         print(self.outcomes)
 
     def dump_outcomes(self, file_name: str):
+        """
+        Summarizes scan results into JSON file
+        :param file_name: Name of the generated JSON file containing the scan summary
+        """         
         file_path = "../outputs/json_dumps/" + file_name + ".json"
 
         with open(file_path, "w") as fp:
             json.dump(self.outcomes, fp)
 
     def generate_html_prioritized(self, file_name: str):
+        """
+        Summarizes scan results into HTML file 
+        :param file_name: Name of the generated HTML file containing the page summary
+        """     
         html_page = "<!DOCTYPE html> <html> <style> table, th, td { border:1px solid black;}</style> <body> <h2>Scan results</h2> <table style='width:100%'> <tr> <th>Scan</th><th>Status</th><th>Files</th><th>Log</th> </tr>"
         # parse scans
         for scan in self.outcomes:
