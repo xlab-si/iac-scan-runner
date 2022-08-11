@@ -41,7 +41,7 @@ from iac_scan_runner.utils import (
 from pydantic import SecretStr
 
 
-from datetime import datetime
+import uuid
 import os
 
 
@@ -152,10 +152,8 @@ class ScanRunner:
         :param scan_response_type: Scan response type (JSON or HTML)
         :return: Dict or string with output for running checks
         """
-
-        dt = datetime.now()
-        ts = datetime.timestamp(dt)
-        dir_name = "../outputs/logs/scan_run_" + str(ts)
+        random_uuid = str(uuid.uuid4())
+        dir_name = "../outputs/logs/scan_run_" + random_uuid
 
         os.mkdir(dir_name)
 
@@ -205,8 +203,8 @@ class ScanRunner:
             print(non_compatible_checks)
 
             print(self.results_summary.show_outcomes())
-            self.results_summary.dump_outcomes(str(ts))
-            self.results_summary.generate_html_prioritized(str(ts))
+            self.results_summary.dump_outcomes(random_uuid)
+            self.results_summary.generate_html_prioritized(random_uuid)
 
         else:
             for iac_check in self.iac_checks.values():
