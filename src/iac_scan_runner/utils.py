@@ -17,12 +17,7 @@ def run_command(command: str, directory: str = ".") -> CheckOutput:
     :return: CheckOutput object
     """
     try:
-        return CheckOutput(
-            check_output(command, cwd=directory, shell=True, stderr=STDOUT).decode(
-                "utf-8"
-            ),
-            0,
-        )
+        return CheckOutput(check_output(command, cwd=directory, shell=True, stderr=STDOUT).decode('utf-8'), 0)
     except CalledProcessError as e:
         return CheckOutput(str(e.output.decode("utf-8")), e.returncode)
 
@@ -39,9 +34,7 @@ def determine_archive_format(archive_path: str) -> str:
         return "tar"
     else:
         raise Exception(
-            "Unsupported archive format: '{}'. The packaging format should be one of: zip, tar.".format(
-                archive_path
-            )
+            "Unsupported archive format: '{}'. The packaging format should be one of: zip, tar.".format(archive_path)
         )
 
 
@@ -85,8 +78,11 @@ def write_string_to_file(check_name: str, dir_name: str, output_value: str):
     :param output_value: Content written to given file
     """
     file_name = dir_name + "/" + check_name + ".txt"
-    with open(file_name, "w") as text_file:
-        text_file.write(output_value)
+    try:
+        with open(file_name, "w") as text_file:
+            text_file.write(output_value)
+    except Exception as e:
+        raise Exception(f"Error while writing string to file: {str(e)}.")    
 
 def write_html_to_file(file_name: str, output_value: str):
     """
@@ -96,6 +92,8 @@ def write_html_to_file(file_name: str, output_value: str):
     :param output_value: Content written to given file
     """
     file_name = "../outputs/generated_html/" + file_name + ".html"
-    with open(file_name, "w") as text_file:
-        text_file.write(output_value)
-        
+    try:    
+        with open(file_name, "w") as text_file:
+            text_file.write(output_value)
+    except Exception as e:
+        raise Exception(f"Error storing HTML to file: {str(e)}.")           

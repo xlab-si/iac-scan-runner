@@ -1,5 +1,5 @@
 import os
-
+from typing import List
 
 class Compatibility:
     # TODO: This matrix should be revised and extended, it is just a proof of concept here as for now
@@ -10,7 +10,7 @@ class Compatibility:
         "python": ["pylint", "bandit", "pyup-safety"],
         "ansible": ["ansible-lint", "steampunk-scanner"],
         "java": ["checkstyle"],
-        "js": ["es-lint"],
+        "js": ["es-lint", "ts-lint"],
         "html": ["htmlhint"],
         "docker": ["hadolint"],
     }
@@ -22,7 +22,7 @@ class Compatibility:
         """
         self.scanned_files = dict()
 
-    def get_check_list(self, iac_type: str) -> list:
+    def get_check_list(self, iac_type: str) -> List[str]:
         """
         Returns the list of available scanner check tools for given type of IaC archive
         :iac_type: Type of IaC file for which we consider the list of compatible scans        
@@ -30,7 +30,7 @@ class Compatibility:
         """
         return self.compatibility_matrix[iac_type]
 
-    def check_iac_type(self, iac_directory: str) -> list:
+    def check_iac_type(self, iac_directory: str) -> List[str]:
         """Check the type of IaC archive
         :param iac_dircetory: Extracted IaC archive path
         :return: List of specific file types within the given IaC directory
@@ -46,6 +46,7 @@ class Compatibility:
         scanned_html = []
 
         # TODO: List of supported file types should be extended
+        # TODO: Remove hardcoded check names
         try:
             for filename in os.listdir(iac_directory):
                 f = os.path.join(iac_directory, filename)
@@ -84,7 +85,7 @@ class Compatibility:
         except Exception as e:
             raise Exception(f"Error when checking directory type: {str(e)}.")
 
-    def get_all_compatible_checks(self, iac_directory: str) -> list:
+    def get_all_compatible_checks(self, iac_directory: str) -> List[str]:
         """
         Returns the list of available scanner check tools for given type of IaC archive
         :param iac_dircetory: Extracted IaC archive path        
