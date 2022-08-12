@@ -32,7 +32,7 @@ class ResultsSummary:
     ) -> str:
         """Summarize the check result to True/False depending on the return tool output
         :param check: Name of the considered check of interest
-        :return: Whether the check passed (True) or failed (False)
+        :return: Whether the check passed or problems were detected
         """
         self.outcomes[check] = {}
         self.outcomes[check]["log"] = outcome
@@ -44,7 +44,8 @@ class ResultsSummary:
 
         self.outcomes[check]["files"] = file_list
         
-        # TODO: This part should be extended to cover all relevant cases
+        # TODO: This part should be extended to cover all relevant cases and code refactored
+        # TODO: The check names hould not be hardcoded but replaced with parametrized values instead
         if check == "tfsec":
             if outcome.find("No problems detected!") > -1:
                 self.outcomes[check]["status"] = "Passed"
@@ -74,6 +75,7 @@ class ResultsSummary:
         Sets the outcome of the selected check to "no files" case
         :param check: Name of the considered check of interest
         """    
+        # TODO: Fields should be extracted into new Python object, probably extending the existing CheckOutput
         self.outcomes[check] = {}
         self.outcomes[check]["status"] = "No files"
         self.outcomes[check]["log"] = ""
@@ -90,30 +92,35 @@ class ResultsSummary:
         Summarizes scan results into JSON file
         :param file_name: Name of the generated JSON file containing the scan summary
         """         
+        #TODO: Replace hardcoded path with parameter
         file_path = "../outputs/json_dumps/" + file_name + ".json"
 
-        with open(file_path, "w") as fp:
-            json.dump(self.outcomes, fp)
+        try:
+            with open(file_path, "w") as fp:
+                json.dump(self.outcomes, fp)
+        except Exception as e:
+            raise Exception(f"Error dumping json of scan results: {str(e)}.")
+
 
     def generate_html_prioritized(self, file_name: str):
         """
-        Summarizes scan results into HTML file 
+        Summarizes scan results (status, list of scanned files and scan tool log) into HTML file with the following visualization ordering: 1) problems detected 2) passed 3) no files scanned
         :param file_name: Name of the generated HTML file containing the page summary
         """     
-        html_page = "<!DOCTYPE html> <html> <style> table, th, td { border:1px solid black;}</style> <body> <h2>Scan results</h2> <table style='width:100%'> <tr> <th>Scan</th><th>Status</th><th>Files</th><th>Log</th> </tr>"
-        # parse scans
+        html_page = (
+            "<!DOCTYPE html> <html> <style> table, th, td { border:1px solid black;}</style>"
+            + "<body> <h2>Scan results</h2>"
+            + "<table style='width:100%'>" 
+            + "<tr> <th>Scan</th> <th>Status</th> <th>Files</th> <th>Log</th> </tr>"
+        )
+        
         for scan in self.outcomes:
 
             if self.outcomes[scan]["status"] == "Problems":
 
                 html_page = html_page + "<tr>"
                 html_page = html_page + "<td>" + scan + "</td>"
-                html_page = (
-                    html_page
-                    + "<td bgcolor='red'>"
-                    + str(self.outcomes[scan]["status"])
-                    + "</td>"
-                )
+                html_page = html_page + "<td bgcolor='red'>" + str(self.outcomes[scan]["status"]) + "</td>"
 
                 html_page = html_page + "<td>" + self.outcomes[scan]["files"] + "</td>"
                 html_page = html_page + "<td>" + self.outcomes[scan]["log"] + "</td>"
@@ -124,12 +131,7 @@ class ResultsSummary:
             if self.outcomes[scan]["status"] == "Passed":
                 html_page = html_page + "<tr>"
                 html_page = html_page + "<td>" + scan + "</td>"
-                html_page = (
-                    html_page
-                    + "<td bgcolor='green'>"
-                    + str(self.outcomes[scan]["status"])
-                    + "</td>"
-                )
+                html_page = html_page + "<td bgcolor='green'>" + str(self.outcomes[scan]["status"]) + "</td>"
 
                 html_page = html_page + "<td>" + self.outcomes[scan]["files"] + "</td>"
                 html_page = html_page + "<td>" + self.outcomes[scan]["log"] + "</td>"
@@ -140,12 +142,7 @@ class ResultsSummary:
             if self.outcomes[scan]["status"] == "No files":
                 html_page = html_page + "<tr>"
                 html_page = html_page + "<td>" + scan + "</td>"
-                html_page = (
-                    html_page
-                    + "<td bgcolor='gray'>"
-                    + str(self.outcomes[scan]["status"])
-                    + "</td>"
-                )
+                html_page = html_page + "<td bgcolor='gray'>" + str(self.outcomes[scan]["status"]) + "</td>"
                 html_page = html_page + "<td>" + self.outcomes[scan]["files"] + "</td>"
                 html_page = html_page + "<td>" + self.outcomes[scan]["log"] + "</td>"
                 html_page = html_page + "</tr>"

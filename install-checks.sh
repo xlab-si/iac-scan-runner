@@ -5,6 +5,10 @@
 export ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export VIRTUALENV_DIR="${ROOT_DIR}/.venv"
 export TOOLS_DIR="${ROOT_DIR}/tools"
+export OUT_DIR="${ROOT_DIR}/outputs"
+export HTML_DIR="${OUT_DIR}/generated_html"
+export JSON_DIR="${OUT_DIR}/json_dumps"
+export LOG_DIR="${OUT_DIR}/logs"
 export TMP_DIR="${TOOLS_DIR}/tmp"
 export NODE_MODULES_DIR="${ROOT_DIR}/node_modules"
 export CONFIG_DIR="${ROOT_DIR}/config"
@@ -153,6 +157,10 @@ createDirIfNot "${TOOLS_DIR}"
 createDirIfNot "${TMP_DIR}"
 createDirIfNot "${NODE_MODULES_DIR}"
 createDirIfNot "${CONFIG_DIR}"
+createDirIfNot "${OUT_DIR}"
+createDirIfNot "${HTML_DIR}"
+createDirIfNot "${JSON_DIR}"
+createDirIfNot "${LOG_DIR}"
 installPythonModules
 installRequiredNpmModulesIfNot
 downloadCheckStyleJarIfNot
