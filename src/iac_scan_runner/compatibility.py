@@ -44,6 +44,7 @@ class Compatibility:
         scanned_yaml = []
         scanned_java = []
         scanned_html = []
+        scanned_js = []
 
         # TODO: List of supported file types should be extended
         # TODO: Remove hardcoded check names
@@ -75,13 +76,18 @@ class Compatibility:
                         types.append("html")
                         scanned_html.append(filename)
 
+                    if f.find(".js") > -1:
+                        types.append("js")
+                        scanned_js.append(filename)
+                        
             self.scanned_files["terraform"] = str(scanned_terraform)
             self.scanned_files["python"] = str(scanned_py)
             self.scanned_files["shell"] = str(scanned_shell)
             self.scanned_files["yaml"] = str(scanned_yaml)
             self.scanned_files["java"] = str(scanned_java)
             self.scanned_files["html"] = str(scanned_html)
-            
+            self.scanned_files["js"] = str(scanned_js)
+                        
             types = set(types)
             print(types)
                         

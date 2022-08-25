@@ -87,12 +87,20 @@ class ResultsSummary:
                 return "Problems"                
 
         if check == "es-lint":
-            if outcome == "":
-                self.outcomes[check]["status"] = "Passed"
+            if outcome.find("wrong")>-1:
+                self.outcomes[check]["status"] = "Problems"
                 return "Passed"
             else:
-                self.outcomes[check]["status"] = "Problems"
+                self.outcomes[check]["status"] = "Passed"
                 return "Problems"      
+
+        if check == "ts-lint":
+            if outcome.find("wrong")>-1:
+                self.outcomes[check]["status"] = "Prolems"
+                return "Passed"
+            else:
+                self.outcomes[check]["status"] = "Passed"
+                return "Problems"  
 
     def summarize_no_files(self, check: str):
         """
