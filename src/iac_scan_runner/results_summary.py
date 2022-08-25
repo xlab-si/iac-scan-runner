@@ -102,6 +102,16 @@ class ResultsSummary:
                 self.outcomes[check]["status"] = "Passed"
                 return "Problems"  
 
+
+        if check == "pylint":
+            if outcome.find("no problems")>-1:
+                self.outcomes[check]["status"] = "Passed"
+                return "Passed"
+            else:
+                self.outcomes[check]["status"] = "Problems"
+                return "Problems" 
+
+
     def summarize_no_files(self, check: str):
         """
         Sets the outcome of the selected check to "no files" case
