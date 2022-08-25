@@ -96,7 +96,7 @@ class ResultsSummary:
 
         if check == "ts-lint":
             if outcome.find("wrong")>-1:
-                self.outcomes[check]["status"] = "Prolems"
+                self.outcomes[check]["status"] = "Problems"
                 return "Passed"
             else:
                 self.outcomes[check]["status"] = "Passed"
