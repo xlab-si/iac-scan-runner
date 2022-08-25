@@ -81,6 +81,10 @@ class Compatibility:
             self.scanned_files["yaml"] = str(scanned_yaml)
             self.scanned_files["java"] = str(scanned_java)
             self.scanned_files["html"] = str(scanned_html)
+            
+            types = set(types)
+            print(types)
+                        
             return types
         except Exception as e:
             raise Exception(f"Error when checking directory type: {str(e)}.")

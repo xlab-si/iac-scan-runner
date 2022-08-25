@@ -70,6 +70,30 @@ class ResultsSummary:
                 self.outcomes[check]["status"] = "Problems"
                 return "Problems"
 
+        if check == "htmlhint":
+            if outcome.find("no errors")>-1:
+                self.outcomes[check]["status"] = "Passed"
+                return "Passed"
+            else:
+                self.outcomes[check]["status"] = "Problems"
+                return "Problems"
+
+        if check == "checkstyle":
+            if outcome == "":
+                self.outcomes[check]["status"] = "Passed"
+                return "Passed"
+            else:
+                self.outcomes[check]["status"] = "Problems"
+                return "Problems"                
+
+        if check == "es-lint":
+            if outcome == "":
+                self.outcomes[check]["status"] = "Passed"
+                return "Passed"
+            else:
+                self.outcomes[check]["status"] = "Problems"
+                return "Problems"      
+
     def summarize_no_files(self, check: str):
         """
         Sets the outcome of the selected check to "no files" case
