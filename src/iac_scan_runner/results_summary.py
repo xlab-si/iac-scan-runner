@@ -102,7 +102,6 @@ class ResultsSummary:
                 self.outcomes[check]["status"] = "Passed"
                 return "Problems"  
 
-
         if check == "pylint":
             if outcome.find("no problems")>-1:
                 self.outcomes[check]["status"] = "Passed"
@@ -110,6 +109,18 @@ class ResultsSummary:
             else:
                 self.outcomes[check]["status"] = "Problems"
                 return "Problems" 
+
+        if check == "hadolint":
+            if outcome=="":
+                self.outcomes[check]["status"] = "Passed"
+                return "Passed"
+            else:
+                self.outcomes[check]["status"] = "Problems"
+                return "Problems" 
+
+        if check == "other":
+            self.outcomes[check]["status"] = "No scan performed"
+            return "No scan"
 
 
     def summarize_no_files(self, check: str):
