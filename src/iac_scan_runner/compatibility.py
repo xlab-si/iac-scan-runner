@@ -48,48 +48,48 @@ class Compatibility:
         scanned_js = []
         scanned_docker = []
         scanned_other = []
-        
+           
         # TODO: List of supported file types should be extended
         # TODO: Remove hardcoded check names
         try:
-            for filename in os.listdir(iac_directory):
-                f = os.path.join(iac_directory, filename)
-                if os.path.isfile(f):
-                    if (f.find(".tf") or f.find(".tftpl")) > -1:
+            for root, folders, names in os.walk(iac_directory):
+                for f in names:
+                   print(f)
+                   if (f.find(".tf") or f.find(".tftpl")) > -1:
                         types.append("terraform")
-                        scanned_terraform.append(filename)
+                        scanned_terraform.append(f)
                     
-                    elif f.find(".sh") > -1:
+                   elif f.find(".sh") > -1:
                         types.append("shell")
-                        scanned_shell.append(filename)
+                        scanned_shell.append(f)
 
-                    elif f.find(".py") > -1:
+                   elif f.find(".py") > -1:
                         types.append("python")
-                        scanned_py.append(filename)
+                        scanned_py.append(f)
 
-                    elif (f.find(".yaml") or f.find(".yml")) > -1:
+                   elif (f.find(".yaml") or f.find(".yml")) > -1:
                         types.append("yaml")
-                        scanned_yaml.append(filename)
+                        scanned_yaml.append(f)
 
-                    elif f.find(".java") > -1:
+                   elif f.find(".java") > -1:
                         types.append("java")
-                        scanned_java.append(filename)
+                        scanned_java.append(f)
 
-                    elif f.find(".html") > -1:
+                   elif f.find(".html") > -1:
                         types.append("html")
-                        scanned_html.append(filename)
+                        scanned_html.append(f)
 
-                    elif f.find(".js") > -1:
+                   elif f.find(".js") > -1:
                         types.append("js")
-                        scanned_js.append(filename)
+                        scanned_js.append(f)
 
-                    elif f.find("Dockerfile") > -1:
+                   elif f.find("Dockerfile") > -1:
                         types.append("docker")
-                        scanned_docker.append(filename)                        
+                        scanned_docker.append(f)                        
 
-                    else: 
+                   else: 
                         types.append("other")
-                        scanned_other.append(filename)      
+                        scanned_other.append(f)      
                         
             self.scanned_files["terraform"] = str(scanned_terraform)
             self.scanned_files["python"] = str(scanned_py)
