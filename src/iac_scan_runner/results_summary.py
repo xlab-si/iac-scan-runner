@@ -46,6 +46,7 @@ class ResultsSummary:
         
         # TODO: This part should be extended to cover all relevant cases and code refactored
         # TODO: The check names hould not be hardcoded but replaced with parametrized values instead
+        # TODO: Extract "Passed" and "Problems" into an Enum object and use them
         if check == "tfsec":
             if outcome.find("No problems detected!") > -1:
                 self.outcomes[check]["status"] = "Passed"
