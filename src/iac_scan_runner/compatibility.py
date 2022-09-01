@@ -13,7 +13,7 @@ class Compatibility:
         "js": ["es-lint", "ts-lint"],
         "html": ["htmlhint"],
         "docker": ["hadolint"],
-        "other": [""],        
+        "other": [],        
     }
     
     def __init__(self):
@@ -101,8 +101,7 @@ class Compatibility:
             self.scanned_files["other"] = str(scanned_other)
                                                 
             types = set(types)
-            print(types)
-                        
+                                    
             return types
         except Exception as e:
             raise Exception(f"Error when checking directory type: {str(e)}.")
