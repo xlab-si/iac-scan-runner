@@ -155,21 +155,17 @@ class ScanRunner:
                         scan_output[selected_check] = check_output.to_dict()                        
                         write_string_to_file(check.name, dir_name, scan_output[check.name]["output"])
                         self.results_summary.summarize_outcome(selected_check, scan_output[check.name]["output"], self.compatibility_matrix.scanned_files, Compatibility.compatibility_matrix)
-                        
                     else:
                         non_compatible_checks.append(check.name)
                         write_string_to_file(check.name, dir_name, "No files to scan")
                         self.results_summary.summarize_no_files(check.name)
-
             self.results_summary.dump_outcomes(random_uuid)
             self.results_summary.generate_html_prioritized(random_uuid)
- 
         else:
             for iac_check in self.iac_checks.values():
                 if iac_check.enabled:
                     check_output = iac_check.run(self.iac_dir)
                     scan_output[iac_check.name] = check_output.to_dict()
-
                 # TODO: Discuss the format of this output
                 write_string_to_file(
                     iac_check.name, dir_name, scan_output[iac_check.name]["output"]
