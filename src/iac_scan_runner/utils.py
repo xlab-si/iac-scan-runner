@@ -97,3 +97,18 @@ def write_html_to_file(file_name: str, output_value: str):
             text_file.write(output_value)
     except Exception as e:
         raise Exception(f"Error storing HTML to file: {str(e)}.")           
+
+
+def file_to_string(file_path: str):
+    """
+    Reads the file given by path and returns its contents as string output
+    :param file_path: Path of the file
+    :return output: Content read from file in form of a string
+    """
+    output = ""
+    try:
+        with open(file_path, "r") as text_file:
+            output = str(text_file.read())
+    except Exception as e:
+        raise Exception(f"Error while reading file: {str(e)}.")           
+    return output        

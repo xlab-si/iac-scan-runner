@@ -37,10 +37,12 @@ from iac_scan_runner.utils import (
     generate_random_pathname,
     unpack_archive_to_dir,
     write_string_to_file,
+    file_to_string
 )
 from pydantic import SecretStr
 import uuid
 import os
+import json
 
 class ScanRunner:
     def __init__(self):
@@ -142,25 +144,18 @@ class ScanRunner:
         compatible_checks = self.compatibility_matrix.get_all_compatible_checks(self.iac_dir)
         non_compatible_checks = []
 
-        if scan_response_type == ScanResponseType.json:
-            scan_output = {}
-        else:
-            scan_output = ""
+        scan_output = {}
+
         if selected_checks:
             for selected_check in selected_checks:
                 check = self.iac_checks[selected_check]
                 if check.enabled:
                     if selected_check in compatible_checks:
                         check_output = check.run(self.iac_dir)
-                        if scan_response_type == ScanResponseType.json:
-                            scan_output[selected_check] = check_output.to_dict()
-                        else:
-                            # TODO: Discuss the format of this output
-                            scan_output += f"### {selected_check} ###\n{check_output.to_string()}\n\n"
-
+                        scan_output[selected_check] = check_output.to_dict()                        
                         write_string_to_file(check.name, dir_name, scan_output[check.name]["output"])
                         self.results_summary.summarize_outcome(selected_check, scan_output[check.name]["output"], self.compatibility_matrix.scanned_files, Compatibility.compatibility_matrix)
-         
+                        
                     else:
                         non_compatible_checks.append(check.name)
                         write_string_to_file(check.name, dir_name, "No files to scan")
@@ -168,23 +163,23 @@ class ScanRunner:
 
             self.results_summary.dump_outcomes(random_uuid)
             self.results_summary.generate_html_prioritized(random_uuid)
-
+ 
         else:
             for iac_check in self.iac_checks.values():
                 if iac_check.enabled:
                     check_output = iac_check.run(self.iac_dir)
-                    if scan_response_type == ScanResponseType.json:
-                        scan_output[iac_check.name] = check_output.to_dict()
-                    else:
-                        # TODO: Discuss the format of this output
-                        scan_output += (
-                            f"### {iac_check.name} ###\n{check_output.to_string()}\n\n"
-                        )
+                    scan_output[iac_check.name] = check_output.to_dict()
+
                 # TODO: Discuss the format of this output
                 write_string_to_file(
                     iac_check.name, dir_name, scan_output[iac_check.name]["output"]
                 )
 
+        if scan_response_type == ScanResponseType.json:
+            scan_output = json.loads(file_to_string(f"../outputs/json_dumps/{random_uuid}.json"))   
+        else:
+            scan_output = file_to_string(f"../outputs/generated_html/{random_uuid}.html")   
+        
         return scan_output
 
     def enable_check(self, check_name: str) -> str:

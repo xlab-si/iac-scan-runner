@@ -54,7 +54,6 @@ class Compatibility:
         try:
             for root, folders, names in os.walk(iac_directory):
                 for f in names:
-                   print(f)
                    if (f.find(".tf") or f.find(".tftpl")) > -1:
                         types.append("terraform")
                         scanned_terraform.append(f)
