@@ -109,6 +109,7 @@ def file_to_string(file_path: str) -> str:
     try:
         with open(file_path, "r") as text_file:
             output = str(text_file.read())
+    # TODO: Narrow exceptions for this one and similar functions        
     except Exception as e:
         raise Exception(f"Error while reading file: {str(e)}.")           
     return output        
