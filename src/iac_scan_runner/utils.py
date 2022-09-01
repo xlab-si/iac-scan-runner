@@ -99,7 +99,7 @@ def write_html_to_file(file_name: str, output_value: str):
         raise Exception(f"Error storing HTML to file: {str(e)}.")           
 
 
-def file_to_string(file_path: str):
+def file_to_string(file_path: str) -> str:
     """
     Reads the file given by path and returns its contents as string output
     :param file_path: Path of the file
