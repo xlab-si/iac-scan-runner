@@ -227,7 +227,7 @@ class ResultsSummary:
         
         for scan in self.outcomes:
 
-            if self.outcomes[scan]["status"] == "Problems":
+            if not(scan=="uuid") and not(scan=="time") and self.outcomes[scan]["status"] == "Problems":
 
                 html_page = html_page + "<tr>"
                 html_page = html_page + "<td>" + scan + "</td>"
@@ -239,7 +239,7 @@ class ResultsSummary:
 
         for scan in self.outcomes:
 
-            if self.outcomes[scan]["status"] == "Passed":
+            if not(scan=="uuid") and not(scan=="time") and self.outcomes[scan]["status"] == "Passed":
                 html_page = html_page + "<tr>"
                 html_page = html_page + "<td>" + scan + "</td>"
                 html_page = html_page + "<td bgcolor='green'>" + str(self.outcomes[scan]["status"]) + "</td>"
@@ -262,6 +262,7 @@ class ResultsSummary:
         for scan in self.outcomes:
 
             if self.outcomes[scan]["status"] == "No files":
+            if not(scan=="uuid") and not(scan=="time") and self.outcomes[scan]["status"] == "No files" :
                 html_page = html_page + "<tr>"
                 html_page = html_page + "<td>" + scan + "</td>"
                 html_page = html_page + "<td bgcolor='gray'>" + str(self.outcomes[scan]["status"]) + "</td>"

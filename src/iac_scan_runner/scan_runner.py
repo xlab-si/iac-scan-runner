@@ -7,6 +7,7 @@ from fastapi import UploadFile
 
 from iac_scan_runner.compatibility import Compatibility
 from iac_scan_runner.results_summary import ResultsSummary
+from iac_scan_runner.results_persistence import ResultsPersistence
 
 from iac_scan_runner.checks.ansible_lint import AnsibleLintCheck
 from iac_scan_runner.checks.bandit import BanditCheck
@@ -43,6 +44,7 @@ from pydantic import SecretStr
 import uuid
 import os
 import json
+from datetime import datetime
 
 class ScanRunner:
     def __init__(self):
@@ -51,7 +53,8 @@ class ScanRunner:
         self.iac_dir = None
         self.compatibility_matrix = Compatibility()
         self.results_summary = ResultsSummary()        
-
+        self.results_persistence = ResultsPersistence()        
+        
     def init_checks(self):
         """Initiate predefined check objects"""
         opera_tosca_parser = OperaToscaParserCheck()
@@ -162,6 +165,28 @@ class ScanRunner:
                         self.results_summary.summarize_no_files(check.name)
             self.results_summary.dump_outcomes(random_uuid)
             self.results_summary.generate_html_prioritized(random_uuid)
+
+            self.results_summary.outcomes["uuid"]=random_uuid
+            self.results_summary.outcomes["time"]=datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+            #self.results_summary.outcomes["time"]=datetime.now().strftime("07/12/2022, 00:00:00")
+
+            print('INSERT-------------------------------------------------------------------------------------------------------------------------------')            
+            self.results_persistence.insert_result(self.results_summary.outcomes) 
+            print('OUTCOME FROM DB LOADED-------------------------------------------------------------------------------------------------------------------------------')
+            self.results_persistence.show_result(random_uuid)
+            
+            print('RESULT-AGE----------------------------------------------------------------------------------------------------------------------------------')
+            self.results_persistence.result_age(random_uuid)
+            
+            print('SHOW ALL-------------------------------------------------------------------------------------------------------------------------------')                        
+            self.results_persistence.show_all()
+                        
+            print('periodic')
+            self.results_persistence.periodic_clean_job()
+            
+            print('SHOW ALL-------------------------------------------------------------------------------------------------------------------------------')                        
+            self.results_persistence.show_all()
+
         else:
             for iac_check in self.iac_checks.values():
                 if iac_check.enabled:
