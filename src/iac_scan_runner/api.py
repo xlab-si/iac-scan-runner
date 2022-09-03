@@ -12,6 +12,7 @@ from iac_scan_runner.check_target_entity_type import CheckTargetEntityType
 from iac_scan_runner.scan_response_type import ScanResponseType
 from iac_scan_runner.scan_runner import ScanRunner
 from pydantic import SecretStr
+from iac_scan_runner.results_persistence import ResultsPersistence
 
 # create an API instance
 app = FastAPI(
@@ -164,3 +165,41 @@ async def post_scan(iac: UploadFile = File(..., description='IaC file (zip or ta
         return JSONResponse(status_code=status.HTTP_200_OK, content=scan_output)
     except Exception as e:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))
+        
+@app.get("/results", summary="Retrieve particular scan result by given uuid", responses={200: {}, 400: {"model": str}})
+async def get_scan_result(uuid: str) -> JSONResponse:
+    """
+    Retrieve a particular scan result (GET method)
+    :param uuid: Identifier of a scan record in database
+    :return: JSONResponse object (with status code 200 or 400)
+    """
+    try:
+        results_persistence = ResultsPersistence() 
+        if(uuid):           
+            result = results_persistence.show_result(uuid)  
+        else:
+            result = results_persistence.show_all()                                  
+        return JSONResponse(status_code=status.HTTP_200_OK, content=result)
+    except Exception as e:
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))        
+
+
+@app.delete("/results/{uuid}", summary="Delete particular scan result by given uuid", responses={200: {}, 400: {"model": str}})
+async def delete_scan_result(uuid: str) -> JSONResponse:
+    """
+    Delete a particular scan result (GET method)
+    :param uuid: Identifier of a scan record in database
+    :return: JSONResponse object (with status code 200 or 400)
+    """
+    try:
+        results_persistence = ResultsPersistence()      
+              
+        result = results_persistence.show_result(uuid)  
+        if(not result==None):        
+            results_persistence.delete_result(uuid)  
+            return JSONResponse(status_code=status.HTTP_200_OK, content=f"Deleted scan result {uuid}")
+        else:
+            return JSONResponse(status_code=status.HTTP_200_OK, content=f"No such scan result {uuid}")     
+    except Exception as e:
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))         
+        
