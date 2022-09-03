@@ -53,7 +53,8 @@ class ScanRunner:
         self.iac_dir = None
         self.compatibility_matrix = Compatibility()
         self.results_summary = ResultsSummary()        
-        self.results_persistence = ResultsPersistence()        
+        self.results_persistence = ResultsPersistence()
+        self.archive_name = ""        
         
     def init_checks(self):
         """Initiate predefined check objects"""
@@ -116,6 +117,7 @@ class ScanRunner:
         """
         try:
             iac_filename_local = generate_random_pathname(iac_file.filename)
+            self.archive_name = iac_file.filename
             with open(iac_filename_local, "wb+") as iac_file_local:
                 iac_file_local.write(iac_file.file.read())
                 iac_file_local.close()
@@ -141,8 +143,9 @@ class ScanRunner:
         random_uuid = str(uuid.uuid4())
         # TODO: Replace this hardcoded path with a parameter
         dir_name = "../outputs/logs/scan_run_" + random_uuid
-
+         
         os.mkdir(dir_name)
+        
         
         self.results_summary.outcomes = dict()
         self.compatibility_matrix.scanned_files = dict()
@@ -166,26 +169,11 @@ class ScanRunner:
             self.results_summary.dump_outcomes(random_uuid)
             self.results_summary.generate_html_prioritized(random_uuid)
 
-            self.results_summary.outcomes["uuid"]=random_uuid
-            self.results_summary.outcomes["time"]=datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-            #self.results_summary.outcomes["time"]=datetime.now().strftime("07/12/2022, 00:00:00")
+            self.results_summary.outcomes["uuid"] = random_uuid
+            self.results_summary.outcomes["archive"] = self.archive_name                     
+            self.results_summary.outcomes["time"] = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
 
-            print('INSERT-------------------------------------------------------------------------------------------------------------------------------')            
             self.results_persistence.insert_result(self.results_summary.outcomes) 
-            print('OUTCOME FROM DB LOADED-------------------------------------------------------------------------------------------------------------------------------')
-            self.results_persistence.show_result(random_uuid)
-            
-            print('RESULT-AGE----------------------------------------------------------------------------------------------------------------------------------')
-            self.results_persistence.result_age(random_uuid)
-            
-            print('SHOW ALL-------------------------------------------------------------------------------------------------------------------------------')                        
-            self.results_persistence.show_all()
-                        
-            print('periodic')
-            self.results_persistence.periodic_clean_job()
-            
-            print('SHOW ALL-------------------------------------------------------------------------------------------------------------------------------')                        
-            self.results_persistence.show_all()
 
         else:
             for iac_check in self.iac_checks.values():
@@ -201,6 +189,12 @@ class ScanRunner:
                         self.results_summary.summarize_no_files(iac_check.name)
             self.results_summary.dump_outcomes(random_uuid)
             self.results_summary.generate_html_prioritized(random_uuid)                
+            
+            self.results_summary.outcomes["uuid"] = random_uuid
+            self.results_summary.outcomes["archive"] = self.archive_name         
+            self.results_summary.outcomes["time"] = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+
+            self.results_persistence.insert_result(self.results_summary.outcomes)         
         
         # TODO: Discuss the format of this output
         if scan_response_type == ScanResponseType.json:

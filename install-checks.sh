@@ -151,9 +151,10 @@ installSonarScannerIfNot() {
   fi
 }
 
+# TODO: Add docker-compose.yml configuration
 runMongoDocker(){
-    sudo docker rm --force scannerdb
-    sudo docker run --name scannerdb -d -p 27017:27017 mongo
+    docker rm --force scannerdb
+    docker run --name scannerdb -d -p 27017:27017 mongo
 }
 
 # call the functions above to install all the necessary tools

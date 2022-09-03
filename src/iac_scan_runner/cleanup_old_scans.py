@@ -14,16 +14,12 @@ def periodic_clean_job():
     cursor = persistence_manager.mycol.find({})
     scan_ts = ""
     for doc in cursor:
-        print(doc["time"])
         doc_uuid = doc["uuid"]                
         age = persistence_manager.result_age(doc_uuid)
-        if(age>14):
-            print("delete")
-        else:
-            print("not_delete")
-                                                                            
-#schedule.every().day.at("08:54").do(periodic_clean_job)
-schedule.every().second.do(periodic_clean_job)
+        if(age > 14):
+            results_persistence.delete_result(doc_uuid)
+                                                            
+schedule.every().day.at("00:00").do(periodic_clean_job)
 while True:
     schedule.run_pending()
     time.sleep(1)                                      
