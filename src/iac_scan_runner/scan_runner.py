@@ -142,6 +142,7 @@ class ScanRunner:
         os.mkdir(dir_name)
 
         compatible_checks = self.compatibility_matrix.get_all_compatible_checks(self.iac_dir)
+        print(compatible_checks)
         non_compatible_checks = []
 
         scan_output = {}
@@ -162,15 +163,24 @@ class ScanRunner:
             self.results_summary.dump_outcomes(random_uuid)
             self.results_summary.generate_html_prioritized(random_uuid)
         else:
+            print("Else")
             for iac_check in self.iac_checks.values():
                 if iac_check.enabled:
-                    check_output = iac_check.run(self.iac_dir)
-                    scan_output[iac_check.name] = check_output.to_dict()
-                # TODO: Discuss the format of this output
-                write_string_to_file(
-                    iac_check.name, dir_name, scan_output[iac_check.name]["output"]
-                )
-
+                    if iac_check.name in compatible_checks:
+                        print("run")                    
+                        print(iac_check.name)
+                        check_output = iac_check.run(self.iac_dir)
+                        scan_output[iac_check.name] = check_output.to_dict()                  
+                        write_string_to_file(iac_check.name, dir_name, scan_output[iac_check.name]["output"])
+                        self.results_summary.summarize_outcome(iac_check.name, scan_output[iac_check.name]["output"], self.compatibility_matrix.scanned_files, Compatibility.compatibility_matrix)
+                    else:
+                        non_compatible_checks.append(iac_check.name)
+                        write_string_to_file(iac_check.name, dir_name, "No files to scan")
+                        self.results_summary.summarize_no_files(iac_check.name)
+            self.results_summary.dump_outcomes(random_uuid)
+            self.results_summary.generate_html_prioritized(random_uuid)                
+        
+        # TODO: Discuss the format of this output
         if scan_response_type == ScanResponseType.json:
             scan_output = json.loads(file_to_string(f"../outputs/json_dumps/{random_uuid}.json"))   
         else:
