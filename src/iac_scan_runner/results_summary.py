@@ -119,10 +119,20 @@ class ResultsSummary:
                 self.outcomes[check]["status"] = "Problems"
                 return "Problems" 
 
+        if check == "terrascan":
+            if outcome=="":
+                self.outcomes[check]["status"] = "Passed"
+                return "Passed"
+            else:
+                self.outcomes[check]["status"] = "Problems"
+                return "Problems" 
+                
         if check == "other":
             self.outcomes[check]["status"] = "No scan performed"
             return "No scan"
-
+        else:
+            self.outcomes[check]["status"] = "Not fully supported yet"
+            return "Not fully supported yet"
 
     def summarize_no_files(self, check: str):
         """
