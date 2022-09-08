@@ -5,7 +5,7 @@ class Compatibility:
     # TODO: This matrix should be revised and extended, it is just a proof of concept here as for now
     compatibility_matrix = {
         "terraform": ["tfsec", "tflint", "terrascan", "git-leaks", "git-secrets"],
-        "yaml": ["git-leaks", "yamllint", "git-leaks", "git-secrets"],
+        "yaml": ["git-leaks", "yamllint", "git-secrets"],
         "shell": ["shellcheck", "git-leaks", "git-secrets"],
         "python": ["pylint", "bandit", "pyup-safety"],
         "ansible": ["ansible-lint", "steampunk-scanner"],

@@ -140,14 +140,16 @@ class ScanRunner:
         dir_name = "../outputs/logs/scan_run_" + random_uuid
 
         os.mkdir(dir_name)
+        
+        self.results_summary.outcomes = dict()
+        self.compatibility_matrix.scanned_files = dict()
 
         compatible_checks = self.compatibility_matrix.get_all_compatible_checks(self.iac_dir)
-        print(compatible_checks)
         non_compatible_checks = []
-
+                
         scan_output = {}
 
-        if selected_checks:
+        if selected_checks and selected_checks!="":
             for selected_check in selected_checks:
                 check = self.iac_checks[selected_check]
                 if check.enabled:
@@ -163,12 +165,9 @@ class ScanRunner:
             self.results_summary.dump_outcomes(random_uuid)
             self.results_summary.generate_html_prioritized(random_uuid)
         else:
-            print("Else")
             for iac_check in self.iac_checks.values():
                 if iac_check.enabled:
                     if iac_check.name in compatible_checks:
-                        print("run")                    
-                        print(iac_check.name)
                         check_output = iac_check.run(self.iac_dir)
                         scan_output[iac_check.name] = check_output.to_dict()                  
                         write_string_to_file(iac_check.name, dir_name, scan_output[iac_check.name]["output"])
