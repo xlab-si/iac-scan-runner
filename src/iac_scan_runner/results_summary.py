@@ -40,7 +40,6 @@ class ResultsSummary:
         file_list = ""
         for t in compatibility_matrix:
             if check in compatibility_matrix[t]:
-                print(compatibility_matrix[t])
                 file_list = str(scanned_files[t])
 
         self.outcomes[check]["files"] = file_list
