@@ -63,6 +63,22 @@ class ResultsSummary:
                 self.outcomes[check]["status"] = "Problems"
                 return "Problems"
 
+        elif check == "terrascan":
+            if outcome == "":
+                self.outcomes[check]["status"] = "Passed"
+                return "Passed"
+            else:
+                self.outcomes[check]["status"] = "Problems"
+                return "Problems"
+
+        elif check == "steampunk-scanner":
+            if outcome == "":
+                self.outcomes[check]["status"] = "Passed"
+                return "Passed"
+            else:
+                self.outcomes[check]["status"] = "Problems"
+                return "Problems"
+
         elif check == "tflint":
             if outcome == "":
                 self.outcomes[check]["status"] = "Passed"
