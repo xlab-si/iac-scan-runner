@@ -54,13 +54,11 @@ class Compatibility:
         try:
             for root, folders, names in os.walk(iac_directory):
                 for f in names:
-                   print(f)
                    if (f.find(".tf") > -1) or (f.find(".tftpl") > -1):
                         types.append("terraform")
                         scanned_terraform.append(f)
 
                    elif (f.find(".yaml") > -1) or (f.find(".yml") > -1):
-                        print(f)
                         types.append("yaml")
                         scanned_yaml.append(f)
                     
