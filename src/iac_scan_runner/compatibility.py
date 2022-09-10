@@ -13,7 +13,7 @@ class Compatibility:
         "js": ["es-lint", "ts-lint"],
         "html": ["htmlhint"],
         "docker": ["hadolint"],
-        "other": [],        
+        "other": ["git-leaks", "git-secrets"],        
     }
     
     def __init__(self):
