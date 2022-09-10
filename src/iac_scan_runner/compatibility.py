@@ -4,16 +4,16 @@ from typing import List
 class Compatibility:
     # TODO: This matrix should be revised and extended, it is just a proof of concept here as for now
     compatibility_matrix = {
-        "terraform": ["tfsec", "tflint", "terrascan", "git-leaks", "git-secrets"],
-        "yaml": ["git-leaks", "yamllint", "git-secrets", "ansible-lint", "steampunk-scanner"],
-        "shell": ["shellcheck", "git-leaks", "git-secrets"],
-        "python": ["pylint", "bandit", "pyup-safety"],
-        #"ansible": ["ansible-lint", "steampunk-scanner"],
-        "java": ["checkstyle"],
-        "js": ["es-lint", "ts-lint"],
-        "html": ["htmlhint"],
-        "docker": ["hadolint"],
-        "other": ["git-leaks", "git-secrets"],        
+        "terraform": ["tfsec", "tflint", "terrascan", "git-leaks", "git-secrets", "cloc"],
+        "yaml": ["git-leaks", "yamllint", "git-secrets", "ansible-lint", "steampunk-scanner", "cloc"],
+        "shell": ["shellcheck", "git-leaks", "git-secrets", "cloc"],
+        "python": ["pylint", "bandit", "pyup-safety", "cloc"],
+        "java": ["checkstyle", "cloc"],
+        "js": ["es-lint", "ts-lint", "cloc"],
+        "html": ["htmlhint", "cloc"],
+        "docker": ["hadolint", "cloc"],
+        "common":  ["git-leaks", "git-secrets", "cloc"], 
+        "other": []        
     }
     
     def __init__(self):
@@ -48,12 +48,13 @@ class Compatibility:
         scanned_js = []
         scanned_docker = []
         scanned_other = []
-           
+        scanned_all = []           
         # TODO: List of supported file types should be extended
         # TODO: Remove hardcoded check names
         try:
             for root, folders, names in os.walk(iac_directory):
                 for f in names:
+                   scanned_all.append(f)
                    if (f.find(".tf") > -1) or (f.find(".tftpl") > -1):
                         types.append("terraform")
                         scanned_terraform.append(f)
@@ -89,6 +90,8 @@ class Compatibility:
                    else: 
                         types.append("other")
                         scanned_other.append(f)      
+            
+            types.append("common")
                         
             self.scanned_files["terraform"] = str(scanned_terraform)
             self.scanned_files["python"] = str(scanned_py)
@@ -99,6 +102,7 @@ class Compatibility:
             self.scanned_files["js"] = str(scanned_js)
             self.scanned_files["docker"] = str(scanned_docker)
             self.scanned_files["other"] = str(scanned_other)
+            self.scanned_files["common"] = str(scanned_all)            
                                                 
             types = set(types)
                                     
