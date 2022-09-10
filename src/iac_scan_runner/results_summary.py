@@ -63,6 +63,14 @@ class ResultsSummary:
                 self.outcomes[check]["status"] = "Problems"
                 return "Problems"
 
+        elif check == "git-secrets":
+            if outcome=="":
+                self.outcomes[check]["status"] = "Passed"
+                return "Passed"
+            else:
+                self.outcomes[check]["status"] = "Problems"
+                return "Problems"
+
         elif check == "terrascan":
             if outcome == "":
                 self.outcomes[check]["status"] = "Passed"
@@ -159,6 +167,10 @@ class ResultsSummary:
                 self.outcomes[check]["status"] = "Problems"
                 return "Problems" 
 
+        elif check == "cloc":
+            self.outcomes[check]["status"] = "Info"
+            return "Info"
+                
         elif check == "ansible-lint":
             if outcome=="":
                 self.outcomes[check]["status"] = "Passed"
@@ -231,6 +243,17 @@ class ResultsSummary:
                 html_page = html_page + "<tr>"
                 html_page = html_page + "<td>" + scan + "</td>"
                 html_page = html_page + "<td bgcolor='green'>" + str(self.outcomes[scan]["status"]) + "</td>"
+
+                html_page = html_page + "<td>" + self.outcomes[scan]["files"] + "</td>"
+                html_page = html_page + "<td>" + self.outcomes[scan]["log"] + "</td>"
+                html_page = html_page + "</tr>"
+
+        for scan in self.outcomes:
+
+            if self.outcomes[scan]["status"] == "Info":
+                html_page = html_page + "<tr>"
+                html_page = html_page + "<td>" + scan + "</td>"
+                html_page = html_page + "<td bgcolor='yellow'>" + str(self.outcomes[scan]["status"]) + "</td>"
 
                 html_page = html_page + "<td>" + self.outcomes[scan]["files"] + "</td>"
                 html_page = html_page + "<td>" + self.outcomes[scan]["log"] + "</td>"
