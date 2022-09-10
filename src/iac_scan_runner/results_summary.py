@@ -40,6 +40,7 @@ class ResultsSummary:
         file_list = ""
         for t in compatibility_matrix:
             if check in compatibility_matrix[t]:
+                print(compatibility_matrix[t])
                 file_list = str(scanned_files[t])
 
         self.outcomes[check]["files"] = file_list
@@ -55,7 +56,7 @@ class ResultsSummary:
                 self.outcomes[check]["status"] = "Problems"
                 return "Problems"
 
-        if check == "git-leaks":
+        elif check == "git-leaks":
             if outcome.find("No leaks found") > -1:
                 self.outcomes[check]["status"] = "Passed"
                 return "Passed"
@@ -63,7 +64,7 @@ class ResultsSummary:
                 self.outcomes[check]["status"] = "Problems"
                 return "Problems"
 
-        if check == "tflint":
+        elif check == "tflint":
             if outcome == "":
                 self.outcomes[check]["status"] = "Passed"
                 return "Passed"
@@ -71,7 +72,7 @@ class ResultsSummary:
                 self.outcomes[check]["status"] = "Problems"
                 return "Problems"
 
-        if check == "htmlhint":
+        elif check == "htmlhint":
             if outcome.find("no errors")>-1:
                 self.outcomes[check]["status"] = "Passed"
                 return "Passed"
@@ -79,7 +80,7 @@ class ResultsSummary:
                 self.outcomes[check]["status"] = "Problems"
                 return "Problems"
 
-        if check == "checkstyle":
+        elif check == "checkstyle":
             if outcome == "":
                 self.outcomes[check]["status"] = "Passed"
                 return "Passed"
@@ -87,7 +88,7 @@ class ResultsSummary:
                 self.outcomes[check]["status"] = "Problems"
                 return "Problems"                
 
-        if check == "es-lint":
+        elif check == "es-lint":
             if outcome.find("wrong")>-1:
                 self.outcomes[check]["status"] = "Problems"
                 return "Passed"
@@ -95,7 +96,7 @@ class ResultsSummary:
                 self.outcomes[check]["status"] = "Passed"
                 return "Problems"      
 
-        if check == "ts-lint":
+        elif check == "ts-lint":
             if outcome.find("wrong")>-1:
                 self.outcomes[check]["status"] = "Problems"
                 return "Passed"
@@ -103,7 +104,7 @@ class ResultsSummary:
                 self.outcomes[check]["status"] = "Passed"
                 return "Problems"  
 
-        if check == "pylint":
+        elif check == "pylint":
             if outcome.find("no problems")>-1:
                 self.outcomes[check]["status"] = "Passed"
                 return "Passed"
@@ -111,7 +112,7 @@ class ResultsSummary:
                 self.outcomes[check]["status"] = "Problems"
                 return "Problems" 
 
-        if check == "hadolint":
+        elif check == "hadolint":
             if outcome=="":
                 self.outcomes[check]["status"] = "Passed"
                 return "Passed"
@@ -119,20 +120,23 @@ class ResultsSummary:
                 self.outcomes[check]["status"] = "Problems"
                 return "Problems" 
 
-        if check == "terrascan":
+        elif check == "terrascan":
             if outcome=="":
                 self.outcomes[check]["status"] = "Passed"
                 return "Passed"
             else:
                 self.outcomes[check]["status"] = "Problems"
                 return "Problems" 
-                
-        if check == "other":
-            self.outcomes[check]["status"] = "No scan performed"
-            return "No scan"
-        else:
-            self.outcomes[check]["status"] = "Not fully supported yet"
-            return "Not fully supported yet"
+
+        elif check == "ansible-lint":
+            if outcome=="":
+                self.outcomes[check]["status"] = "Passed"
+                return "Passed"
+            else:
+                self.outcomes[check]["status"] = "Problems"
+                return "Problems" 
+        self.outcomes[check]["status"] = "Not fully supported yet"
+        return "Not fully supported yet"
 
     def summarize_no_files(self, check: str):
         """

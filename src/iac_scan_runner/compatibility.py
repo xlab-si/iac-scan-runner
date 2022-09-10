@@ -5,10 +5,10 @@ class Compatibility:
     # TODO: This matrix should be revised and extended, it is just a proof of concept here as for now
     compatibility_matrix = {
         "terraform": ["tfsec", "tflint", "terrascan", "git-leaks", "git-secrets"],
-        "yaml": ["git-leaks", "yamllint", "git-secrets"],
+        "yaml": ["git-leaks", "yamllint", "git-secrets", "ansible-lint", "steampunk-scanner"],
         "shell": ["shellcheck", "git-leaks", "git-secrets"],
         "python": ["pylint", "bandit", "pyup-safety"],
-        "ansible": ["ansible-lint", "steampunk-scanner"],
+        #"ansible": ["ansible-lint", "steampunk-scanner"],
         "java": ["checkstyle"],
         "js": ["es-lint", "ts-lint"],
         "html": ["htmlhint"],
@@ -54,9 +54,15 @@ class Compatibility:
         try:
             for root, folders, names in os.walk(iac_directory):
                 for f in names:
-                   if (f.find(".tf") or f.find(".tftpl")) > -1:
+                   print(f)
+                   if (f.find(".tf") > -1) or (f.find(".tftpl") > -1):
                         types.append("terraform")
                         scanned_terraform.append(f)
+
+                   elif (f.find(".yaml") > -1) or (f.find(".yml") > -1):
+                        print(f)
+                        types.append("yaml")
+                        scanned_yaml.append(f)
                     
                    elif f.find(".sh") > -1:
                         types.append("shell")
@@ -65,10 +71,6 @@ class Compatibility:
                    elif f.find(".py") > -1:
                         types.append("python")
                         scanned_py.append(f)
-
-                   elif (f.find(".yaml") or f.find(".yml")) > -1:
-                        types.append("yaml")
-                        scanned_yaml.append(f)
 
                    elif f.find(".java") > -1:
                         types.append("java")

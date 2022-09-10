@@ -146,13 +146,15 @@ class ScanRunner:
 
         compatible_checks = self.compatibility_matrix.get_all_compatible_checks(self.iac_dir)
         non_compatible_checks = []
-                
         scan_output = {}
-
-        if selected_checks and selected_checks!="":
+        
+        if selected_checks:
             for selected_check in selected_checks:
                 check = self.iac_checks[selected_check]
+                print(selected_check)
                 if check.enabled:
+                    print("enabled")
+                    print(compatible_checks)
                     if selected_check in compatible_checks:
                         check_output = check.run(self.iac_dir)
                         scan_output[selected_check] = check_output.to_dict()                        
