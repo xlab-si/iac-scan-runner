@@ -87,6 +87,14 @@ class ResultsSummary:
                 self.outcomes[check]["status"] = "Problems"
                 return "Problems"                
 
+        elif check == "shellcheck":
+            if outcome == "":
+                self.outcomes[check]["status"] = "Passed"
+                return "Passed"
+            else:
+                self.outcomes[check]["status"] = "Problems"
+                return "Problems"   
+
         elif check == "es-lint":
             if outcome.find("wrong")>-1:
                 self.outcomes[check]["status"] = "Problems"
@@ -105,6 +113,14 @@ class ResultsSummary:
 
         elif check == "pylint":
             if outcome.find("no problems")>-1:
+                self.outcomes[check]["status"] = "Passed"
+                return "Passed"
+            else:
+                self.outcomes[check]["status"] = "Problems"
+                return "Problems" 
+
+        elif check == "bandit":
+            if outcome.find("No issues identified.")>-1:
                 self.outcomes[check]["status"] = "Passed"
                 return "Passed"
             else:
