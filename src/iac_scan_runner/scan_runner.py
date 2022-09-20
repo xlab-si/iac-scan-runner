@@ -52,9 +52,10 @@ class ScanRunner:
         self.iac_checks = {}
         self.iac_dir = None
         self.compatibility_matrix = Compatibility()
-        self.results_summary = ResultsSummary()        
+        self.results_summary = ResultsSummary()
+        self.archive_name = ""   
+        self.persistence_enabled = True          
         self.results_persistence = ResultsPersistence()
-        self.archive_name = ""        
         
     def init_checks(self):
         """Initiate predefined check objects"""
@@ -166,14 +167,16 @@ class ScanRunner:
                         non_compatible_checks.append(check.name)
                         write_string_to_file(check.name, dir_name, "No files to scan")
                         self.results_summary.summarize_no_files(check.name)
-            self.results_summary.dump_outcomes(random_uuid)
+
             self.results_summary.generate_html_prioritized(random_uuid)
 
             self.results_summary.outcomes["uuid"] = random_uuid
             self.results_summary.outcomes["archive"] = self.archive_name                     
             self.results_summary.outcomes["time"] = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-
-            self.results_persistence.insert_result(self.results_summary.outcomes) 
+            self.results_summary.dump_outcomes(random_uuid)
+                        
+            if(self.results_persistence.connection_problem == False and self.persistence_enabled == True):
+                self.results_persistence.insert_result(self.results_summary.outcomes) 
 
         else:
             for iac_check in self.iac_checks.values():
@@ -187,14 +190,16 @@ class ScanRunner:
                         non_compatible_checks.append(iac_check.name)
                         write_string_to_file(iac_check.name, dir_name, "No files to scan")
                         self.results_summary.summarize_no_files(iac_check.name)
-            self.results_summary.dump_outcomes(random_uuid)
+
             self.results_summary.generate_html_prioritized(random_uuid)                
             
             self.results_summary.outcomes["uuid"] = random_uuid
             self.results_summary.outcomes["archive"] = self.archive_name         
             self.results_summary.outcomes["time"] = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-
-            self.results_persistence.insert_result(self.results_summary.outcomes)         
+            self.results_summary.dump_outcomes(random_uuid)
+            
+            if(self.results_persistence.connection_problem == False and self.persistence_enabled == True):
+                self.results_persistence.insert_result(self.results_summary.outcomes) 
         
         # TODO: Discuss the format of this output
         if scan_response_type == ScanResponseType.json:

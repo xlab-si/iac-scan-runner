@@ -3,16 +3,26 @@ import bson.json_util as json_util
 from bson.json_util import dumps
 import json
 from datetime import datetime
-
+import os
 class ResultsPersistence:
     def __init__(self):
     
         """
         Initialize new scan result database, collection and client
         """        
-        self.myclient = pymongo.MongoClient("mongodb://localhost:27017/") 
-        self.mydb = self.myclient["scandb"]
-        self.mycol = self.mydb["results"]
+        
+        try:
+            connection_string = os.environ['MONGO_STRING']  
+            print(connection_string)  
+            self.myclient = pymongo.MongoClient(connection_string)
+            self.mydb = self.myclient["scandb"]
+            self.mycol = self.mydb["results"]
+            self.connection_problem = False
+            
+        except Exception as e:
+            print("Scan result persistence not available")
+            self.connection_problem = True
+
 
     def parse_json(self, data):
         return json.loads(json_util.dumps(data))
