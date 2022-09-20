@@ -202,4 +202,22 @@ async def delete_scan_result(uuid: str) -> JSONResponse:
             return JSONResponse(status_code=status.HTTP_200_OK, content=f"No such scan result {uuid}")     
     except Exception as e:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))         
-        
+
+
+@app.put("/persistence_enabler/{enable}", summary="Delete particular scan result by given uuid", responses={200: {}, 400: {"model": str}})
+async def persistence_enable(enable: str) -> JSONResponse:
+    """
+    Delete a particular scan result (GET method)
+    :param uuid: Identifier of a scan record in database
+    :return: JSONResponse object (with status code 200 or 400)
+    """
+    try:
+        if(enable == "disable"):
+            scan_runner.persistence_enabled = False              
+        else:
+            scan_runner.persistence_enabled = True
+                         
+        return JSONResponse(status_code=status.HTTP_200_OK, content=f"Persistence enable: {enable}")
+
+    except Exception as e:
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))              
