@@ -45,6 +45,7 @@ import uuid
 import os
 import json
 from datetime import datetime
+import time
 
 class ScanRunner:
     def __init__(self):
@@ -141,6 +142,7 @@ class ScanRunner:
         :param scan_response_type: Scan response type (JSON or HTML)
         :return: Dict or string with output for running checks
         """
+        start_time = time.time()
         random_uuid = str(uuid.uuid4())
         # TODO: Replace this hardcoded path with a parameter
         dir_name = "../outputs/logs/scan_run_" + random_uuid
@@ -167,14 +169,16 @@ class ScanRunner:
                         non_compatible_checks.append(check.name)
                         write_string_to_file(check.name, dir_name, "No files to scan")
                         self.results_summary.summarize_no_files(check.name)
-
+            end_time = time.time()
+            duration = end_time-start_time                        
             self.results_summary.generate_html_prioritized(random_uuid)
 
             self.results_summary.outcomes["uuid"] = random_uuid
             self.results_summary.outcomes["archive"] = self.archive_name                     
             self.results_summary.outcomes["time"] = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+            self.results_summary.outcomes["execution-duration"] = str(round(duration, 3))         
             self.results_summary.dump_outcomes(random_uuid)
-                        
+                                                
             if(self.results_persistence.connection_problem == False and self.persistence_enabled == True):
                 self.results_persistence.insert_result(self.results_summary.outcomes) 
 
@@ -190,12 +194,15 @@ class ScanRunner:
                         non_compatible_checks.append(iac_check.name)
                         write_string_to_file(iac_check.name, dir_name, "No files to scan")
                         self.results_summary.summarize_no_files(iac_check.name)
-
+            
+            end_time = time.time()
+            duration = end_time-start_time
             self.results_summary.generate_html_prioritized(random_uuid)                
             
             self.results_summary.outcomes["uuid"] = random_uuid
             self.results_summary.outcomes["archive"] = self.archive_name         
             self.results_summary.outcomes["time"] = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+            self.results_summary.outcomes["execution-duration"] = str(round(duration, 3))         
             self.results_summary.dump_outcomes(random_uuid)
             
             if(self.results_persistence.connection_problem == False and self.persistence_enabled == True):
