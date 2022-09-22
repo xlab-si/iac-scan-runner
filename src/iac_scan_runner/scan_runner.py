@@ -55,7 +55,12 @@ class ScanRunner:
         self.compatibility_matrix = Compatibility()
         self.results_summary = ResultsSummary()
         self.archive_name = ""   
-        self.persistence_enabled = True          
+        
+        if(os.environ.get("SCAN_PERSISTENCE") == "enabled"):
+            self.persistence_enabled = True
+        else:
+            self.persistence_enabled = False
+                        
         self.results_persistence = ResultsPersistence()
         
     def init_checks(self):

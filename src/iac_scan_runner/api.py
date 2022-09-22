@@ -167,10 +167,10 @@ async def post_scan(iac: UploadFile = File(..., description='IaC file (zip or ta
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))
         
 @app.get("/results", summary="Retrieve particular scan result by given uuid", responses={200: {}, 400: {"model": str}})
-async def get_scan_result(uuid: str) -> JSONResponse:
+async def get_scan_result(uuid: Optional[str]) -> JSONResponse:
     """
     Retrieve a particular scan result (GET method)
-    :param uuid: Identifier of a scan record in database
+    :param uuid: Identifier of a saved scan record
     :return: JSONResponse object (with status code 200 or 400)
     """
     try:
@@ -188,36 +188,17 @@ async def get_scan_result(uuid: str) -> JSONResponse:
 async def delete_scan_result(uuid: str) -> JSONResponse:
     """
     Delete a particular scan result (GET method)
-    :param uuid: Identifier of a scan record in database
+    :param uuid: Identifier of a saved scan record
     :return: JSONResponse object (with status code 200 or 400)
     """
     try:
         results_persistence = ResultsPersistence()      
               
         result = results_persistence.show_result(uuid)  
-        if(not result==None):        
+        if(not result == None):        
             results_persistence.delete_result(uuid)  
             return JSONResponse(status_code=status.HTTP_200_OK, content=f"Deleted scan result {uuid}")
         else:
             return JSONResponse(status_code=status.HTTP_200_OK, content=f"No such scan result {uuid}")     
     except Exception as e:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))         
-
-
-@app.put("/persistence_enabler/{enable}", summary="Delete particular scan result by given uuid", responses={200: {}, 400: {"model": str}})
-async def persistence_enable(enable: str) -> JSONResponse:
-    """
-    Delete a particular scan result (GET method)
-    :param uuid: Identifier of a scan record in database
-    :return: JSONResponse object (with status code 200 or 400)
-    """
-    try:
-        if(enable == "disable"):
-            scan_runner.persistence_enabled = False              
-        else:
-            scan_runner.persistence_enabled = True
-                         
-        return JSONResponse(status_code=status.HTTP_200_OK, content=f"Persistence enable: {enable}")
-
-    except Exception as e:
-        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))              

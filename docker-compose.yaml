@@ -1,0 +1,17 @@
+version: '3.9'  
+services:
+  mongoservice:
+    image: mongo:5.0
+    ports:
+      - 27017:27017
+  iac-scan-runner:
+    image: xscanner/runner
+    expose: 
+      - 27017
+    ports:
+      - 8080:80 
+    depends_on:
+      - "mongoservice"
+    environment:
+      - MONGODB_CONNECTION_STRING=mongodb://mongoservice:27017/
+      - SCAN_PERSISTENCE=enabled
