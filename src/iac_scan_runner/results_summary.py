@@ -213,6 +213,18 @@ class ResultsSummary:
             raise Exception(f"Error dumping json of scan results: {str(e)}.")
 
 
+    def evaluate_verdict(self):
+        verdict = "Passed"
+        for check in self.outcomes:
+            if(check!="uuid" and check!="time" and check!="problems" and check!="passed" and check!="total"):       
+                #print(self.outcomes[check]["status"])
+                if(self.outcomes[check]["status"]=="Problems"):
+                    self.outcomes["verdict"] = "Problems"
+                    return "Problems"
+        self.outcomes["verdict"] = "Passed"
+        return "Passed"
+
+
     def generate_html_prioritized(self, file_name: str):
         """
         Summarizes scan results (status, list of scanned files and scan tool log) into HTML file with the following visualization ordering: 1) problems detected 2) passed 3) no files scanned
@@ -221,13 +233,32 @@ class ResultsSummary:
         html_page = (
             "<!DOCTYPE html> <html> <style> table, th, td { border:1px solid black;}</style>"
             + "<body> <h2>Scan results</h2>"
-            + "<table style='width:100%'>" 
-            + "<tr> <th>Scan</th> <th>Status</th> <th>Files</th> <th>Log</th> </tr>"
+        )    
+        
+        
+        summary_header = (
+        "<table style='width:100%'>" 
+        + "<tr> <th>Aspect</th> <th>Measure</th>"
         )
         
+        archive_row = f"<tr> <td>Archive name</td> <td>{self.outcomes['archive']}</td> </tr>"
+        timestamp_row = f"<tr> <td>Run on</td> <td>{self.outcomes['time']}</td> </tr>"
+        duration_row = f"<tr> <td>Time spent (seconds)</td> <td>{self.outcomes['execution-duration']}</td> </tr>"
+        verdict_row = f"<tr> <td>Final verdict</td> <td>{self.outcomes['verdict']}</td> </tr>"
+                
+        summary_table = summary_header+archive_row + timestamp_row + duration_row + verdict_row
+        
+        html_page = html_page + summary_table
+                       
+        html_page = (
+        html_page 
+        + "<table style='width:100%'>" 
+        + "<tr> <th>Scan</th> <th>Status</th> <th>Files</th> <th>Log</th> </tr>"
+        )
+       
         for scan in self.outcomes:
 
-            if not(scan == "uuid") and not(scan == "time") and not(scan == "archive") and not(scan == "execution-duration") and self.outcomes[scan]["status"] == "Problems":
+            if not(scan == "uuid") and not(scan == "time") and not(scan == "archive") and not(scan == "execution-duration")  and not(scan == "verdict") and self.outcomes[scan]["status"] == "Problems":
 
                 html_page = html_page + "<tr>"
                 html_page = html_page + "<td>" + scan + "</td>"
@@ -239,7 +270,7 @@ class ResultsSummary:
 
         for scan in self.outcomes:
 
-            if not(scan == "uuid") and not(scan == "time") and not(scan == "archive") and not(scan == "execution-duration") and self.outcomes[scan]["status"] == "Passed":
+            if not(scan == "uuid") and not(scan == "time") and not(scan == "archive") and not(scan == "execution-duration") and not(scan == "verdict") and self.outcomes[scan]["status"] == "Passed":
                 html_page = html_page + "<tr>"
                 html_page = html_page + "<td>" + scan + "</td>"
                 html_page = html_page + "<td bgcolor='green'>" + str(self.outcomes[scan]["status"]) + "</td>"
@@ -250,7 +281,7 @@ class ResultsSummary:
 
         for scan in self.outcomes:
 
-            if not(scan=="uuid") and not(scan=="time") and not(scan == "archive") and not(scan == "execution-duration") and self.outcomes[scan]["status"] == "Info" :
+            if not(scan=="uuid") and not(scan=="time") and not(scan == "archive") and not(scan == "execution-duration")  and not(scan == "verdict") and self.outcomes[scan]["status"] == "Info" :
                 html_page = html_page + "<tr>"
                 html_page = html_page + "<td>" + scan + "</td>"
                 html_page = html_page + "<td bgcolor='yellow'>" + str(self.outcomes[scan]["status"]) + "</td>"
@@ -261,7 +292,7 @@ class ResultsSummary:
 
         for scan in self.outcomes:
 
-            if not(scan=="uuid") and not(scan=="time") and not(scan == "archive") and not(scan == "execution-duration") and self.outcomes[scan]["status"] == "No files" :
+            if not(scan=="uuid") and not(scan=="time") and not(scan == "archive") and not(scan == "execution-duration")  and not(scan == "verdict") and self.outcomes[scan]["status"] == "No files" :
                 html_page = html_page + "<tr>"
                 html_page = html_page + "<td>" + scan + "</td>"
                 html_page = html_page + "<td bgcolor='gray'>" + str(self.outcomes[scan]["status"]) + "</td>"
