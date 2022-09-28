@@ -15,3 +15,4 @@ services:
     environment:
       - MONGODB_CONNECTION_STRING=mongodb://mongoservice:27017/
       - SCAN_PERSISTENCE=enabled
+      - USER_MANAGEMENT=enabled      

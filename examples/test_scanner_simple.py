@@ -5,9 +5,14 @@ URL = "http://127.0.0.1:8000/scan"
 
 multipart_form_data = {
     "iac": (sys.argv[1], open(sys.argv[1], "rb")),
-    "checks": (None, sys.argv[2]),
+    "checks": (None, sys.argv[2])
 }
-response = requests.post(URL, files=multipart_form_data)
+
+par = { 
+    "projectid" : (None, "penenadpi") 
+}
+
+response = requests.post(URL, files = multipart_form_data, params=par)
 print(response.json())
 
 scan_result = response.json()

@@ -8,6 +8,7 @@ from fastapi import UploadFile
 from iac_scan_runner.compatibility import Compatibility
 from iac_scan_runner.results_summary import ResultsSummary
 from iac_scan_runner.results_persistence import ResultsPersistence
+from iac_scan_runner.scan_project import ScanProject
 
 from iac_scan_runner.checks.ansible_lint import AnsibleLintCheck
 from iac_scan_runner.checks.bandit import BanditCheck
@@ -62,6 +63,12 @@ class ScanRunner:
             self.persistence_enabled = False
                         
         self.results_persistence = ResultsPersistence()
+
+        if(os.environ.get("USER_MANAGEMENT") == "enabled"):
+            self.users_enabled = True
+        else:
+            self.users_enabled = False
+        self.scan_project = ScanProject()
         
     def init_checks(self):
         """Initiate predefined check objects"""
@@ -140,7 +147,7 @@ class ScanRunner:
         except Exception as e:
             raise Exception(f"Error when cleaning IaC directory: {str(e)}.")
 
-    def _run_checks(self, selected_checks: Optional[List], scan_response_type: ScanResponseType) -> Union[dict, str]:
+    def _run_checks(self, selected_checks: Optional[List], projectid: str, scan_response_type: ScanResponseType) -> Union[dict, str]:
         """
         Run the specified IaC checks
         :param selected_checks: List of selected checks to be executed on IaC
@@ -182,8 +189,13 @@ class ScanRunner:
             self.results_summary.outcomes["time"] = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
             self.results_summary.outcomes["execution-duration"] = str(round(duration, 3))   
             self.results_summary.evaluate_verdict()      
+            if(self.users_enabled):
+                self.results_summary.outcomes["projectid"] = projectid 
+
             self.results_summary.dump_outcomes(random_uuid)
             self.results_summary.generate_html_prioritized(random_uuid)
+            
+  
                                                             
             if(self.results_persistence.connection_problem == False and self.persistence_enabled == True):
                 self.results_persistence.insert_result(self.results_summary.outcomes) 
@@ -209,8 +221,13 @@ class ScanRunner:
             self.results_summary.outcomes["time"] = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
             self.results_summary.outcomes["execution-duration"] = str(round(duration, 3))   
             self.results_summary.evaluate_verdict()      
+            if(self.users_enabled):
+                self.results_summary.outcomes["projectid"] = projectid 
+
             self.results_summary.dump_outcomes(random_uuid)
             self.results_summary.generate_html_prioritized(random_uuid)
+
+
             
             if(self.results_persistence.connection_problem == False and self.persistence_enabled == True):
                 self.results_persistence.insert_result(self.results_summary.outcomes) 
@@ -283,7 +300,7 @@ class ScanRunner:
             raise Exception(f'Nonexistent check: {check_name}')
 
     def scan_iac(
-        self, iac_file: UploadFile, checks: List, scan_response_type: ScanResponseType
+        self, iac_file: UploadFile, projectid: str, checks: List, scan_response_type: ScanResponseType
     ) -> Union[dict, str]:
         """
         Run IaC scanning process (initiate IaC dir, run checks and cleanup IaC dir)
@@ -299,6 +316,6 @@ class ScanRunner:
             raise Exception(f'Nonexistent, disabled or un-configured checks: {nonexistent_checks}.')
 
         self._init_iac_dir(iac_file)
-        scan_output = self._run_checks(checks, scan_response_type)
+        scan_output = self._run_checks(checks, projectid, scan_response_type)
         self._cleanup_iac_dir()
         return scan_output
