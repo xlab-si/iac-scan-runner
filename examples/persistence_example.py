@@ -8,8 +8,7 @@ print("SHOW ALL RESULTS")
 URL = "http://127.0.0.1:8000/results"
 
 uuids = {
-    "uuid": "8357c950-78d3-4a15-94c6-f911116dcd10",
-
+    "uuid": "8357c950-78d3-4a15-94c6-f911116dcd10"
 }
 
 response = requests.get(URL, uuids)

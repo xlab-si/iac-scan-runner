@@ -13,7 +13,7 @@ from iac_scan_runner.scan_response_type import ScanResponseType
 from iac_scan_runner.scan_runner import ScanRunner
 from pydantic import SecretStr
 from iac_scan_runner.results_persistence import ResultsPersistence
-
+from iac_scan_runner.scan_project import ScanProject
 # create an API instance
 app = FastAPI(
     docs_url="/swagger",
@@ -142,14 +142,15 @@ async def put_configure_check(check_name: str,
 
 
 @app.post("/scan", summary="Initiate IaC scan", responses={200: {}, 400: {"model": str}})
-async def post_scan(iac: UploadFile = File(..., description='IaC file (zip or tar compressed) that will be scanned'),
+async def post_scan(iac: UploadFile = File(..., description='IaC file (zip or tar compressed) that will be scanned'), projectid: Optional[str]=None,
                     checks: Optional[List[str]] = Form(None,
                                                        description='List of selected checks (by their unique names) to '
                                                                    'be executed on IaC'),
                     scan_response_type: ScanResponseType = ScanResponseType.json) -> Union[JSONResponse, HTMLResponse]:
     """
     Run IaC scan (POST method)
-    :param iac: IaC file (zip or tar compressed) that will be scanned'
+    :param iac: IaC file (zip or tar compressed) that will be scanned
+    :param projectid: Identifier of a projectid to which where scan run belongs  
     :param checks: List of selected checks to be executed on IaC
     :param scan_response_type: Scan response type (JSON or HTML)
     :return: JSONResponse or HTMLResponse object (with status code 200 or 400)
@@ -159,7 +160,11 @@ async def post_scan(iac: UploadFile = File(..., description='IaC file (zip or ta
             checks = []
         else:
             checks = list(set(checks[0].split(",")))
-        scan_output = scan_runner.scan_iac(iac, checks, scan_response_type)
+
+        if not projectid:
+            projectid = ""
+                
+        scan_output = scan_runner.scan_iac(iac, projectid, checks, scan_response_type)
         if scan_response_type == ScanResponseType.html:
             return HTMLResponse(status_code=status.HTTP_200_OK, content=scan_output)
         return JSONResponse(status_code=status.HTTP_200_OK, content=scan_output)
@@ -200,5 +205,38 @@ async def delete_scan_result(uuid: str) -> JSONResponse:
             return JSONResponse(status_code=status.HTTP_200_OK, content=f"Deleted scan result {uuid}")
         else:
             return JSONResponse(status_code=status.HTTP_200_OK, content=f"No such scan result {uuid}")     
+    except Exception as e:
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))         
+
+@app.post("/new_project", summary="Generate new scan project for given user as creator", responses={200: {}, 400: {"model": str}})
+async def post_new_project(creatorid: str) -> JSONResponse:
+    """
+    Create a new project which might contain multiple scan runs (POST method)
+    :param creatorid: Identifier of a user who created project
+    :return: JSONResponse object (with status code 200 or 400)
+    """
+    try:
+        scan_project = ScanProject() 
+
+        pid=scan_project.new_project(creatorid, "")  
+         
+        return JSONResponse(status_code=status.HTTP_200_OK, content=pid)
+    except Exception as e:
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))         
+        
+@app.post("/set_project_config", summary="Assign configuration to the given scan project", responses={200: {}, 400: {"model": str}})
+async def set_project_config(projectid: str, configid: str) -> JSONResponse:
+    """
+    Assign configuration by its id to a scan project (POST method)
+    :param projectid: Identifier of a previously stored scan project
+    :param configid: Identifier of a previously stored configuration    
+    :return: JSONResponse object (with status code 200 or 400)
+    """
+    try:
+        scan_project = ScanProject() 
+
+        scan_project.set_config(projectid, configid)
+        
+        return JSONResponse(status_code=status.HTTP_200_OK, content=f"New project created with id: {projectid}")
     except Exception as e:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))         
