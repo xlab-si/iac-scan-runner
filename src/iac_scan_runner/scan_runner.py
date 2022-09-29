@@ -178,7 +178,7 @@ class ScanRunner:
             duration = end_time-start_time                        
                         
             self.results_summary.outcomes["uuid"] = random_uuid
-            self.results_summary.outcomes["archive"] = self.archive_name                     
+            self.results_summary.outcomes["archive"] = self.archive_name
             self.results_summary.outcomes["time"] = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
             self.results_summary.outcomes["execution-duration"] = str(round(duration, 3))   
             self.results_summary.evaluate_verdict()      
@@ -205,7 +205,7 @@ class ScanRunner:
             duration = end_time-start_time
 
             self.results_summary.outcomes["uuid"] = random_uuid
-            self.results_summary.outcomes["archive"] = self.archive_name                     
+            self.results_summary.outcomes["archive"] = self.archive_name
             self.results_summary.outcomes["time"] = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
             self.results_summary.outcomes["execution-duration"] = str(round(duration, 3))   
             self.results_summary.evaluate_verdict()      

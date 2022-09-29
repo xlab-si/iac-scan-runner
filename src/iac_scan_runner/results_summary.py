@@ -216,8 +216,7 @@ class ResultsSummary:
     def evaluate_verdict(self):
         verdict = "Passed"
         for check in self.outcomes:
-            if(check!="uuid" and check!="time" and check!="problems" and check!="passed" and check!="total"):       
-                #print(self.outcomes[check]["status"])
+            if check != "uuid" and check != "time" and check != "problems" and check != "passed" and check != "total":       
                 if(self.outcomes[check]["status"]=="Problems"):
                     self.outcomes["verdict"] = "Problems"
                     return "Problems"
@@ -234,7 +233,6 @@ class ResultsSummary:
             "<!DOCTYPE html> <html> <style> table, th, td { border:1px solid black;}</style>"
             + "<body> <h2>Scan results</h2>"
         )    
-        
         
         summary_header = (
         "<table style='width:100%'>" 
@@ -281,7 +279,7 @@ class ResultsSummary:
 
         for scan in self.outcomes:
 
-            if not(scan=="uuid") and not(scan=="time") and not(scan == "archive") and not(scan == "execution-duration")  and not(scan == "verdict") and self.outcomes[scan]["status"] == "Info" :
+            if not(scan == "uuid") and not(scan == "time") and not(scan == "archive") and not(scan == "execution-duration")  and not(scan == "verdict") and self.outcomes[scan]["status"] == "Info" :
                 html_page = html_page + "<tr>"
                 html_page = html_page + "<td>" + scan + "</td>"
                 html_page = html_page + "<td bgcolor='yellow'>" + str(self.outcomes[scan]["status"]) + "</td>"
@@ -292,7 +290,7 @@ class ResultsSummary:
 
         for scan in self.outcomes:
 
-            if not(scan=="uuid") and not(scan=="time") and not(scan == "archive") and not(scan == "execution-duration")  and not(scan == "verdict") and self.outcomes[scan]["status"] == "No files" :
+            if not(scan == "uuid") and not(scan == "time") and not(scan == "archive") and not(scan == "execution-duration")  and not(scan == "verdict") and self.outcomes[scan]["status"] == "No files" :
                 html_page = html_page + "<tr>"
                 html_page = html_page + "<td>" + scan + "</td>"
                 html_page = html_page + "<td bgcolor='gray'>" + str(self.outcomes[scan]["status"]) + "</td>"
