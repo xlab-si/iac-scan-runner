@@ -4,6 +4,7 @@ import os
 from typing import Optional, List, Union
 
 import yaml
+import json
 from content_size_limit_asgi import ContentSizeLimitMiddleware
 from fastapi import FastAPI, File, Form, UploadFile, status
 from fastapi.responses import JSONResponse, HTMLResponse
@@ -14,6 +15,8 @@ from iac_scan_runner.scan_runner import ScanRunner
 from pydantic import SecretStr
 from iac_scan_runner.results_persistence import ResultsPersistence
 from iac_scan_runner.scan_project import ScanProject
+from iac_scan_runner.project_config import ProjectConfig
+
 # create an API instance
 app = FastAPI(
     docs_url="/swagger",
@@ -240,3 +243,37 @@ async def set_project_config(projectid: str, configid: str) -> JSONResponse:
         return JSONResponse(status_code=status.HTTP_200_OK, content=f"New project created with id: {projectid}")
     except Exception as e:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))         
+
+@app.post("/new_config", summary="Create a new scan project configuration", responses={200: {}, 400: {"model": str}})
+async def post_new_config(creatorid: str) -> JSONResponse:
+    """
+    Create a new scan project configuration which can be assigned to a project (POST method)
+    :param creatorid: Identifier of a user who created project
+    :return: JSONResponse object (with status code 200 or 400)
+    """
+    try:
+        project_config = ProjectConfig() 
+
+        cid=project_config.new_config(creatorid, None)  
+         
+        return JSONResponse(status_code=status.HTTP_200_OK, content=cid)
+    except Exception as e:
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))         
+
+@app.post("/set_config_params", summary="Set the parameters for configuration by given id", responses={200: {}, 400: {"model": str}})
+async def set_config_params(configid: str, parameters: str) -> JSONResponse:
+    """
+    Assign configuration by its id to a scan project (POST method)
+    :param projectid: Identifier of a previously stored scan project
+    :param configid: Identifier of a previously stored configuration    
+    :return: JSONResponse object (with status code 200 or 400)
+    """
+    try:
+        print(parameters)
+        project_config = ProjectConfig() 
+        parameters_dict = eval(parameters)        
+        project_config.set_parameters(configid, parameters_dict)
+        
+        return JSONResponse(status_code=status.HTTP_200_OK, content=f"Config modified: {configid}")
+    except Exception as e:
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))          
