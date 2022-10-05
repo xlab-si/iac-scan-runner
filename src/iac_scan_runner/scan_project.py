@@ -6,7 +6,6 @@ from datetime import datetime
 import os
 import uuid
 
-
 class ScanProject:
     def __init__(self):
         """
@@ -23,7 +22,7 @@ class ScanProject:
         try:
             connection_string = os.environ['MONGODB_CONNECTION_STRING']  
             
-            if(connection_string):
+            if connection_string:
                 self.myclient = pymongo.MongoClient(connection_string)
                 self.mydb = self.myclient["scandb"]
                 self.mycol = self.mydb["projects"]
@@ -43,13 +42,12 @@ class ScanProject:
         return json.loads(json_util.dumps(data))
 
     def insert_project(self, result: dict):
-    
         """Inserts new project into database
         :param result: Dictionary holding the project info
         """     
-        if(self.connection_problem == True):
+        if self.connection_problem:
             self.connect_db()
-        if(self.mycol != None):
+        if self.mycol is not None:
             self.mycol.insert_one(self.parse_json(result))
 
     def new_project(self, creatorid: str, active_config: str):
@@ -65,15 +63,15 @@ class ScanProject:
 
         project_json["time"] = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
                       
-        if(active_config):
+        if active_config:
             project_json["active_config"] = active_config
         else:
             project_json["active_config"] = ""
             
                        
-        if(self.connection_problem == True):
+        if self.connection_problem:
             self.connect_db()
-        if(self.mycol != None):
+        if self.mycol is not None:
             self.mycol.insert_one(self.parse_json(project_json))
             return  project_json["projectid"]
          
@@ -83,10 +81,10 @@ class ScanProject:
         :param projectid: Identifier of a scan project
         :return: JSON object of project
         """
-        if(self.connection_problem==True):
+        if self.connection_problem:
             self.connect_db()
             
-        if(self.mycol != None):                
+        if self.mycol is not None:                
             myquery = { "projectid": projectid }
             mydoc = self.mycol.find(myquery)
             for x in mydoc:
@@ -100,13 +98,13 @@ class ScanProject:
         :return: JSON object of user
         """
 
-        if(self.connection_problem == True):
+        if self.connection_problem:
             self.connect_db()
 
-        if(self.mycol != None):           
+        if self.mycol is not None:           
 
-            myquery = { "projectid": projectid }
-            new_value = { "$set": { "active_config": configid } }
+            myquery = {"projectid": projectid}
+            new_value = {"$set": {"active_config": configid}}
             try:
                 self.mycol.find_one_and_update(myquery, new_value, upsert=True)
             except Exception as e:
@@ -117,25 +115,43 @@ class ScanProject:
         """Deletes the project with given id from database
         :param projectid: Identifier of a project which is about to be deleted
         """
-        if(self.connection_problem==True):
+        if self.connection_problem:
             self.connect_db()
             
-        if(self.mycol != None):          
-            myquery = { "projectid": projectid }
+        if self.mycol is not None:          
+            myquery = {"projectid": projectid}
             mydoc = self.mycol.delete_one(myquery)
-
 
     def all_projects(self) -> str:
     
         """Shows all the scan projects from the database
         :return: String of all database records concatenated
         """
-        if(self.connection_problem==True):
+        if self.connection_problem:
             self.connect_db()
             
-        if(self.mycol != None):        
+        if self.mycol is not None:        
             cursor = self.mycol.find({})
             output = ""
             for doc in cursor:
                 output = output + str(doc)
-            return output	                                                       
+            return output
+
+    def all_projects_by_user(self, creatorid: str) -> str:
+    
+        """Shows all the scan projects from the database created by guven user
+        :param creatorid: Identifier of project creator        
+        :return: String of all database records concatenated for given user creator
+        """
+        if self.connection_problem==True:
+            self.connect_db()
+
+        if self.mycol is not None:        
+            myquery = {"creatorid": creatorid}
+            cursor = self.mycol.find(myquery)
+            output = ""
+            for doc in cursor:
+                output = output + str(doc)
+            return output
+
+            	                                                       

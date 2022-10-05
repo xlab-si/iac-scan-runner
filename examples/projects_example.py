@@ -4,7 +4,7 @@ import sys
 url = "http://127.0.0.1:8000/new_project"
 
 par = {
-    "creatorid": "8357c950-78d3-4a15-94c6-f911116dcd10"
+    "creatorid": "penenadpi"
 }
 
 response = requests.post(url, params=par)
@@ -18,6 +18,13 @@ par = {
 par["projectid"] = projectid
 
 url = "http://127.0.0.1:8000/set_project_config"
-
 response = requests.post(url, params=par)
+print(response.json())
+
+par = {
+    "creatorid": "penenadpi"
+}
+
+url = "http://127.0.0.1:8000/projects"
+response = requests.get(url, params=par)
 print(response.json())

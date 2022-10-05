@@ -64,7 +64,7 @@ class ResultsSummary:
                 return "Problems"
 
         elif check == "git-secrets":
-            if outcome=="":
+            if outcome == "":
                 self.outcomes[check]["status"] = "Passed"
                 return "Passed"
             else:
@@ -120,7 +120,7 @@ class ResultsSummary:
                 return "Problems"   
 
         elif check == "es-lint":
-            if outcome.find("wrong")>-1:
+            if outcome.find("wrong") > -1:
                 self.outcomes[check]["status"] = "Problems"
                 return "Passed"
             else:
@@ -128,7 +128,7 @@ class ResultsSummary:
                 return "Problems"      
 
         elif check == "ts-lint":
-            if outcome.find("wrong")>-1:
+            if outcome.find("wrong") > -1:
                 self.outcomes[check]["status"] = "Problems"
                 return "Passed"
             else:
@@ -136,7 +136,7 @@ class ResultsSummary:
                 return "Problems"  
 
         elif check == "pylint":
-            if outcome.find("no problems")>-1:
+            if outcome.find("no problems") > -1:
                 self.outcomes[check]["status"] = "Passed"
                 return "Passed"
             else:
@@ -144,7 +144,7 @@ class ResultsSummary:
                 return "Problems" 
 
         elif check == "bandit":
-            if outcome.find("No issues identified.")>-1:
+            if outcome.find("No issues identified.") > -1:
                 self.outcomes[check]["status"] = "Passed"
                 return "Passed"
             else:
@@ -152,7 +152,7 @@ class ResultsSummary:
                 return "Problems" 
 
         elif check == "hadolint":
-            if outcome=="":
+            if outcome == "":
                 self.outcomes[check]["status"] = "Passed"
                 return "Passed"
             else:
@@ -160,7 +160,7 @@ class ResultsSummary:
                 return "Problems" 
 
         elif check == "terrascan":
-            if outcome=="":
+            if outcome == "":
                 self.outcomes[check]["status"] = "Passed"
                 return "Passed"
             else:
@@ -172,7 +172,7 @@ class ResultsSummary:
             return "Info"
                 
         elif check == "ansible-lint":
-            if outcome=="":
+            if outcome == "":
                 self.outcomes[check]["status"] = "Passed"
                 return "Passed"
             else:
@@ -217,7 +217,7 @@ class ResultsSummary:
         verdict = "Passed"
         for check in self.outcomes:
             if check != "uuid" and check != "time" and check != "problems" and check != "passed" and check != "total":       
-                if(self.outcomes[check]["status"]=="Problems"):
+                if(self.outcomes[check]["status"] == "Problems"):
                     self.outcomes["verdict"] = "Problems"
                     return "Problems"
         self.outcomes["verdict"] = "Passed"
@@ -279,7 +279,7 @@ class ResultsSummary:
 
         for scan in self.outcomes:
 
-            if not(scan=="uuid") and not(scan=="time") and not(scan == "archive") and not(scan == "execution-duration")  and not(scan == "verdict") and not(scan == "projectid") and self.outcomes[scan]["status"] == "Info" :
+            if not(scan == "uuid") and not(scan == "time") and not(scan == "archive") and not(scan == "execution-duration")  and not(scan == "verdict") and not(scan == "projectid") and self.outcomes[scan]["status"] == "Info" :
 
                 html_page = html_page + "<tr>"
                 html_page = html_page + "<td>" + scan + "</td>"
@@ -291,7 +291,7 @@ class ResultsSummary:
 
         for scan in self.outcomes:
 
-            if not(scan=="uuid") and not(scan=="time") and not(scan == "archive") and not(scan == "execution-duration")  and not(scan == "verdict") and not(scan == "projectid") and self.outcomes[scan]["status"] == "No files" :
+            if not(scan == "uuid") and not(scan == "time") and not(scan == "archive") and not(scan == "execution-duration")  and not(scan == "verdict") and not(scan == "projectid") and self.outcomes[scan]["status"] == "No files" :
 
                 html_page = html_page + "<tr>"
                 html_page = html_page + "<td>" + scan + "</td>"
