@@ -4,6 +4,7 @@ from bson.json_util import dumps
 import json
 from datetime import datetime
 import os
+
 class ResultsPersistence:
     def __init__(self):
         """
@@ -19,7 +20,7 @@ class ResultsPersistence:
         try:
             connection_string = os.environ['MONGODB_CONNECTION_STRING']  
             
-            if(connection_string):
+            if connection_string:
                 self.myclient = pymongo.MongoClient(connection_string)
                 self.mydb = self.myclient["scandb"]
                 self.mycol = self.mydb["results"]
@@ -39,52 +40,48 @@ class ResultsPersistence:
         return json.loads(json_util.dumps(data))
 
     def insert_result(self, result: dict):
-    
         """Inserts new scan result into database
         :param result: Dictionary holding the scan summary
         """     
-        if(self.connection_problem == True):
+        if self.connection_problem:
             self.connect_db()
-        if(self.mycol != None):
+        if self.mycol is not None:
             self.mycol.insert_one(self.parse_json(result))
          
     def show_result(self, uuid4: str) -> str:
-    
         """Shows scan result with given id
         :param uuid4: Identifier of a scan result
         :return: String representing the scan result record
         """
-        if(self.connection_problem==True):
+        if self.connection_problem:
             self.connect_db()
             
-        if(self.mycol != None):                
-            myquery = { "uuid": uuid4 }
+        if self.mycol is not None:                
+            myquery = {"uuid": uuid4}
             mydoc = self.mycol.find(myquery)
             for x in mydoc:
                 return str(x)      
 
     def delete_result(self, uuid4: str):
-    
         """Deletes the scan result with given id from database
         :param uuid4: Identifier of a scan result which is about to be deleted
         """
-        if(self.connection_problem==True):
+        if self.connection_problem:
             self.connect_db()
             
-        if(self.mycol != None):          
-            myquery = { "uuid": uuid4 }
+        if self.mycol is not None:          
+            myquery = {"uuid": uuid4}
             mydoc = self.mycol.delete_one(myquery)
 
 
     def show_all(self) -> str:
-    
         """Shows all the scan records from the database
         :return: String of all database records concatenated
         """
-        if(self.connection_problem==True):
+        if self.connection_problem:
             self.connect_db()
             
-        if(self.mycol != None):        
+        if self.mycol is not None:        
             cursor = self.mycol.find({})
             output = ""
             for doc in cursor:
@@ -92,7 +89,6 @@ class ResultsPersistence:
             return output	                   
 
     def days_passed(self, time_stamp: str) -> int:
-    
         """Calculates how many days have passed between today and given timestamp
         :param time_stamp: Timestamp in format %m/%d/%Y, %H:%M:%S given as string
         :return: Integer which denotes the number of days passed
@@ -110,17 +106,16 @@ class ResultsPersistence:
             return 0    
    
 
-    def result_age(self, uuid4: str) -> int:
-    
+    def result_age(self, uuid4: str) -> int:    
         """Calculates how long a scan result resides in database since its insertion
         :param uuid4: Identifier of a scan result
         :return: Integer denoting scan result age
         """
-        if(self.connection_problem == True):
+        if self.connection_problem:
             self.connect_db()
             
-        if(self.mycol != None):          
-            myquery = { "uuid": uuid4 }
+        if self.mycol is not None:          
+            myquery = {"uuid": uuid4}
             mydoc = self.mycol.find(myquery)
             for x in mydoc:
                 scan_ts = x["time"]
@@ -128,18 +123,35 @@ class ResultsPersistence:
             return self.days_passed(scan_ts)            
         
     def periodic_clean_job(self):
-    
         """Calculates how long a scan result resides in database since its insertion
         :param uuid4: Identifier of a scan result
         """    
-        if(self.connection_problem == True):
+        if self.connection_problem:
             self.connect_db()
             
-        if(self.mycol != None):          
+        if self.mycol is not None:          
             cursor = self.mycol.find({})
             scan_ts = ""
             for doc in cursor:
                 doc_uuid = doc["uuid"]                
                 age = self.result_age(doc_uuid)
+                # TODO: Add environment variable instead of constant	                     
                 if(age>14):
                     self.delete_result(doc_uuid)                                      
+
+    def all_scans_by_project(self, projectid: str) -> str:
+        """Shows all the scan results from the database that belong to a particular project given by id
+        :param projectid: Identifier of project where scan results belongs        
+        :return: All scan results for given project identifier
+        """
+        if self.connection_problem:
+            self.connect_db()
+
+        if self.mycol is not None:        
+            myquery = { "projectid": projectid }
+            cursor = self.mycol.find(myquery)
+            output = ""
+            for doc in cursor:
+                output = output + str(doc)
+            return output
+                    

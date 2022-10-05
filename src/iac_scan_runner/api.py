@@ -175,7 +175,7 @@ async def post_scan(iac: UploadFile = File(..., description='IaC file (zip or ta
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))
         
 @app.get("/results", summary="Retrieve particular scan result by given uuid", responses={200: {}, 400: {"model": str}})
-async def get_scan_result(uuid: Optional[str]) -> JSONResponse:
+async def get_scan_result(uuid: Optional[str], projectid: Optional[str]) -> JSONResponse:
     """
     Retrieve a particular scan result (GET method)
     :param uuid: Identifier of a saved scan record
@@ -183,8 +183,10 @@ async def get_scan_result(uuid: Optional[str]) -> JSONResponse:
     """
     try:
         results_persistence = ResultsPersistence() 
-        if(uuid):           
-            result = results_persistence.show_result(uuid)  
+        if uuid and projectid:
+            result = results_persistence.all_scans_by_project(projectid)   
+        if uuid and not projectid:           
+            result = results_persistence.show_result(uuid)                                         
         else:
             result = results_persistence.show_all()                                  
         return JSONResponse(status_code=status.HTTP_200_OK, content=result)
@@ -240,7 +242,7 @@ async def set_project_config(projectid: str, configid: str) -> JSONResponse:
 
         scan_project.set_config(projectid, configid)
         
-        return JSONResponse(status_code=status.HTTP_200_OK, content=f"New project created with id: {projectid}")
+        return JSONResponse(status_code=status.HTTP_200_OK, content=f"New config assigned to project: {projectid}")
     except Exception as e:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))         
 
@@ -248,13 +250,12 @@ async def set_project_config(projectid: str, configid: str) -> JSONResponse:
 async def post_new_config(creatorid: str) -> JSONResponse:
     """
     Create a new scan project configuration which can be assigned to a project (POST method)
-    :param creatorid: Identifier of a user who created project
+    :param creatorid: Identifier of a user who created configuration
     :return: JSONResponse object (with status code 200 or 400)
     """
     try:
         project_config = ProjectConfig() 
-
-        cid=project_config.new_config(creatorid, None)  
+        cid = project_config.new_config(creatorid, None)  
          
         return JSONResponse(status_code=status.HTTP_200_OK, content=cid)
     except Exception as e:
@@ -263,17 +264,33 @@ async def post_new_config(creatorid: str) -> JSONResponse:
 @app.post("/set_config_params", summary="Set the parameters for configuration by given id", responses={200: {}, 400: {"model": str}})
 async def set_config_params(configid: str, parameters: str) -> JSONResponse:
     """
-    Assign configuration by its id to a scan project (POST method)
-    :param projectid: Identifier of a previously stored scan project
+    Assign configuration parameters to scan project configuration (POST method)
+    :param parameters: Dictionary of tool-specific parameter strings, such as tokens
     :param configid: Identifier of a previously stored configuration    
     :return: JSONResponse object (with status code 200 or 400)
     """
     try:
-        print(parameters)
         project_config = ProjectConfig() 
         parameters_dict = eval(parameters)        
         project_config.set_parameters(configid, parameters_dict)
         
         return JSONResponse(status_code=status.HTTP_200_OK, content=f"Config modified: {configid}")
+    except Exception as e:
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))          
+        
+@app.get("/projects", summary="Retrieve list of projects for given user or all projects if no user provided", responses={200: {}, 400: {"model": str}})
+async def get_all_projects(creatorid: Optional[str]) -> JSONResponse:
+    """
+    Retrieve a list of projects by given user creator (GET method)
+    :param creatorid: Identifier of a user who created project
+    :return: JSONResponse object (with status code 200 or 400)
+    """
+    try:
+        scan_persistence = ScanProject() 
+        if creatorid:           
+            result = scan_persistence.all_projects_by_user(creatorid)
+        else:
+            result = scan_persistence.all_projects()                                                
+        return JSONResponse(status_code=status.HTTP_200_OK, content=result)
     except Exception as e:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))          

@@ -9,6 +9,7 @@ from iac_scan_runner.compatibility import Compatibility
 from iac_scan_runner.results_summary import ResultsSummary
 from iac_scan_runner.results_persistence import ResultsPersistence
 from iac_scan_runner.scan_project import ScanProject
+from iac_scan_runner.project_config import ProjectConfig
 
 from iac_scan_runner.checks.ansible_lint import AnsibleLintCheck
 from iac_scan_runner.checks.bandit import BanditCheck
@@ -57,19 +58,23 @@ class ScanRunner:
         self.results_summary = ResultsSummary()
         self.archive_name = ""   
         
-        if(os.environ.get("SCAN_PERSISTENCE") == "enabled"):
+        self.parameters = dict()
+        
+        if (os.environ.get("SCAN_PERSISTENCE") == "enabled"):
             self.persistence_enabled = True
         else:
             self.persistence_enabled = False
                         
         self.results_persistence = ResultsPersistence()
 
-        if(os.environ.get("USER_MANAGEMENT") == "enabled"):
+        self.scan_project = ScanProject()
+        self.project_config = ProjectConfig()
+
+        if (os.environ.get("USER_MANAGEMENT") == "enabled"):
             self.users_enabled = True
         else:
             self.users_enabled = False
-        self.scan_project = ScanProject()
-        
+            
     def init_checks(self):
         """Initiate predefined check objects"""
         opera_tosca_parser = OperaToscaParserCheck()
@@ -156,17 +161,24 @@ class ScanRunner:
         """
         start_time = time.time()
         random_uuid = str(uuid.uuid4())
-        # TODO: Replace this hardcoded path with a parameter
-        dir_name = "../outputs/logs/scan_run_" + random_uuid
-         
-        os.mkdir(dir_name)
         
+        # TODO: Replace this hardcoded path with a parameter
+        dir_name = "../outputs/logs/scan_run_" + random_uuid 
+        os.mkdir(dir_name)
         
         self.results_summary.outcomes = dict()
         self.compatibility_matrix.scanned_files = dict()
         compatible_checks = self.compatibility_matrix.get_all_compatible_checks(self.iac_dir)
         non_compatible_checks = []
         scan_output = {}
+        
+        if self.users_enabled:
+            if projectid:
+                project_temp = self.scan_project.load_project(projectid)     
+                if project_temp:
+                    config_temp = self.project_config.load_config(project_temp["active_config"])
+                    if config_temp:
+                        self.parameters = config_temp["parameters"]
         
         if selected_checks:
             for selected_check in selected_checks:
@@ -189,14 +201,12 @@ class ScanRunner:
             self.results_summary.outcomes["time"] = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
             self.results_summary.outcomes["execution-duration"] = str(round(duration, 3))   
             self.results_summary.evaluate_verdict()      
-            if(self.users_enabled):
+            if self.users_enabled:
                 self.results_summary.outcomes["projectid"] = projectid 
 
             self.results_summary.dump_outcomes(random_uuid)
             self.results_summary.generate_html_prioritized(random_uuid)
-            
-  
-                                                            
+                                                                      
             if(self.results_persistence.connection_problem == False and self.persistence_enabled == True):
                 self.results_persistence.insert_result(self.results_summary.outcomes) 
 
@@ -220,15 +230,14 @@ class ScanRunner:
             self.results_summary.outcomes["archive"] = self.archive_name
             self.results_summary.outcomes["time"] = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
             self.results_summary.outcomes["execution-duration"] = str(round(duration, 3))   
-            self.results_summary.evaluate_verdict()      
-            if(self.users_enabled):
+            self.results_summary.evaluate_verdict()    
+              
+            if self.users_enabled:
                 self.results_summary.outcomes["projectid"] = projectid 
 
             self.results_summary.dump_outcomes(random_uuid)
             self.results_summary.generate_html_prioritized(random_uuid)
 
-
-            
             if(self.results_persistence.connection_problem == False and self.persistence_enabled == True):
                 self.results_persistence.insert_result(self.results_summary.outcomes) 
         
