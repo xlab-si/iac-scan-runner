@@ -68,7 +68,8 @@ class ScanProject:
         else:
             project_json["active_config"] = ""
             
-                       
+        project_json["checklist"] = [] 
+                              
         if self.connection_problem:
             self.connect_db()
         if self.mycol is not None:
@@ -154,4 +155,44 @@ class ScanProject:
                 output = output + str(doc)
             return output
 
-            	                                                       
+    def add_check(self, projectid: str, check: str):
+    
+        """Adds a new check to the list of enabled checks for particular project
+        :param projectid: Identifier of a scan project
+        :param check: Name of the enabled check     
+        """
+        if self.connection_problem:
+            self.connect_db()
+
+        if self.mycol is not None:           
+            current_project = self.load_project(projectid)
+            current_list = current_project["checklist"]
+            current_list.append(check)
+            myquery = { "projectid": projectid }
+            new_value = {"$set": { "checklist": current_list }}
+            try:
+                self.mycol.find_one_and_update(myquery, new_value, upsert=True)
+            except Exception as e:
+                print(str(e))   
+
+
+    def remove_check(self, projectid: str, check: str):
+    
+        """Removes the given check from the list of enabled checks for particular project
+        :param projectid: Identifier of a scan project
+        :param check: Name of the disabled check     
+        """
+        
+        if self.connection_problem:
+            self.connect_db()
+
+        if self.mycol is not None:           
+            current_project = self.load_project(projectid) 
+            current_list = current_project["checklist"]
+            current_list.remove(check)
+            myquery = {"projectid": projectid}
+            new_value = {"$set": { "checklist": current_list}}
+            try:
+                self.mycol.find_one_and_update(myquery, new_value, upsert=True)
+            except Exception as e:
+                print(str(e))

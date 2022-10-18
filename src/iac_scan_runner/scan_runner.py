@@ -249,37 +249,63 @@ class ScanRunner:
         
         return scan_output
 
-    def enable_check(self, check_name: str) -> str:
+    def enable_check(self, check_name: str, projectid: str) -> str:
         """
         Enables the specified check and makes it available to be used
         :param check_name: Name of the check
         :return: String with result for enabling check
         """
-        if check_name in self.iac_checks.keys():
-            check = self.iac_checks[check_name]
-            if not check.enabled:
-                check.enabled = True
-                return f"Check: {check_name} is now enabled and available to use."
+        if projectid and self.users_enabled:
+            self.scan_project.add_check(projectid, check_name)
+            active_project = self.scan_project.load_project(projectid)
+            print("ACTIVE")
+            print(active_project)
+            
+            enabled_checks = active_project["checklist"]
+            print(enabled_checks)
+            
+            print(active_project)
+            
+        else: 
+        
+            if check_name in self.iac_checks.keys():
+                check = self.iac_checks[check_name]
+                if not check.enabled:
+                    check.enabled = True
+                    return f"Check: {check_name} is now enabled and available to use."
+                else:
+                    raise Exception(f"Check: {check_name} is already enabled.")
             else:
-                raise Exception(f"Check: {check_name} is already enabled.")
-        else:
-            raise Exception(f"Nonexistent check: {check_name}")
+                raise Exception(f"Nonexistent check: {check_name}")
 
-    def disable_check(self, check_name: str) -> str:
+    def disable_check(self, check_name: str, projectid: str) -> str:
         """
         Disables the specified check and makes it unavailable to be used
         :param check_name: Name of the check
         :return: String with result for disabling check
         """
-        if check_name in self.iac_checks.keys():
-            check = self.iac_checks[check_name]
-            if check.enabled:
-                check.enabled = False
-                return f"Check: {check_name} is now disabled and cannot be used."
+        if projectid and self.users_enabled:
+            self.scan_project.remove_check(projectid, check_name)
+            active_project = self.scan_project.load_project(projectid)
+            print("ACTIVE")
+            print(active_project)
+            
+            enabled_checks = active_project["checklist"]
+            print(enabled_checks)
+            
+            print(active_project)
+            
+        else:   
+        
+            if check_name in self.iac_checks.keys():
+                check = self.iac_checks[check_name]
+                if check.enabled:
+                    check.enabled = False
+                    return f"Check: {check_name} is now disabled and cannot be used."
+                else:
+                    raise Exception(f"Check: {check_name} is already disabled.")
             else:
-                raise Exception(f"Check: {check_name} is already disabled.")
-        else:
-            raise Exception(f"Nonexistent check: {check_name}")
+                raise Exception(f"Nonexistent check: {check_name}")
 
     def configure_check(self, check_name: str, config_file: Optional[UploadFile], secret: Optional[SecretStr]) -> str:
         """

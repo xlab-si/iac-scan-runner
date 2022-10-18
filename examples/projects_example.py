@@ -11,20 +11,56 @@ response = requests.post(url, params=par)
 projectid = str(response.json())
 print(projectid)
 
+checkname="tfsec"
+
+url = f"http://127.0.0.1:8000/checks/{checkname}/enable"
+
 par = {
-    "configid": "updated_config_value"
+    "projectid": projectid
 }
 
-par["projectid"] = projectid
-
-url = "http://127.0.0.1:8000/set_project_config"
-response = requests.post(url, params=par)
+response = requests.put(url, params=par)
 print(response.json())
+
+
+
+checkname="tflint"
+
+url = f"http://127.0.0.1:8000/checks/{checkname}/enable"
+
+par = {
+    "projectid": projectid
+}
+
+response = requests.put(url, params=par)
+print(response.json())
+
+
+
+checkname="tfsec"
+
+url = f"http://127.0.0.1:8000/checks/{checkname}/disable"
+
+par = {
+    "projectid": projectid
+}
+
+response = requests.put(url, params=par)
+print(response.json())
+
+
 
 par = {
     "creatorid": "penenadpi"
 }
 
 url = "http://127.0.0.1:8000/projects"
-response = requests.get(url, params=par)
+response = requests.get(url, par)
 print(response.json())
+
+print("ALL PROJECTS")
+url = "http://127.0.0.1:8000/projects"
+response = requests.get(url)
+print(response.json())
+
+
