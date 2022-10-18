@@ -96,28 +96,28 @@ async def get_checks(keyword: Optional[str] = None, enabled: Optional[bool] = No
 
 
 @app.put("/checks/{check_name}/enable", summary="Enable check for running", responses={200: {}, 400: {"model": str}})
-async def put_enable_checks(check_name: str) -> JSONResponse:
+async def put_enable_checks(check_name: str, projectid: Optional[str]) -> JSONResponse:
     """
     Enable check for running (PUT method)
     :param check_name: Unique name of check to be enabled
     :return: JSONResponse object (with status code 200 or 400)
     """
     try:
-        return JSONResponse(status_code=status.HTTP_200_OK, content=scan_runner.enable_check(check_name))
+        return JSONResponse(status_code=status.HTTP_200_OK, content=scan_runner.enable_check(check_name, projectid))
     except Exception as e:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))
 
 
 @app.put("/checks/{check_name}/disable", summary="Disable check for running",
          responses={200: {}, 400: {"model": str}})
-async def put_disable_checks(check_name: str) -> JSONResponse:
+async def put_disable_checks(check_name: str, projectid: Optional[str]) -> JSONResponse:
     """
     Disable check for running (PUT method)
     :param check_name: Unique name of check to be disabled
     :return: JSONResponse object (with status code 200 or 400)
     """
     try:
-        return JSONResponse(status_code=status.HTTP_200_OK, content=scan_runner.disable_check(check_name))
+        return JSONResponse(status_code=status.HTTP_200_OK, content=scan_runner.disable_check(check_name, projectid))
     except Exception as e:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))
 
@@ -279,7 +279,7 @@ async def set_config_params(configid: str, parameters: str) -> JSONResponse:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))          
         
 @app.get("/projects", summary="Retrieve list of projects for given user or all projects if no user provided", responses={200: {}, 400: {"model": str}})
-async def get_all_projects(creatorid: Optional[str]) -> JSONResponse:
+async def get_all_projects(creatorid: Optional[str] = None) -> JSONResponse:
     """
     Retrieve a list of projects by given user creator (GET method)
     :param creatorid: Identifier of a user who created project
