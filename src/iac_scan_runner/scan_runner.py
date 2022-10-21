@@ -205,7 +205,7 @@ class ScanRunner:
             self.results_summary.evaluate_verdict()      
             if self.users_enabled:
                 self.results_summary.outcomes["projectid"] = projectid 
-
+            
             self.results_summary.dump_outcomes(random_uuid)
             self.results_summary.generate_html_prioritized(random_uuid)
                                                                       
