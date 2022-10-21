@@ -57,6 +57,7 @@ class ScanRunner:
         self.compatibility_matrix = Compatibility()
         self.results_summary = ResultsSummary()
         self.archive_name = ""   
+        self.project_checklist = None
         
         self.parameters = dict()
         
@@ -177,10 +178,22 @@ class ScanRunner:
                 project_temp = self.scan_project.load_project(projectid)     
                 if project_temp:
                     config_temp = self.project_config.load_config(project_temp["active_config"])
+                    print("CONFIG")
+                    print(config_temp)
                     if config_temp:
                         self.parameters = config_temp["parameters"]
-        
-        if selected_checks:
+                        self.project_checklist = project_temp["checklist"]
+                        print("checklist:---")
+                        print(self.project_checklist)
+                    else:
+                        print("NO config tgemp")    
+        else:
+            print("sa")
+        print("HERE")    
+        print("SELECTED")
+        print(selected_checks)	
+        if (selected_checks is not None and len(selected_checks) > 0) and self.project_checklist is None:
+            print("A")
             for selected_check in selected_checks:
                 check = self.iac_checks[selected_check]
                 if check.enabled:
@@ -210,7 +223,8 @@ class ScanRunner:
             if(self.results_persistence.connection_problem == False and self.persistence_enabled == True):
                 self.results_persistence.insert_result(self.results_summary.outcomes) 
 
-        else:
+        if (selected_checks is None or len(selected_checks) == 0) and self.project_checklist is None:
+            print("B")
             for iac_check in self.iac_checks.values():
                 if iac_check.enabled:
                     if iac_check.name in compatible_checks:
@@ -222,7 +236,7 @@ class ScanRunner:
                         non_compatible_checks.append(iac_check.name)
                         write_string_to_file(iac_check.name, dir_name, "No files to scan")
                         self.results_summary.summarize_no_files(iac_check.name)
-            
+
             end_time = time.time()
             duration = end_time-start_time
 
@@ -240,7 +254,79 @@ class ScanRunner:
 
             if(self.results_persistence.connection_problem == False and self.persistence_enabled == True):
                 self.results_persistence.insert_result(self.results_summary.outcomes) 
-        
+
+
+        if selected_checks and self.project_checklist:
+            print("C")        
+            for selected_check in selected_checks:
+                check = self.iac_checks[selected_check]
+                print(check.name)
+                print(self.project_checklist)
+                if check.name in self.project_checklist:
+                    if selected_check in compatible_checks:
+                        check_output = check.run(self.iac_dir)
+                        scan_output[selected_check] = check_output.to_dict()                        
+                        write_string_to_file(check.name, dir_name, scan_output[check.name]["output"])
+                        self.results_summary.summarize_outcome(selected_check, scan_output[check.name]["output"], self.compatibility_matrix.scanned_files, Compatibility.compatibility_matrix)
+                    else:
+                        non_compatible_checks.append(check.name)
+                        write_string_to_file(check.name, dir_name, "No files to scan")
+                        self.results_summary.summarize_no_files(check.name)
+            end_time = time.time()
+            duration = end_time-start_time                        
+                        
+            self.results_summary.outcomes["uuid"] = random_uuid
+            self.results_summary.outcomes["archive"] = self.archive_name
+            self.results_summary.outcomes["time"] = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+            self.results_summary.outcomes["execution-duration"] = str(round(duration, 3))   
+            self.results_summary.evaluate_verdict()      
+            if self.users_enabled:
+                self.results_summary.outcomes["projectid"] = projectid 
+
+            self.results_summary.dump_outcomes(random_uuid)
+            self.results_summary.generate_html_prioritized(random_uuid)
+                                                                      
+            if(self.results_persistence.connection_problem == False and self.persistence_enabled == True):
+                self.results_persistence.insert_result(self.results_summary.outcomes) 
+
+        if (selected_checks is None or len(selected_checks) == 0) and self.project_checklist:
+            print("D")    
+            print(selected_checks)
+            print(len(selected_checks) )
+            print("AAA")  
+            print(self.iac_checks.values())
+            for iac_check in self.iac_checks.values():
+                if iac_check.name in self.project_checklist:
+                    if iac_check.name in compatible_checks:
+                        check_output = iac_check.run(self.iac_dir)
+                        scan_output[iac_check.name] = check_output.to_dict()                  
+                        write_string_to_file(iac_check.name, dir_name, scan_output[iac_check.name]["output"])
+                        self.results_summary.summarize_outcome(iac_check.name, scan_output[iac_check.name]["output"], self.compatibility_matrix.scanned_files, Compatibility.compatibility_matrix)
+                    else:
+                        non_compatible_checks.append(iac_check.name)
+                        write_string_to_file(iac_check.name, dir_name, "No files to scan")
+                        self.results_summary.summarize_no_files(iac_check.name)
+            
+            
+
+            end_time = time.time()
+            duration = end_time-start_time
+
+            self.results_summary.outcomes["uuid"] = random_uuid
+            self.results_summary.outcomes["archive"] = self.archive_name
+            self.results_summary.outcomes["time"] = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+            self.results_summary.outcomes["execution-duration"] = str(round(duration, 3))   
+            self.results_summary.evaluate_verdict()    
+              
+            if self.users_enabled:
+                self.results_summary.outcomes["projectid"] = projectid 
+
+            self.results_summary.dump_outcomes(random_uuid)
+            self.results_summary.generate_html_prioritized(random_uuid)
+
+            if(self.results_persistence.connection_problem == False and self.persistence_enabled == True):
+                self.results_persistence.insert_result(self.results_summary.outcomes) 
+        print("HERE2")        
         # TODO: Discuss the format of this output
         if scan_response_type == ScanResponseType.json:
             scan_output = json.loads(file_to_string(f"../outputs/json_dumps/{random_uuid}.json"))   
