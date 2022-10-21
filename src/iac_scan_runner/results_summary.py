@@ -216,7 +216,7 @@ class ResultsSummary:
     def evaluate_verdict(self):
         verdict = "Passed"
         for check in self.outcomes:
-            if check != "uuid" and check != "time" and check != "problems" and check != "passed" and check != "total":       
+            if check != "uuid" and check != "time" and check != "problems" and check != "passed" and check != "total" and check != "execution-duration" and check != "projectid" and check!="archive":  
                 if(self.outcomes[check]["status"] == "Problems"):
                     self.outcomes["verdict"] = "Problems"
                     return "Problems"
