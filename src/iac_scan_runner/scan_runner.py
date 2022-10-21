@@ -178,22 +178,11 @@ class ScanRunner:
                 project_temp = self.scan_project.load_project(projectid)     
                 if project_temp:
                     config_temp = self.project_config.load_config(project_temp["active_config"])
-                    print("CONFIG")
-                    print(config_temp)
                     if config_temp:
                         self.parameters = config_temp["parameters"]
                         self.project_checklist = project_temp["checklist"]
-                        print("checklist:---")
-                        print(self.project_checklist)
-                    else:
-                        print("NO config tgemp")    
-        else:
-            print("sa")
-        print("HERE")    
-        print("SELECTED")
-        print(selected_checks)	
+	
         if (selected_checks is not None and len(selected_checks) > 0) and self.project_checklist is None:
-            print("A")
             for selected_check in selected_checks:
                 check = self.iac_checks[selected_check]
                 if check.enabled:
@@ -224,7 +213,6 @@ class ScanRunner:
                 self.results_persistence.insert_result(self.results_summary.outcomes) 
 
         if (selected_checks is None or len(selected_checks) == 0) and self.project_checklist is None:
-            print("B")
             for iac_check in self.iac_checks.values():
                 if iac_check.enabled:
                     if iac_check.name in compatible_checks:
@@ -257,11 +245,8 @@ class ScanRunner:
 
 
         if selected_checks and self.project_checklist:
-            print("C")        
             for selected_check in selected_checks:
                 check = self.iac_checks[selected_check]
-                print(check.name)
-                print(self.project_checklist)
                 if check.name in self.project_checklist:
                     if selected_check in compatible_checks:
                         check_output = check.run(self.iac_dir)
@@ -290,11 +275,6 @@ class ScanRunner:
                 self.results_persistence.insert_result(self.results_summary.outcomes) 
 
         if (selected_checks is None or len(selected_checks) == 0) and self.project_checklist:
-            print("D")    
-            print(selected_checks)
-            print(len(selected_checks) )
-            print("AAA")  
-            print(self.iac_checks.values())
             for iac_check in self.iac_checks.values():
                 if iac_check.name in self.project_checklist:
                     if iac_check.name in compatible_checks:
@@ -307,8 +287,6 @@ class ScanRunner:
                         write_string_to_file(iac_check.name, dir_name, "No files to scan")
                         self.results_summary.summarize_no_files(iac_check.name)
             
-            
-
             end_time = time.time()
             duration = end_time-start_time
 
@@ -326,7 +304,7 @@ class ScanRunner:
 
             if(self.results_persistence.connection_problem == False and self.persistence_enabled == True):
                 self.results_persistence.insert_result(self.results_summary.outcomes) 
-        print("HERE2")        
+
         # TODO: Discuss the format of this output
         if scan_response_type == ScanResponseType.json:
             scan_output = json.loads(file_to_string(f"../outputs/json_dumps/{random_uuid}.json"))   
@@ -343,17 +321,10 @@ class ScanRunner:
         """
         if projectid and self.users_enabled:
             self.scan_project.add_check(projectid, check_name)
-            active_project = self.scan_project.load_project(projectid)
-            print("ACTIVE")
-            print(active_project)
-            
+            active_project = self.scan_project.load_project(projectid)            
             enabled_checks = active_project["checklist"]
-            print(enabled_checks)
-            
-            print(active_project)
-            
-        else: 
-        
+
+        else:         
             if check_name in self.iac_checks.keys():
                 check = self.iac_checks[check_name]
                 if not check.enabled:
@@ -373,16 +344,8 @@ class ScanRunner:
         if projectid and self.users_enabled:
             self.scan_project.remove_check(projectid, check_name)
             active_project = self.scan_project.load_project(projectid)
-            print("ACTIVE")
-            print(active_project)
-            
             enabled_checks = active_project["checklist"]
-            print(enabled_checks)
-            
-            print(active_project)
-            
         else:   
-        
             if check_name in self.iac_checks.keys():
                 check = self.iac_checks[check_name]
                 if check.enabled:
