@@ -156,7 +156,7 @@ class ScanProject:
             return output
 
     def add_check(self, projectid: str, check: str):
-    
+
         """Adds a new check to the list of enabled checks for particular project
         :param projectid: Identifier of a scan project
         :param check: Name of the enabled check     
@@ -168,13 +168,12 @@ class ScanProject:
             current_project = self.load_project(projectid)
             current_list = current_project["checklist"]
             current_list.append(check)
-            myquery = { "projectid": projectid }
-            new_value = {"$set": { "checklist": current_list }}
+            myquery = {"projectid": projectid}
+            new_value = {"$set": {"checklist": current_list}}
             try:
                 self.mycol.find_one_and_update(myquery, new_value, upsert=True)
             except Exception as e:
                 print(str(e))   
-
 
     def remove_check(self, projectid: str, check: str):
     
@@ -182,7 +181,6 @@ class ScanProject:
         :param projectid: Identifier of a scan project
         :param check: Name of the disabled check     
         """
-        
         if self.connection_problem:
             self.connect_db()
 
@@ -191,7 +189,7 @@ class ScanProject:
             current_list = current_project["checklist"]
             current_list.remove(check)
             myquery = {"projectid": projectid}
-            new_value = {"$set": { "checklist": current_list}}
+            new_value = {"$set": {"checklist": current_list}}
             try:
                 self.mycol.find_one_and_update(myquery, new_value, upsert=True)
             except Exception as e:

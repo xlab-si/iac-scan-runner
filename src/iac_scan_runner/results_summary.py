@@ -1,5 +1,7 @@
 import json
 from iac_scan_runner.utils import write_html_to_file
+from datetime import datetime
+import time
 
 class ResultsSummary:
     def __init__(self):
@@ -212,17 +214,30 @@ class ResultsSummary:
         except Exception as e:
             raise Exception(f"Error dumping json of scan results: {str(e)}.")
 
-
-    def evaluate_verdict(self):
+    def is_check(self, check: str) -> bool:
+        fields = ["uuid", "time", "problems", "passed", "total", "execution-duration", "projectid", "archive"]        
+        if not(check in fields):
+            return True
+        else:
+            return False    
+        
+    def evaluate_verdict(self) -> str:
         verdict = "Passed"
         for check in self.outcomes:
-            if check != "uuid" and check != "time" and check != "problems" and check != "passed" and check != "total" and check != "execution-duration" and check != "projectid" and check!="archive":  
+            is_tool = self.is_check(check)
+            if is_tool:  
                 if(self.outcomes[check]["status"] == "Problems"):
                     self.outcomes["verdict"] = "Problems"
                     return "Problems"
         self.outcomes["verdict"] = "Passed"
         return "Passed"
 
+    def set_result(self, random_uuid, archive_name, duration):
+        self.outcomes["uuid"] = random_uuid
+        self.outcomes["archive"] = archive_name
+        self.outcomes["time"] = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+        self.outcomes["execution-duration"] = str(round(duration, 3))   
+        self.evaluate_verdict()    
 
     def generate_html_prioritized(self, file_name: str):
         """
@@ -268,7 +283,9 @@ class ResultsSummary:
 
         for scan in self.outcomes:
 
-            if not(scan == "uuid") and not(scan == "time") and not(scan == "archive") and not(scan == "execution-duration") and not(scan == "verdict") and not(scan == "projectid") and self.outcomes[scan]["status"] == "Passed":
+            if not(scan == "uuid") and not(scan == "time") and not(scan == "archive") \
+            and not(scan == "execution-duration") and not(scan == "verdict") and not(scan == "projectid") \
+            and self.outcomes[scan]["status"] == "Passed":
                 html_page = html_page + "<tr>"
                 html_page = html_page + "<td>" + scan + "</td>"
                 html_page = html_page + "<td bgcolor='green'>" + str(self.outcomes[scan]["status"]) + "</td>"
@@ -279,7 +296,9 @@ class ResultsSummary:
 
         for scan in self.outcomes:
 
-            if not(scan == "uuid") and not(scan == "time") and not(scan == "archive") and not(scan == "execution-duration")  and not(scan == "verdict") and not(scan == "projectid") and self.outcomes[scan]["status"] == "Info" :
+            if not(scan == "uuid") and not(scan == "time") and not(scan == "archive") \
+            and not(scan == "execution-duration")  and not(scan == "verdict") and not(scan == "projectid") \
+            and self.outcomes[scan]["status"] == "Info" :
 
                 html_page = html_page + "<tr>"
                 html_page = html_page + "<td>" + scan + "</td>"
@@ -291,7 +310,9 @@ class ResultsSummary:
 
         for scan in self.outcomes:
 
-            if not(scan == "uuid") and not(scan == "time") and not(scan == "archive") and not(scan == "execution-duration")  and not(scan == "verdict") and not(scan == "projectid") and self.outcomes[scan]["status"] == "No files" :
+            if not(scan == "uuid") and not(scan == "time") and not(scan == "archive") \
+            and not(scan == "execution-duration")  and not(scan == "verdict") and not(scan == "projectid") \
+            and self.outcomes[scan]["status"] == "No files" :
 
                 html_page = html_page + "<tr>"
                 html_page = html_page + "<td>" + scan + "</td>"

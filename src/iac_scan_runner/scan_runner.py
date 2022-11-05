@@ -190,7 +190,8 @@ class ScanRunner:
                         check_output = check.run(self.iac_dir)
                         scan_output[selected_check] = check_output.to_dict()                        
                         write_string_to_file(check.name, dir_name, scan_output[check.name]["output"])
-                        self.results_summary.summarize_outcome(selected_check, scan_output[check.name]["output"], self.compatibility_matrix.scanned_files, Compatibility.compatibility_matrix)
+                        self.results_summary.summarize_outcome(selected_check, scan_output[check.name]["output"], \
+                        self.compatibility_matrix.scanned_files, Compatibility.compatibility_matrix)
                     else:
                         non_compatible_checks.append(check.name)
                         write_string_to_file(check.name, dir_name, "No files to scan")
@@ -198,11 +199,8 @@ class ScanRunner:
             end_time = time.time()
             duration = end_time-start_time                        
                         
-            self.results_summary.outcomes["uuid"] = random_uuid
-            self.results_summary.outcomes["archive"] = self.archive_name
-            self.results_summary.outcomes["time"] = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-            self.results_summary.outcomes["execution-duration"] = str(round(duration, 3))   
-            self.results_summary.evaluate_verdict()      
+            self.results_summary.set_result(random_uuid, self.archive_name, duration) 
+   
             if self.users_enabled:
                 self.results_summary.outcomes["projectid"] = projectid 
             
@@ -219,7 +217,8 @@ class ScanRunner:
                         check_output = iac_check.run(self.iac_dir)
                         scan_output[iac_check.name] = check_output.to_dict()                  
                         write_string_to_file(iac_check.name, dir_name, scan_output[iac_check.name]["output"])
-                        self.results_summary.summarize_outcome(iac_check.name, scan_output[iac_check.name]["output"], self.compatibility_matrix.scanned_files, Compatibility.compatibility_matrix)
+                        self.results_summary.summarize_outcome(iac_check.name, scan_output[iac_check.name]["output"], \
+                        self.compatibility_matrix.scanned_files, Compatibility.compatibility_matrix)
                     else:
                         non_compatible_checks.append(iac_check.name)
                         write_string_to_file(iac_check.name, dir_name, "No files to scan")
@@ -228,11 +227,7 @@ class ScanRunner:
             end_time = time.time()
             duration = end_time-start_time
 
-            self.results_summary.outcomes["uuid"] = random_uuid
-            self.results_summary.outcomes["archive"] = self.archive_name
-            self.results_summary.outcomes["time"] = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-            self.results_summary.outcomes["execution-duration"] = str(round(duration, 3))   
-            self.results_summary.evaluate_verdict()    
+            self.results_summary.set_result(random_uuid, self.archive_name, duration) 
               
             if self.users_enabled:
                 self.results_summary.outcomes["projectid"] = projectid 
@@ -252,7 +247,8 @@ class ScanRunner:
                         check_output = check.run(self.iac_dir)
                         scan_output[selected_check] = check_output.to_dict()                        
                         write_string_to_file(check.name, dir_name, scan_output[check.name]["output"])
-                        self.results_summary.summarize_outcome(selected_check, scan_output[check.name]["output"], self.compatibility_matrix.scanned_files, Compatibility.compatibility_matrix)
+                        self.results_summary.summarize_outcome(selected_check, scan_output[check.name]["output"], \
+                        self.compatibility_matrix.scanned_files, Compatibility.compatibility_matrix)
                     else:
                         non_compatible_checks.append(check.name)
                         write_string_to_file(check.name, dir_name, "No files to scan")
@@ -260,11 +256,8 @@ class ScanRunner:
             end_time = time.time()
             duration = end_time-start_time                        
                         
-            self.results_summary.outcomes["uuid"] = random_uuid
-            self.results_summary.outcomes["archive"] = self.archive_name
-            self.results_summary.outcomes["time"] = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-            self.results_summary.outcomes["execution-duration"] = str(round(duration, 3))   
-            self.results_summary.evaluate_verdict()      
+            self.results_summary.set_result(random_uuid, self.archive_name, duration)
+             
             if self.users_enabled:
                 self.results_summary.outcomes["projectid"] = projectid 
 
@@ -290,11 +283,7 @@ class ScanRunner:
             end_time = time.time()
             duration = end_time-start_time
 
-            self.results_summary.outcomes["uuid"] = random_uuid
-            self.results_summary.outcomes["archive"] = self.archive_name
-            self.results_summary.outcomes["time"] = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-            self.results_summary.outcomes["execution-duration"] = str(round(duration, 3))   
-            self.results_summary.evaluate_verdict()    
+            self.results_summary.set_result(random_uuid, archive_name, duration)   
               
             if self.users_enabled:
                 self.results_summary.outcomes["projectid"] = projectid 
@@ -323,7 +312,6 @@ class ScanRunner:
             self.scan_project.add_check(projectid, check_name)
             active_project = self.scan_project.load_project(projectid)            
             enabled_checks = active_project["checklist"]
-
         else:         
             if check_name in self.iac_checks.keys():
                 check = self.iac_checks[check_name]

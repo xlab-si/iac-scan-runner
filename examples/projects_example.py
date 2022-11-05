@@ -48,8 +48,6 @@ par = {
 response = requests.put(url, params=par)
 print(response.json())
 
-
-
 par = {
     "creatorid": "penenadpi"
 }
@@ -58,7 +56,6 @@ url = "http://127.0.0.1:8000/projects"
 response = requests.get(url, par)
 print(response.json())
 
-print("ALL PROJECTS")
 url = "http://127.0.0.1:8000/projects"
 response = requests.get(url)
 print(response.json())
