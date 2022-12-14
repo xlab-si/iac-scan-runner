@@ -2,6 +2,8 @@ import json
 from iac_scan_runner.utils import write_html_to_file
 from datetime import datetime
 import time
+import re
+
 
 class ResultsSummary:
     def __init__(self):
@@ -50,6 +52,7 @@ class ResultsSummary:
         # TODO: The check names hould not be hardcoded but replaced with parametrized values instead
         # TODO: Extract "Passed" and "Problems" into an Enum object and use them
         if check == "tfsec":
+            outcome = re.sub(r'\[[0-9]*m', '', outcome)         
             if outcome.find("No problems detected!") > -1:
                 self.outcomes[check]["status"] = "Passed"
                 return "Passed"
