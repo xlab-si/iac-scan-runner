@@ -283,7 +283,7 @@ class ScanRunner:
             end_time = time.time()
             duration = end_time-start_time
 
-            self.results_summary.set_result(random_uuid, archive_name, duration)   
+            self.results_summary.set_result(random_uuid, self.archive_name, duration)   
               
             if self.users_enabled:
                 self.results_summary.outcomes["projectid"] = projectid 
