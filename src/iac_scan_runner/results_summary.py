@@ -52,7 +52,9 @@ class ResultsSummary:
         # TODO: The check names hould not be hardcoded but replaced with parametrized values instead
         # TODO: Extract "Passed" and "Problems" into an Enum object and use them
         if check == "tfsec":
-            outcome = re.sub(r'\[[0-9]*m', '', outcome)         
+            outcome = re.sub(r'\[[0-9]*m', '', outcome)
+            self.outcomes[check]["log"] = outcome                     
+            
             if outcome.find("No problems detected!") > -1:
                 self.outcomes[check]["status"] = "Passed"
                 return "Passed"
