@@ -177,10 +177,11 @@ class ScanRunner:
             if projectid:
                 project_temp = self.scan_project.load_project(projectid)     
                 if project_temp:
+                    self.project_checklist = project_temp["checklist"]                
                     config_temp = self.project_config.load_config(project_temp["active_config"])
                     if config_temp:
                         self.parameters = config_temp["parameters"]
-                        self.project_checklist = project_temp["checklist"]
+
 	
         if (selected_checks is not None and len(selected_checks) > 0) and self.project_checklist is None:
             for selected_check in selected_checks:
@@ -309,9 +310,12 @@ class ScanRunner:
         :return: String with result for enabling check
         """
         if projectid and self.users_enabled:
-            self.scan_project.add_check(projectid, check_name)
-            active_project = self.scan_project.load_project(projectid)            
-            enabled_checks = active_project["checklist"]
+            if check_name in self.iac_checks.keys():
+                self.scan_project.add_check(projectid, check_name)
+                active_project = self.scan_project.load_project(projectid)            
+                enabled_checks = active_project["checklist"]
+            else:
+                raise Exception(f"Nonexistent check: {check_name}")    
         else:         
             if check_name in self.iac_checks.keys():
                 check = self.iac_checks[check_name]
