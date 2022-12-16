@@ -53,6 +53,9 @@ class ResultsSummary:
         # TODO: Extract "Passed" and "Problems" into an Enum object and use them
         if check == "tfsec":
             outcome = re.sub(r'\[[0-9]*m', '', outcome)
+            outcome = outcome.replace("\u001b", ' ')
+            outcome = outcome.replace("\n", ' ')
+                                    
             self.outcomes[check]["log"] = outcome                     
             
             if outcome.find("No problems detected!") > -1:
