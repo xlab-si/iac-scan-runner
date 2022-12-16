@@ -167,11 +167,19 @@ class ScanProject:
         if self.mycol is not None:           
             current_project = self.load_project(projectid)
             current_list = current_project["checklist"]
-            current_list.append(check)
-            myquery = {"projectid": projectid}
-            new_value = {"$set": {"checklist": current_list}}
-            try:
-                self.mycol.find_one_and_update(myquery, new_value, upsert=True)
+            
+            new = False
+            
+            if not (check in current_list):
+                current_list.append(check)
+                new = True
+            try:            
+                if new:    
+                    myquery = {"projectid": projectid}
+                    new_value = {"$set": {"checklist": current_list}}
+                    self.mycol.find_one_and_update(myquery, new_value, upsert=True)
+                else:
+                    raise Exception(f"Check: {check} is already enabled.")                    
             except Exception as e:
                 print(str(e))   
 
