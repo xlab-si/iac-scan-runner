@@ -188,7 +188,16 @@ class ResultsSummary:
                 return "Passed"
             else:
                 self.outcomes[check]["status"] = "Problems"
+                return "Problems"        
+
+        elif check == "yamllint":
+            if outcome.find("error") > -1:
+                self.outcomes[check]["status"] = "Problems"
                 return "Problems"
+            else:
+                self.outcomes[check]["status"] = "Passed"
+                return "Passed"
+
         self.outcomes[check]["status"] = "Not fully supported yet"
         return "Not fully supported yet"
 
