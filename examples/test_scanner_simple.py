@@ -3,6 +3,7 @@ import sys
 
 URL = "http://127.0.0.1:8000/scan"
 
+print(sys.argv[0])
 multipart_form_data = {
     "iac": (sys.argv[1], open(sys.argv[1], "rb")),
     "checks": (None, sys.argv[2])

@@ -1,9 +1,10 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 
+from pydantic import SecretStr
+
 from iac_scan_runner.check_output import CheckOutput
 from iac_scan_runner.check_target_entity_type import CheckTargetEntityType
-from pydantic import SecretStr
 
 
 class Check(ABC):
@@ -25,6 +26,7 @@ class Check(ABC):
     def configure(self, config_filename: Optional[str], secret: Optional[SecretStr]):
         """
         Initiate check configuration (override this method if configuration is needed)
+
         :param config_filename: Name of the check configuration file
         :param secret: Secret needed for configuration (e.g. API key, token, password, cloud credentials, etc.)
         """

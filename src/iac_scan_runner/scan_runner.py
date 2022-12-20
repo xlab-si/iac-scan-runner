@@ -1,16 +1,15 @@
+import json
+import os
+import time
+import uuid
 from os import remove
 from shutil import rmtree
 from typing import Optional, List, Union
 
-import iac_scan_runner.vars as env
 from fastapi import UploadFile
+from pydantic import SecretStr
 
-from iac_scan_runner.compatibility import Compatibility
-from iac_scan_runner.results_summary import ResultsSummary
-from iac_scan_runner.results_persistence import ResultsPersistence
-from iac_scan_runner.scan_project import ScanProject
-from iac_scan_runner.project_config import ProjectConfig
-
+import iac_scan_runner.vars as env
 from iac_scan_runner.checks.ansible_lint import AnsibleLintCheck
 from iac_scan_runner.checks.bandit import BanditCheck
 from iac_scan_runner.checks.checkstyle import CheckStyle
@@ -35,6 +34,11 @@ from iac_scan_runner.checks.tflint import TFLintCheck
 from iac_scan_runner.checks.tfsec import TfsecCheck
 from iac_scan_runner.checks.ts_lint import TSLintCheck
 from iac_scan_runner.checks.yamllint import YamlLintCheck
+from iac_scan_runner.compatibility import Compatibility
+from iac_scan_runner.project_config import ProjectConfig
+from iac_scan_runner.results_persistence import ResultsPersistence
+from iac_scan_runner.results_summary import ResultsSummary
+from iac_scan_runner.scan_project import ScanProject
 from iac_scan_runner.scan_response_type import ScanResponseType
 from iac_scan_runner.utils import (
     generate_random_pathname,
@@ -42,12 +46,7 @@ from iac_scan_runner.utils import (
     write_string_to_file,
     file_to_string
 )
-from pydantic import SecretStr
-import uuid
-import os
-import json
-from datetime import datetime
-import time
+
 
 class ScanRunner:
     def __init__(self):
@@ -56,26 +55,26 @@ class ScanRunner:
         self.iac_dir = None
         self.compatibility_matrix = Compatibility()
         self.results_summary = ResultsSummary()
-        self.archive_name = ""   
+        self.archive_name = ""
         self.project_checklist = None
-        
+
         self.parameters = dict()
-        
-        if (os.environ.get("SCAN_PERSISTENCE") == "enabled"):
+
+        if os.environ.get("SCAN_PERSISTENCE") == "enabled":
             self.persistence_enabled = True
         else:
             self.persistence_enabled = False
-                        
+
         self.results_persistence = ResultsPersistence()
 
         self.scan_project = ScanProject()
         self.project_config = ProjectConfig()
 
-        if (os.environ.get("USER_MANAGEMENT") == "enabled"):
+        if os.environ.get("USER_MANAGEMENT") == "enabled":
             self.users_enabled = True
         else:
             self.users_enabled = False
-            
+
     def init_checks(self):
         """Initiate predefined check objects"""
         opera_tosca_parser = OperaToscaParserCheck()
@@ -153,7 +152,8 @@ class ScanRunner:
         except Exception as e:
             raise Exception(f"Error when cleaning IaC directory: {str(e)}.")
 
-    def _run_checks(self, selected_checks: Optional[List], projectid: str, scan_response_type: ScanResponseType) -> Union[dict, str]:
+    def _run_checks(self, selected_checks: Optional[List], project_id: str, scan_response_type: ScanResponseType) -> \
+            Union[dict, str]:
         """
         Run the specified IaC checks
         :param selected_checks: List of selected checks to be executed on IaC
@@ -162,83 +162,83 @@ class ScanRunner:
         """
         start_time = time.time()
         random_uuid = str(uuid.uuid4())
-        
+
         # TODO: Replace this hardcoded path with a parameter
-        dir_name = "../outputs/logs/scan_run_" + random_uuid 
+        dir_name = "../outputs/logs/scan_run_" + random_uuid
         os.mkdir(dir_name)
-        
+
         self.results_summary.outcomes = dict()
         self.compatibility_matrix.scanned_files = dict()
         compatible_checks = self.compatibility_matrix.get_all_compatible_checks(self.iac_dir)
         non_compatible_checks = []
         scan_output = {}
-        
+
         if self.users_enabled:
-            if projectid:
-                project_temp = self.scan_project.load_project(projectid)     
+            if project_id:
+                project_temp = self.scan_project.load_project(project_id)
                 if project_temp:
-                    self.project_checklist = project_temp["checklist"]                
+                    self.project_checklist = project_temp["checklist"]
                     config_temp = self.project_config.load_config(project_temp["active_config"])
                     if config_temp:
                         self.parameters = config_temp["parameters"]
 
-	
-        if (selected_checks is not None and len(selected_checks) > 0) and self.project_checklist is None:
+        if selected_checks is not None and len(selected_checks) > 0 and self.project_checklist is None:
             for selected_check in selected_checks:
                 check = self.iac_checks[selected_check]
                 if check.enabled:
                     if selected_check in compatible_checks:
                         check_output = check.run(self.iac_dir)
-                        scan_output[selected_check] = check_output.to_dict()                        
+                        scan_output[selected_check] = check_output.to_dict()
                         write_string_to_file(check.name, dir_name, scan_output[check.name]["output"])
-                        self.results_summary.summarize_outcome(selected_check, scan_output[check.name]["output"], \
-                        self.compatibility_matrix.scanned_files, Compatibility.compatibility_matrix)
+                        self.results_summary.summarize_outcome(selected_check, scan_output[check.name]["output"],
+                                                               self.compatibility_matrix.scanned_files,
+                                                               Compatibility.compatibility_matrix)
                     else:
                         non_compatible_checks.append(check.name)
                         write_string_to_file(check.name, dir_name, "No files to scan")
                         self.results_summary.summarize_no_files(check.name)
             end_time = time.time()
-            duration = end_time-start_time                        
-                        
-            self.results_summary.set_result(random_uuid, self.archive_name, duration) 
-   
+            duration = end_time - start_time
+
+            self.results_summary.set_result(random_uuid, self.archive_name, duration)
+
             if self.users_enabled:
-                self.results_summary.outcomes["projectid"] = projectid 
-            
+                self.results_summary.outcomes["project_id"] = project_id
+
             self.results_summary.dump_outcomes(random_uuid)
             self.results_summary.generate_html_prioritized(random_uuid)
-                                                                      
-            if(self.results_persistence.connection_problem == False and self.persistence_enabled == True):
-                self.results_persistence.insert_result(self.results_summary.outcomes) 
+
+            if self.results_persistence.connection_problem is False and self.persistence_enabled is True:
+                self.results_persistence.insert_result(self.results_summary.outcomes)
 
         if (selected_checks is None or len(selected_checks) == 0) and self.project_checklist is None:
             for iac_check in self.iac_checks.values():
                 if iac_check.enabled:
                     if iac_check.name in compatible_checks:
                         check_output = iac_check.run(self.iac_dir)
-                        scan_output[iac_check.name] = check_output.to_dict()                  
+                        scan_output[iac_check.name] = check_output.to_dict()
                         write_string_to_file(iac_check.name, dir_name, scan_output[iac_check.name]["output"])
-                        self.results_summary.summarize_outcome(iac_check.name, scan_output[iac_check.name]["output"], \
-                        self.compatibility_matrix.scanned_files, Compatibility.compatibility_matrix)
+                        self.results_summary.summarize_outcome(iac_check.name, scan_output[iac_check.name]["output"],
+                                                               self.compatibility_matrix.scanned_files,
+                                                               Compatibility.compatibility_matrix)
                     else:
                         non_compatible_checks.append(iac_check.name)
                         write_string_to_file(iac_check.name, dir_name, "No files to scan")
                         self.results_summary.summarize_no_files(iac_check.name)
 
             end_time = time.time()
-            duration = end_time-start_time
+            duration = end_time - start_time
 
-            self.results_summary.set_result(random_uuid, self.archive_name, duration) 
-              
+            self.results_summary.set_result(random_uuid, self.archive_name, duration)
+
             if self.users_enabled:
-                self.results_summary.outcomes["projectid"] = projectid 
+                self.results_summary.outcomes["project_id"] = project_id
 
             self.results_summary.dump_outcomes(random_uuid)
             self.results_summary.generate_html_prioritized(random_uuid)
 
-            if(self.results_persistence.connection_problem == False and self.persistence_enabled == True):
-                self.results_persistence.insert_result(self.results_summary.outcomes) 
-
+            if self.results_persistence.connection_problem is False and self.persistence_enabled is True:
+                self.results_persistence.insert_result(self.results_summary.outcomes)
 
         if selected_checks and self.project_checklist:
             for selected_check in selected_checks:
@@ -246,77 +246,81 @@ class ScanRunner:
                 if check.name in self.project_checklist:
                     if selected_check in compatible_checks:
                         check_output = check.run(self.iac_dir)
-                        scan_output[selected_check] = check_output.to_dict()                        
+                        scan_output[selected_check] = check_output.to_dict()
                         write_string_to_file(check.name, dir_name, scan_output[check.name]["output"])
-                        self.results_summary.summarize_outcome(selected_check, scan_output[check.name]["output"], \
-                        self.compatibility_matrix.scanned_files, Compatibility.compatibility_matrix)
+                        self.results_summary.summarize_outcome(selected_check, scan_output[check.name]["output"],
+                                                               self.compatibility_matrix.scanned_files,
+                                                               Compatibility.compatibility_matrix)
                     else:
                         non_compatible_checks.append(check.name)
                         write_string_to_file(check.name, dir_name, "No files to scan")
                         self.results_summary.summarize_no_files(check.name)
             end_time = time.time()
-            duration = end_time-start_time                        
-                        
+            duration = end_time - start_time
+
             self.results_summary.set_result(random_uuid, self.archive_name, duration)
-             
+
             if self.users_enabled:
-                self.results_summary.outcomes["projectid"] = projectid 
+                self.results_summary.outcomes["project_id"] = project_id
 
             self.results_summary.dump_outcomes(random_uuid)
             self.results_summary.generate_html_prioritized(random_uuid)
-                                                                      
-            if(self.results_persistence.connection_problem == False and self.persistence_enabled == True):
-                self.results_persistence.insert_result(self.results_summary.outcomes) 
+
+            if self.results_persistence.connection_problem is False and self.persistence_enabled is True:
+                self.results_persistence.insert_result(self.results_summary.outcomes)
 
         if (selected_checks is None or len(selected_checks) == 0) and self.project_checklist:
             for iac_check in self.iac_checks.values():
                 if iac_check.name in self.project_checklist:
                     if iac_check.name in compatible_checks:
                         check_output = iac_check.run(self.iac_dir)
-                        scan_output[iac_check.name] = check_output.to_dict()                  
+                        scan_output[iac_check.name] = check_output.to_dict()
                         write_string_to_file(iac_check.name, dir_name, scan_output[iac_check.name]["output"])
-                        self.results_summary.summarize_outcome(iac_check.name, scan_output[iac_check.name]["output"], self.compatibility_matrix.scanned_files, Compatibility.compatibility_matrix)
+                        self.results_summary.summarize_outcome(iac_check.name, scan_output[iac_check.name]["output"],
+                                                               self.compatibility_matrix.scanned_files,
+                                                               Compatibility.compatibility_matrix)
                     else:
                         non_compatible_checks.append(iac_check.name)
                         write_string_to_file(iac_check.name, dir_name, "No files to scan")
                         self.results_summary.summarize_no_files(iac_check.name)
-            
-            end_time = time.time()
-            duration = end_time-start_time
 
-            self.results_summary.set_result(random_uuid, self.archive_name, duration)   
-              
+            end_time = time.time()
+            duration = end_time - start_time
+
+            self.results_summary.set_result(random_uuid, self.archive_name, duration)
+
             if self.users_enabled:
-                self.results_summary.outcomes["projectid"] = projectid 
+                self.results_summary.outcomes["project_id"] = project_id
 
             self.results_summary.dump_outcomes(random_uuid)
             self.results_summary.generate_html_prioritized(random_uuid)
 
-            if(self.results_persistence.connection_problem == False and self.persistence_enabled == True):
-                self.results_persistence.insert_result(self.results_summary.outcomes) 
+            if self.results_persistence.connection_problem is False and self.persistence_enabled is True:
+                self.results_persistence.insert_result(self.results_summary.outcomes)
 
-        # TODO: Discuss the format of this output
+                # TODO: Discuss the format of this output
         if scan_response_type == ScanResponseType.json:
-            scan_output = json.loads(file_to_string(f"../outputs/json_dumps/{random_uuid}.json"))   
+            scan_output = json.loads(file_to_string(f"../outputs/json_dumps/{random_uuid}.json"))
         else:
-            scan_output = file_to_string(f"../outputs/generated_html/{random_uuid}.html")   
-        
+            scan_output = file_to_string(f"../outputs/generated_html/{random_uuid}.html")
+
         return scan_output
 
-    def enable_check(self, check_name: str, projectid: str) -> str:
+    def enable_check(self, check_name: str, project_id: str) -> str:
         """
         Enables the specified check and makes it available to be used
         :param check_name: Name of the check
+        :param project_id: Project identification
         :return: String with result for enabling check
         """
-        if projectid and self.users_enabled:
+        if project_id and self.users_enabled:
             if check_name in self.iac_checks.keys():
-                self.scan_project.add_check(projectid, check_name)
-                active_project = self.scan_project.load_project(projectid)            
+                self.scan_project.add_check(project_id, check_name)
+                active_project = self.scan_project.load_project(project_id)
                 enabled_checks = active_project["checklist"]
             else:
-                raise Exception(f"Nonexistent check: {check_name}")    
-        else:         
+                raise Exception(f"Nonexistent check: {check_name}")
+        else:
             if check_name in self.iac_checks.keys():
                 check = self.iac_checks[check_name]
                 if not check.enabled:
@@ -327,17 +331,18 @@ class ScanRunner:
             else:
                 raise Exception(f"Nonexistent check: {check_name}")
 
-    def disable_check(self, check_name: str, projectid: str) -> str:
+    def disable_check(self, check_name: str, project_id: str) -> str:
         """
         Disables the specified check and makes it unavailable to be used
-        :param check_name: Name of the check
+        :param check_name: Name of the checkž
+        :param project_id: Project identification
         :return: String with result for disabling check
         """
-        if projectid and self.users_enabled:
-            self.scan_project.remove_check(projectid, check_name)
-            active_project = self.scan_project.load_project(projectid)
+        if project_id and self.users_enabled:
+            self.scan_project.remove_check(project_id, check_name)
+            active_project = self.scan_project.load_project(project_id)
             enabled_checks = active_project["checklist"]
-        else:   
+        else:
             if check_name in self.iac_checks.keys():
                 check = self.iac_checks[check_name]
                 if check.enabled:
@@ -363,7 +368,7 @@ class ScanRunner:
                 if config_file:
                     config_filename_local = generate_random_pathname("", "-" + config_file.filename)
                     with open(
-                        f"{env.CONFIG_DIR}/{config_filename_local}", "wb+"
+                            f"{env.CONFIG_DIR}/{config_filename_local}", "wb+"
                     ) as config_file_local:
                         config_file_local.write(config_file.file.read())
                         config_file_local.close()
@@ -376,11 +381,12 @@ class ScanRunner:
             raise Exception(f'Nonexistent check: {check_name}')
 
     def scan_iac(
-        self, iac_file: UploadFile, projectid: str, checks: List, scan_response_type: ScanResponseType
+            self, iac_file: UploadFile, project_id: str, checks: List, scan_response_type: ScanResponseType
     ) -> Union[dict, str]:
         """
         Run IaC scanning process (initiate IaC dir, run checks and cleanup IaC dir)
         :param iac_file: IaC file that will be scanned
+        :param project_id: Project identification
         :param checks: List of selected checks to be executed on IaC
         :param scan_response_type: Scan response type (JSON or HTML)
         :return: Dict or string with scan result
@@ -392,6 +398,6 @@ class ScanRunner:
             raise Exception(f'Nonexistent, disabled or un-configured checks: {nonexistent_checks}.')
 
         self._init_iac_dir(iac_file)
-        scan_output = self._run_checks(checks, projectid, scan_response_type)
+        scan_output = self._run_checks(checks, project_id, scan_response_type)
         self._cleanup_iac_dir()
         return scan_output
