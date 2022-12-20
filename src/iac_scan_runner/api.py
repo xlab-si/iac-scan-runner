@@ -72,7 +72,7 @@ async def get_checks(keyword: Optional[str] = None, enabled: Optional[bool] = No
                      target_entity_type: Optional[CheckTargetEntityType] = None) -> JSONResponse:
     """
     Retrieve and filter checks (GET method)
-
+    \f
     :param keyword: substring for filtering
     :param enabled: bool saying whether check is enabled or disabled
     :param configured: bool saying whether check is configured or not
@@ -103,7 +103,7 @@ async def get_checks(keyword: Optional[str] = None, enabled: Optional[bool] = No
 async def put_enable_checks(check_name: str, project_id: Optional[str]) -> JSONResponse:
     """
     Enable check for running (PUT method)
-
+    \f
     :param check_name: Unique name of check to be enabled
     :param project_id: Identifier of a project
     :return: JSONResponse object (with status code 200 or 400)
@@ -119,7 +119,7 @@ async def put_enable_checks(check_name: str, project_id: Optional[str]) -> JSONR
 async def put_disable_checks(check_name: str, project_id: Optional[str]) -> JSONResponse:
     """
     Disable check for running (PUT method)
-
+    \f
     :param check_name: Unique name of check to be disabled
     :param project_id: Identifier of a project
     :return: JSONResponse object (with status code 200 or 400)
@@ -140,7 +140,7 @@ async def put_configure_check(check_name: str,
                                                                                    'etc.)')) -> JSONResponse:
     """
     Configure check for running (PUT method)
-
+    \f
     :param check_name: Unique name of check to be configured
     :param config_file: Check configuration file
     :param secret: Secret needed for configuration (e.g., API key, token, password, cloud credentials, etc.)
@@ -162,7 +162,7 @@ async def post_scan(iac: UploadFile = File(..., description='IaC file (zip or ta
                     scan_response_type: ScanResponseType = ScanResponseType.json) -> Union[JSONResponse, HTMLResponse]:
     """
     Run IaC scan (POST method)
-
+    \f
     :param iac: IaC file (zip or tar compressed) that will be scanned
     :param project_id: Identifier of a project_id to which where scan run belongs
     :param checks: List of selected checks to be executed on IaC
@@ -190,7 +190,7 @@ async def post_scan(iac: UploadFile = File(..., description='IaC file (zip or ta
 async def get_scan_result(uuid: Optional[str], project_id: Optional[str]) -> JSONResponse:
     """
     Retrieve a particular scan result (GET method)
-
+    \f
     :param uuid: Identifier of a saved scan record
     :param project_id: Identifier of a project
     :return: JSONResponse object (with status code 200 or 400)
@@ -213,7 +213,7 @@ async def get_scan_result(uuid: Optional[str], project_id: Optional[str]) -> JSO
 async def delete_scan_result(uuid: str) -> JSONResponse:
     """
     Delete a particular scan result (GET method)
-
+    \f
     :param uuid: Identifier of a saved scan record
     :return: JSONResponse object (with status code 200 or 400)
     """
@@ -235,7 +235,7 @@ async def delete_scan_result(uuid: str) -> JSONResponse:
 async def post_new_project(creator_id: str) -> JSONResponse:
     """
     Create a new project which might contain multiple scan runs (POST method)
-
+    \f
     :param creator_id: Identifier of a user who created project
     :return: JSONResponse object (with status code 200 or 400)
     """
@@ -254,7 +254,7 @@ async def post_new_project(creator_id: str) -> JSONResponse:
 async def set_project_config(project_id: str, config_id: str) -> JSONResponse:
     """
     Assign configuration by its id to a scan project (POST method)
-
+    \f
     :param project_id: Identifier of a previously stored scan project
     :param config_id: Identifier of a previously stored configuration
     :return: JSONResponse object (with status code 200 or 400)
@@ -273,7 +273,7 @@ async def set_project_config(project_id: str, config_id: str) -> JSONResponse:
 async def post_new_config(creator_id: str) -> JSONResponse:
     """
     Create a new scan project configuration which can be assigned to a project (POST method)
-
+    \f
     :param creator_id: Identifier of a user who created configuration
     :return: JSONResponse object (with status code 200 or 400)
     """
@@ -291,7 +291,7 @@ async def post_new_config(creator_id: str) -> JSONResponse:
 async def set_config_params(config_id: str, parameters: str) -> JSONResponse:
     """
     Assign configuration parameters to scan project configuration (POST method)
-
+    \f
     :param parameters: Dictionary of tool-specific parameter strings, such as tokens
     :param config_id: Identifier of a previously stored configuration
     :return: JSONResponse object (with status code 200 or 400)
@@ -311,7 +311,7 @@ async def set_config_params(config_id: str, parameters: str) -> JSONResponse:
 async def get_all_projects(creator_id: Optional[str] = None) -> JSONResponse:
     """
     Retrieve a list of projects by given user creator (GET method)
-
+    \f
     :param creator_id: Identifier of a user who created project
     :return: JSONResponse object (with status code 200 or 400)
     """
