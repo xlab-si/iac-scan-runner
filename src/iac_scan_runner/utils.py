@@ -74,7 +74,7 @@ def write_string_to_file(check_name: str, dir_name: str, output_value: str):
     """
     Writes string to given file inside specified directory
     :param check_name: Name of the check
-    :param output_dir: Directory where log will be stored
+    :param dir_name: Directory name
     :param output_value: Content written to given file
     """
     file_name = dir_name + "/" + check_name + ".txt"
@@ -82,21 +82,21 @@ def write_string_to_file(check_name: str, dir_name: str, output_value: str):
         with open(file_name, "w") as text_file:
             text_file.write(output_value)
     except Exception as e:
-        raise Exception(f"Error while writing string to file: {str(e)}.")    
+        raise Exception(f"Error while writing string to file: {str(e)}.")
+
 
 def write_html_to_file(file_name: str, output_value: str):
     """
     Writes string to given file inside specified directory
-    :param check_name: Name of the check
-    :param output_dir: Directory where log will be stored
+    :param file_name: File name
     :param output_value: Content written to given file
     """
     file_name = "../outputs/generated_html/" + file_name + ".html"
-    try:    
+    try:
         with open(file_name, "w") as text_file:
             text_file.write(output_value)
     except Exception as e:
-        raise Exception(f"Error storing HTML to file: {str(e)}.")           
+        raise Exception(f"Error storing HTML to file: {str(e)}.")
 
 
 def file_to_string(file_path: str) -> str:
@@ -111,5 +111,5 @@ def file_to_string(file_path: str) -> str:
             output = str(text_file.read())
     # TODO: Narrow exceptions for this one and similar functions        
     except Exception as e:
-        raise Exception(f"Error while reading file: {str(e)}.")           
-    return output        
+        raise Exception(f"Error while reading file: {str(e)}.")
+    return output

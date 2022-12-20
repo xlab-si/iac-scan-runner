@@ -1,6 +1,7 @@
 import os
 from typing import List
 
+
 class Compatibility:
     # TODO: This matrix should be revised and extended, it is just a proof of concept here as for now
     compatibility_matrix = {
@@ -12,14 +13,13 @@ class Compatibility:
         "js": ["es-lint", "ts-lint", "cloc"],
         "html": ["htmlhint", "cloc"],
         "docker": ["hadolint", "cloc"],
-        "common":  ["git-leaks", "git-secrets", "cloc"], 
-        "other": []        
+        "common": ["git-leaks", "git-secrets", "cloc"],
+        "other": []
     }
-    
+
     def __init__(self):
         """
         Initialize new IaC Compatibility matrix
-        :param matrix: Dictionary of available checks for given IaC type
         """
         self.scanned_files = dict()
 
@@ -33,7 +33,7 @@ class Compatibility:
 
     def check_iac_type(self, iac_directory: str) -> List[str]:
         """Check the type of IaC archive
-        :param iac_dircetory: Extracted IaC archive path
+        :param iac_directory: Extracted IaC archive path
         :return: List of specific file types within the given IaC directory
         """
 
@@ -48,51 +48,51 @@ class Compatibility:
         scanned_js = []
         scanned_docker = []
         scanned_other = []
-        scanned_all = []           
+        scanned_all = []
         # TODO: List of supported file types should be extended
         # TODO: Remove hardcoded check names
         try:
             for root, folders, names in os.walk(iac_directory):
                 for f in names:
-                   scanned_all.append(f)
-                   if (f.find(".tf") > -1) or (f.find(".tftpl") > -1):
+                    scanned_all.append(f)
+                    if (f.find(".tf") > -1) or (f.find(".tftpl") > -1):
                         types.append("terraform")
                         scanned_terraform.append(f)
 
-                   elif (f.find(".yaml") > -1) or (f.find(".yml") > -1):
+                    elif (f.find(".yaml") > -1) or (f.find(".yml") > -1):
                         types.append("yaml")
                         scanned_yaml.append(f)
-                    
-                   elif f.find(".sh") > -1:
+
+                    elif f.find(".sh") > -1:
                         types.append("shell")
                         scanned_shell.append(f)
 
-                   elif f.find(".py") > -1:
+                    elif f.find(".py") > -1:
                         types.append("python")
                         scanned_py.append(f)
 
-                   elif f.find(".java") > -1:
+                    elif f.find(".java") > -1:
                         types.append("java")
                         scanned_java.append(f)
 
-                   elif f.find(".html") > -1:
+                    elif f.find(".html") > -1:
                         types.append("html")
                         scanned_html.append(f)
 
-                   elif f.find(".js") > -1:
+                    elif f.find(".js") > -1:
                         types.append("js")
                         scanned_js.append(f)
 
-                   elif f.find("Dockerfile") > -1:
+                    elif f.find("Dockerfile") > -1:
                         types.append("docker")
-                        scanned_docker.append(f)                        
+                        scanned_docker.append(f)
 
-                   else: 
+                    else:
                         types.append("other")
-                        scanned_other.append(f)      
-            
+                        scanned_other.append(f)
+
             types.append("common")
-                        
+
             self.scanned_files["terraform"] = str(scanned_terraform)
             self.scanned_files["python"] = str(scanned_py)
             self.scanned_files["shell"] = str(scanned_shell)
@@ -102,10 +102,10 @@ class Compatibility:
             self.scanned_files["js"] = str(scanned_js)
             self.scanned_files["docker"] = str(scanned_docker)
             self.scanned_files["other"] = str(scanned_other)
-            self.scanned_files["common"] = str(scanned_all)            
-                                                
-            types = set(types)
-                                    
+            self.scanned_files["common"] = str(scanned_all)
+
+            types = list(dict.fromkeys(types))
+
             return types
         except Exception as e:
             raise Exception(f"Error when checking directory type: {str(e)}.")
@@ -113,7 +113,7 @@ class Compatibility:
     def get_all_compatible_checks(self, iac_directory: str) -> List[str]:
         """
         Returns the list of available scanner check tools for given type of IaC archive
-        :param iac_dircetory: Extracted IaC archive path        
+        :param iac_directory: Extracted IaC archive path
         :return: List with names of compatible checks as strings 
         """
         checks_list = []
