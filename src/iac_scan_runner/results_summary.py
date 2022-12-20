@@ -196,7 +196,7 @@ class ResultsSummary:
                 return "Passed"
             else:
                 self.outcomes[check]["status"] = "Problems"
-                return "Problems"        
+                return "Problems" 
 
         elif check == "yamllint":
             if outcome.find("error") > -1:
