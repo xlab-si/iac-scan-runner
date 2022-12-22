@@ -1,4 +1,4 @@
-FROM debian:bullseye-20220228-slim
+FROM debian:bullseye-20221205-slim
 
 # add python virtualenv and tools dir to path to be able to invoke commands
 ENV PATH="/iac-scan-runner/.venv/bin:/iac-scan-runner/tools:$PATH"
@@ -15,11 +15,13 @@ COPY . /iac-scan-runner
 # install system and API requirements
 RUN cd /iac-scan-runner \
     && apt-get update \
-    && apt-get -y install --no-install-recommends build-essential bash gcc git curl wget openjdk-17-jre \
-                                                  ruby2.7 nodejs npm unzip python3 python3-pip python3-venv \
+    && apt-get -y install --no-install-recommends apt-utils build-essential bash gcc git curl wget openjdk-17-jre \
+                                                  ruby2.7 npm unzip python3 python3-pip python3-venv \
     && apt-get update \
     && mkdir -p /usr/share/man/man1 \
-    && npm i npm@latest -g \
+    && npm cache clean -f \
+    && npm install -g n \
+    && n 14.17.0 \
     && python3 -m venv .venv \
     && . .venv/bin/activate \
     && pip3 install --upgrade pip \
