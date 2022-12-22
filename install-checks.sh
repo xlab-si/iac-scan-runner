@@ -45,7 +45,7 @@ gitLeaksUrl='https://github.com/zricethezav/gitleaks/releases/download/v7.5.0/gi
 gitSecretsUrl='https://github.com/awslabs/git-secrets.git'
 tflintUrl='https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh'
 tfsecUrl='https://github.com/tfsec/tfsec/releases/download/v0.51.1/tfsec-linux-amd64'
-terrascanUrl='https://api.github.com/repos/accurics/terrascan/releases/latest'
+terrascanUrl='https://api.github.com/repositories/103084166/releases/latest'
 sonarScannerUrl='https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.7.0.2747.zip'
 
 # functions below are used to install the check tools
