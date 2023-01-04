@@ -5,14 +5,10 @@ from fastapi import File, Form, UploadFile, status
 from fastapi.responses import JSONResponse
 from pydantic import SecretStr
 
+from iac_scan_runner.api import scan_runner
 from iac_scan_runner.enum.check_target_entity_type import CheckTargetEntityType
-from iac_scan_runner.scan_runner import ScanRunner
 
 router = APIRouter(tags=["Checks"])
-
-# instantiate runner for scanning IaC
-scan_runner = ScanRunner()
-scan_runner.init_checks()
 
 
 @router.get("/checks", summary="Retrieve and filter checks", responses={200: {}, 400: {"model": str}})
