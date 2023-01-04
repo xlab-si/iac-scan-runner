@@ -6,7 +6,7 @@ from fastapi.responses import JSONResponse, HTMLResponse
 
 from iac_scan_runner.enum.scan_response_type import ScanResponseType
 from iac_scan_runner.object_store import scan_runner
-from iac_scan_runner.results_persistence import ResultsPersistence
+from iac_scan_runner.business_logic.results_persistence import ResultsPersistence
 
 router = APIRouter(tags=["Scan"], prefix="/scan")
 

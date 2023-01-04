@@ -3,7 +3,7 @@ from typing import Optional
 
 from pydantic import SecretStr
 
-from iac_scan_runner.check_output import CheckOutput
+from iac_scan_runner.business_logic.check_output import CheckOutput
 from iac_scan_runner.enum.check_target_entity_type import CheckTargetEntityType
 
 
