@@ -4,15 +4,11 @@ from fastapi import APIRouter
 from fastapi import File, Form, UploadFile, status
 from fastapi.responses import JSONResponse, HTMLResponse
 
+from iac_scan_runner.api import scan_runner
 from iac_scan_runner.enum.scan_response_type import ScanResponseType
 from iac_scan_runner.results_persistence import ResultsPersistence
-from iac_scan_runner.scan_runner import ScanRunner
 
 router = APIRouter(tags=["Scan"], prefix="/scan")
-
-# instantiate runner for scanning IaC
-scan_runner = ScanRunner()
-scan_runner.init_checks()
 
 
 @router.post("", summary="Initiate IaC scan", responses={200: {}, 400: {"model": str}})

@@ -6,13 +6,8 @@ from fastapi.responses import JSONResponse
 
 from iac_scan_runner.project_config import ProjectConfig
 from iac_scan_runner.scan_project import ScanProject
-from iac_scan_runner.scan_runner import ScanRunner
 
 router = APIRouter(tags=["Project"], prefix="/project")
-
-# instantiate runner for scanning IaC
-scan_runner = ScanRunner()
-scan_runner.init_checks()
 
 
 @router.post("", summary="Generate new scan project for given user as creator",
@@ -54,7 +49,8 @@ async def set_project_config(project_id: str, config_id: str) -> JSONResponse:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))
 
 
-@router.post("/configuration", summary="Create a new scan project configuration", responses={200: {}, 400: {"model": str}})
+@router.post("/configuration", summary="Create a new scan project configuration",
+             responses={200: {}, 400: {"model": str}})
 async def post_new_config(creator_id: str) -> JSONResponse:
     """
     Create a new scan project configuration which can be assigned to a project (POST method)
