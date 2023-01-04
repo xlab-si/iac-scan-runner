@@ -3,7 +3,8 @@ import os
 from content_size_limit_asgi import ContentSizeLimitMiddleware
 from fastapi import FastAPI
 
-from routers import project, scan, checks, openapi
+from iac_scan_runner.object_store import scan_runner
+from iac_scan_runner.routers import scan, project, checks, openapi
 
 # create an API instance
 app = FastAPI(
@@ -15,6 +16,9 @@ app = FastAPI(
 )
 # limit maximum size for file uploads to 50 MB
 app.add_middleware(ContentSizeLimitMiddleware, max_content_size=52428800)
+
+# initialize checks
+scan_runner.init_checks()
 
 # Include routes
 app.include_router(openapi.router)
