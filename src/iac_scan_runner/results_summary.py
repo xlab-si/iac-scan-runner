@@ -178,6 +178,14 @@ class ResultsSummary:
                 self.outcomes[check]["status"] = "Problems"
                 return "Problems"
 
+        elif check == "steampunk-scanner":
+            if outcome.find("ERROR") > -1:
+                self.outcomes[check]["status"] = "Problems"
+                return "Problems"
+            else:
+                self.outcomes[check]["status"] = "Passed"
+                return "Passed"
+
         elif check == "cloc":
             self.outcomes[check]["status"] = "Info"
             return "Info"
