@@ -241,7 +241,7 @@ class ResultsSummary:
             raise Exception(f"Error dumping json of scan results: {str(e)}.")
 
     def is_check(self, check: str) -> bool:
-        fields = ["uuid", "time", "problems", "passed", "total", "execution-duration", "projectid", "archive"]
+        fields = ["uuid", "time", "problems", "passed", "total", "execution-duration", "project_id", "archive"]
         if not (check in fields):
             return True
         else:
@@ -298,7 +298,7 @@ class ResultsSummary:
         for scan in self.outcomes:
 
             if not (scan == "uuid") and not (scan == "time") and not (scan == "archive") and not (
-                    scan == "execution-duration") and not (scan == "verdict") and not (scan == "projectid") and \
+                    scan == "execution-duration") and not (scan == "verdict") and not (scan == "project_id") and \
                     self.outcomes[scan]["status"] == "Problems":
                 html_page = html_page + "<tr>"
                 html_page = html_page + "<td>" + scan + "</td>"
@@ -311,7 +311,7 @@ class ResultsSummary:
         for scan in self.outcomes:
 
             if not (scan == "uuid") and not (scan == "time") and not (scan == "archive") \
-                    and not (scan == "execution-duration") and not (scan == "verdict") and not (scan == "projectid") \
+                    and not (scan == "execution-duration") and not (scan == "verdict") and not (scan == "project_id") \
                     and self.outcomes[scan]["status"] == "Passed":
                 html_page = html_page + "<tr>"
                 html_page = html_page + "<td>" + scan + "</td>"
@@ -324,7 +324,7 @@ class ResultsSummary:
         for scan in self.outcomes:
 
             if not (scan == "uuid") and not (scan == "time") and not (scan == "archive") \
-                    and not (scan == "execution-duration") and not (scan == "verdict") and not (scan == "projectid") \
+                    and not (scan == "execution-duration") and not (scan == "verdict") and not (scan == "project_id") \
                     and self.outcomes[scan]["status"] == "Info":
                 html_page = html_page + "<tr>"
                 html_page = html_page + "<td>" + scan + "</td>"
@@ -337,7 +337,7 @@ class ResultsSummary:
         for scan in self.outcomes:
 
             if not (scan == "uuid") and not (scan == "time") and not (scan == "archive") \
-                    and not (scan == "execution-duration") and not (scan == "verdict") and not (scan == "projectid") \
+                    and not (scan == "execution-duration") and not (scan == "verdict") and not (scan == "project_id") \
                     and self.outcomes[scan]["status"] == "No files":
                 html_page = html_page + "<tr>"
                 html_page = html_page + "<td>" + scan + "</td>"
