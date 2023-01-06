@@ -39,7 +39,7 @@ from iac_scan_runner.functionality.project_config import ProjectConfig
 from iac_scan_runner.functionality.results_persistence import ResultsPersistence
 from iac_scan_runner.functionality.results_summary import ResultsSummary
 from iac_scan_runner.functionality.scan_project import ScanProject
-from iac_scan_runner.enum.scan_response_type import ScanResponseType
+from iac_scan_runner.enums.scan_response_type import ScanResponseType
 from iac_scan_runner.utils import (
     generate_random_pathname,
     unpack_archive_to_dir,

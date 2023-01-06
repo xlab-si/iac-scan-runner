@@ -4,7 +4,7 @@ from typing import Optional
 from pydantic import SecretStr
 
 from iac_scan_runner.functionality.check_output import CheckOutput
-from iac_scan_runner.enum.check_target_entity_type import CheckTargetEntityType
+from iac_scan_runner.enums.check_target_entity_type import CheckTargetEntityType
 
 
 class Check(ABC):
