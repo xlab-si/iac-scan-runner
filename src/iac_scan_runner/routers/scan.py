@@ -19,7 +19,7 @@ async def post_scan(iac: UploadFile = File(..., description='IaC file (zip or ta
                                                                    'be executed on IaC'),
                     scan_response_type: ScanResponseType = ScanResponseType.json) -> Union[JSONResponse, HTMLResponse]:
     """
-    Run IaC scan (POST method)
+    Run IaC scan
     \f
     :param iac: IaC file (zip or tar compressed) that will be scanned
     :param project_id: Identifier of a project_id to which where scan run belongs
@@ -48,7 +48,7 @@ async def post_scan(iac: UploadFile = File(..., description='IaC file (zip or ta
             responses={200: {}, 400: {"model": str}})
 async def get_scan_result(uuid: Optional[str], project_id: Optional[str]) -> JSONResponse:
     """
-    Retrieve a particular scan result (GET method)
+    Retrieve a particular scan result
     \f
     :param uuid: Identifier of a saved scan record
     :param project_id: Identifier of a project
@@ -71,7 +71,7 @@ async def get_scan_result(uuid: Optional[str], project_id: Optional[str]) -> JSO
                responses={200: {}, 400: {"model": str}})
 async def delete_scan_result(uuid: str) -> JSONResponse:
     """
-    Delete a particular scan result (GET method)
+    Delete a particular scan result
     \f
     :param uuid: Identifier of a saved scan record
     :return: JSONResponse object (with status code 200 or 400)
