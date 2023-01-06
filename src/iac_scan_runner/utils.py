@@ -6,7 +6,7 @@ from typing import Optional
 from uuid import uuid4
 from zipfile import is_zipfile
 
-from iac_scan_runner.business_logic.check_output import CheckOutput
+from iac_scan_runner.functionality.check_output import CheckOutput
 
 
 def run_command(command: str, directory: str = ".") -> CheckOutput:
