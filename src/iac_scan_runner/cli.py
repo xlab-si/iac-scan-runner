@@ -6,7 +6,8 @@ import typer
 import uvicorn
 import yaml
 
-from iac_scan_runner.api import app, openapi_yaml
+from iac_scan_runner.object_store import app
+from iac_scan_runner.routers.openapi import openapi_yaml
 
 cli = typer.Typer(help="IaC Scan Runner CLI", context_settings={"help_option_names": ["-h", "--help"]})
 
