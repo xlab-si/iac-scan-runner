@@ -15,7 +15,7 @@ router = APIRouter(tags=["Checks"])
 async def get_checks(keyword: Optional[str] = None, enabled: Optional[bool] = None, configured: Optional[bool] = None,
                      target_entity_type: Optional[CheckTargetEntityType] = None) -> JSONResponse:
     """
-    Retrieve and filter checks (GET method)
+    Retrieve and filter checks
     \f
     :param keyword: substring for filtering
     :param enabled: bool saying whether check is enabled or disabled
@@ -46,7 +46,7 @@ async def get_checks(keyword: Optional[str] = None, enabled: Optional[bool] = No
 @router.put("/checks/{check_name}/enable", summary="Enable check for running", responses={200: {}, 400: {"model": str}})
 async def put_enable_checks(check_name: str, project_id: Optional[str]) -> JSONResponse:
     """
-    Enable check for running (PUT method)
+    Enable check for running
     \f
     :param check_name: Unique name of check to be enabled
     :param project_id: Identifier of a project
@@ -62,7 +62,7 @@ async def put_enable_checks(check_name: str, project_id: Optional[str]) -> JSONR
             responses={200: {}, 400: {"model": str}})
 async def put_disable_checks(check_name: str, project_id: Optional[str]) -> JSONResponse:
     """
-    Disable check for running (PUT method)
+    Disable check for running
     \f
     :param check_name: Unique name of check to be disabled
     :param project_id: Identifier of a project
@@ -83,7 +83,7 @@ async def put_configure_check(check_name: str,
                                                                                    'password, cloud credentials, '
                                                                                    'etc.)')) -> JSONResponse:
     """
-    Configure check for running (PUT method)
+    Configure check for running
     \f
     :param check_name: Unique name of check to be configured
     :param config_file: Check configuration file
