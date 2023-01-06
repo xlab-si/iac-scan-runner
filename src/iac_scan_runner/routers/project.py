@@ -14,7 +14,7 @@ router = APIRouter(tags=["Project"], prefix="/project")
              responses={200: {}, 400: {"model": str}})
 async def post_new_project(creator_id: str) -> JSONResponse:
     """
-    Create a new project which might contain multiple scan runs (POST method)
+    Create a new project which might contain multiple scan runs
     \f
     :param creator_id: Identifier of a user who created project
     :return: JSONResponse object (with status code 200 or 400)
@@ -33,7 +33,7 @@ async def post_new_project(creator_id: str) -> JSONResponse:
              responses={200: {}, 400: {"model": str}})
 async def set_project_config(project_id: str, config_id: str) -> JSONResponse:
     """
-    Assign configuration by its id to a scan project (POST method)
+    Assign configuration by its id to a scan project
     \f
     :param project_id: Identifier of a previously stored scan project
     :param config_id: Identifier of a previously stored configuration
@@ -53,7 +53,7 @@ async def set_project_config(project_id: str, config_id: str) -> JSONResponse:
              responses={200: {}, 400: {"model": str}})
 async def post_new_config(creator_id: str) -> JSONResponse:
     """
-    Create a new scan project configuration which can be assigned to a project (POST method)
+    Create a new scan project configuration which can be assigned to a project
     \f
     :param creator_id: Identifier of a user who created configuration
     :return: JSONResponse object (with status code 200 or 400)
@@ -71,7 +71,7 @@ async def post_new_config(creator_id: str) -> JSONResponse:
              responses={200: {}, 400: {"model": str}})
 async def set_config_params(config_id: str, parameters: str) -> JSONResponse:
     """
-    Assign configuration parameters to scan project configuration (POST method)
+    Assign configuration parameters to scan project configuration
     \f
     :param parameters: Dictionary of tool-specific parameter strings, such as tokens
     :param config_id: Identifier of a previously stored configuration
@@ -91,7 +91,7 @@ async def set_config_params(config_id: str, parameters: str) -> JSONResponse:
             responses={200: {}, 400: {"model": str}})
 async def get_all_projects(creator_id: Optional[str] = None) -> JSONResponse:
     """
-    Retrieve a list of projects by given user creator (GET method)
+    Retrieve a list of projects by given user creator
     \f
     :param creator_id: Identifier of a user who created project
     :return: JSONResponse object (with status code 200 or 400)
