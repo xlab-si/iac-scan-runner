@@ -34,11 +34,11 @@ from iac_scan_runner.checks.tflint import TFLintCheck
 from iac_scan_runner.checks.tfsec import TfsecCheck
 from iac_scan_runner.checks.ts_lint import TSLintCheck
 from iac_scan_runner.checks.yamllint import YamlLintCheck
-from iac_scan_runner.business_logic.compatibility import Compatibility
-from iac_scan_runner.business_logic.project_config import ProjectConfig
-from iac_scan_runner.business_logic.results_persistence import ResultsPersistence
-from iac_scan_runner.business_logic.results_summary import ResultsSummary
-from iac_scan_runner.business_logic.scan_project import ScanProject
+from iac_scan_runner.functionality.compatibility import Compatibility
+from iac_scan_runner.functionality.project_config import ProjectConfig
+from iac_scan_runner.functionality.results_persistence import ResultsPersistence
+from iac_scan_runner.functionality.results_summary import ResultsSummary
+from iac_scan_runner.functionality.scan_project import ScanProject
 from iac_scan_runner.enum.scan_response_type import ScanResponseType
 from iac_scan_runner.utils import (
     generate_random_pathname,

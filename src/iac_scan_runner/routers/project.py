@@ -4,8 +4,8 @@ from fastapi import APIRouter
 from fastapi import status
 from fastapi.responses import JSONResponse
 
-from iac_scan_runner.business_logic.project_config import ProjectConfig
-from iac_scan_runner.business_logic.scan_project import ScanProject
+from iac_scan_runner.functionality.project_config import ProjectConfig
+from iac_scan_runner.functionality.scan_project import ScanProject
 
 router = APIRouter(tags=["Project"], prefix="/project")
 
