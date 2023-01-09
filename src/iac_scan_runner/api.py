@@ -1,7 +1,7 @@
 import uvicorn
 from content_size_limit_asgi import ContentSizeLimitMiddleware
 
-from object_store import app
+from iac_scan_runner.object_store import app
 from iac_scan_runner.object_store import scan_runner
 from iac_scan_runner.routers import scan, project, checks, openapi
 
