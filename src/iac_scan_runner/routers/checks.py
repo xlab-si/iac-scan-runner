@@ -1,11 +1,11 @@
 from typing import Optional
 
 from fastapi import APIRouter
-from fastapi import File, Form, UploadFile, status
+from fastapi import status, Depends
 from fastapi.responses import JSONResponse
-from pydantic import SecretStr
 
 from iac_scan_runner.enums.check_target_entity_type import CheckTargetEntityType
+from iac_scan_runner.model.ConfigureCheck import CheckConfigurationModel
 from iac_scan_runner.object_store import scan_runner
 
 router = APIRouter(tags=["Checks"])
@@ -77,21 +77,17 @@ async def put_disable_checks(check_name: str, project_id: Optional[str]) -> JSON
 @router.put("/checks/{check_name}/configure", summary="Configure check for running",
             responses={200: {}, 400: {"model": str}})
 async def put_configure_check(check_name: str,
-                              config_file: Optional[UploadFile] = File(None, description='Check configuration file'),
-                              secret: Optional[SecretStr] = Form(None, description='Secret needed for configuration '
-                                                                                   '(e.g., ''API key, token, '
-                                                                                   'password, cloud credentials, '
-                                                                                   'etc.)')) -> JSONResponse:
+                              form_data: CheckConfigurationModel = Depends(
+                                  CheckConfigurationModel.as_form)) -> JSONResponse:
     """
     Configure check for running
     \f
     :param check_name: Unique name of check to be configured
-    :param config_file: Check configuration file
-    :param secret: Secret needed for configuration (e.g., API key, token, password, cloud credentials, etc.)
+    :param form_data: Form data model
     :return: JSONResponse object (with status code 200 or 400)
     """
     try:
         return JSONResponse(status_code=status.HTTP_200_OK,
-                            content=scan_runner.configure_check(check_name, config_file, secret))
+                            content=scan_runner.configure_check(check_name, form_data.config_file, form_data.secret))
     except Exception as e:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))
