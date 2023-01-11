@@ -1,3 +1,4 @@
+import json
 from os import path
 from shutil import unpack_archive
 from subprocess import check_output, STDOUT, CalledProcessError
@@ -5,6 +6,8 @@ from tarfile import is_tarfile
 from typing import Optional
 from uuid import uuid4
 from zipfile import is_zipfile
+
+import bson.json_util as json_util
 
 from iac_scan_runner.functionality.check_output import CheckOutput
 
@@ -113,3 +116,15 @@ def file_to_string(file_path: str) -> str:
     except Exception as e:
         raise Exception(f"Error while reading file: {str(e)}.")
     return output
+
+
+def parse_json(data):
+    """
+    Converts bson to dictionary
+    :param data: json
+    :return: dictionary
+    """
+    try:
+        return json.loads(json_util.dumps(data))
+    except Exception as e:
+        print(f"Could not parse JSON, error: {e}")
