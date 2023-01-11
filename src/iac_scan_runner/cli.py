@@ -7,6 +7,7 @@ import uvicorn
 import yaml
 
 from iac_scan_runner.object_store import app
+from iac_scan_runner.routers import openapi as open_api, scan, checks, project
 from iac_scan_runner.routers.openapi import openapi_yaml
 
 cli = typer.Typer(help="IaC Scan Runner CLI", context_settings={"help_option_names": ["-h", "--help"]})
@@ -62,6 +63,10 @@ def install():
 def run():
     """Run REST API for IaC Scan Runner"""
     try:
+        app.include_router(open_api.router)
+        app.include_router(project.router)
+        app.include_router(scan.router)
+        app.include_router(checks.router)
         uvicorn.run(app)
     except Exception as e:
         typer.echo(e)
