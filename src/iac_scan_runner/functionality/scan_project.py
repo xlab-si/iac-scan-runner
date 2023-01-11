@@ -1,10 +1,10 @@
-import json
 import os
 import uuid
 from datetime import datetime
 
-import bson.json_util as json_util
 import pymongo
+
+from iac_scan_runner.utils import parse_json
 
 
 class ScanProject:
@@ -37,9 +37,6 @@ class ScanProject:
             self.mycol = None
             self.connection_problem = True
 
-    def parse_json(self, data):
-        return json.loads(json_util.dumps(data))
-
     def insert_project(self, result: dict):
         """Inserts new project into database
         :param result: Dictionary holding the project info
@@ -47,7 +44,7 @@ class ScanProject:
         if self.connection_problem:
             self.connect_db()
         if self.mycol is not None:
-            self.mycol.insert_one(self.parse_json(result))
+            self.mycol.insert_one(parse_json(result))
 
     def new_project(self, creator_id: str, active_config: str):
 
@@ -71,7 +68,7 @@ class ScanProject:
         if self.connection_problem:
             self.connect_db()
         if self.mycol is not None:
-            self.mycol.insert_one(self.parse_json(project_json))
+            self.mycol.insert_one(parse_json(project_json))
             return project_json["project_id"]
 
     def load_project(self, project_id: str):

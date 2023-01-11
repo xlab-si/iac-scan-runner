@@ -1,9 +1,9 @@
-import json
 import os
 import uuid
 
-import bson.json_util as json_util
 import pymongo
+
+from iac_scan_runner.utils import parse_json
 
 
 class ProjectConfig:
@@ -36,12 +36,6 @@ class ProjectConfig:
             self.mycol = None
             self.connection_problem = True
 
-    def parse_json(self, data):
-        try:
-            return json.loads(json_util.dumps(data))
-        except Exception as e:
-            print(f"Could not parse JSON, error: {e}")
-
     def insert_config(self, result: dict):
         """Inserts new config into database
         :param result: Dictionary holding the project info
@@ -49,7 +43,7 @@ class ProjectConfig:
         if self.connection_problem:
             self.connect_db()
         if self.mycol is not None:
-            self.mycol.insert_one(self.parse_json(result))
+            self.mycol.insert_one(parse_json(result))
 
     def new_config(self, creator_id: str, parameters: dict) -> str:
         """Inserts new project config into database

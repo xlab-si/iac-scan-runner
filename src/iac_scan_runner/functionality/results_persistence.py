@@ -1,9 +1,9 @@
-import json
 import os
 from datetime import datetime
 
-import bson.json_util as json_util
 import pymongo
+
+from iac_scan_runner.utils import parse_json
 
 
 class ResultsPersistence:
@@ -36,9 +36,6 @@ class ResultsPersistence:
             self.mycol = None
             self.connection_problem = True
 
-    def parse_json(self, data):
-        return json.loads(json_util.dumps(data))
-
     def insert_result(self, result: dict):
         """Inserts new scan result into database
         :param result: Dictionary holding the scan summary
@@ -46,7 +43,7 @@ class ResultsPersistence:
         if self.connection_problem:
             self.connect_db()
         if self.mycol is not None:
-            self.mycol.insert_one(self.parse_json(result))
+            self.mycol.insert_one(parse_json(result))
 
     def show_result(self, uuid4: str) -> str:
         """Shows scan result with given id
