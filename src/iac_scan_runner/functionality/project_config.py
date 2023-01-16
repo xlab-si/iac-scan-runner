@@ -66,7 +66,7 @@ class ProjectConfig:
         if self.connection_problem:
             self.connect_db()
         if self.mycol is not None:
-            self.mycol.insert_one(self.parse_json(config_json))
+            self.mycol.insert_one(parse_json(config_json))
             return config_json["config_id"]
 
     def load_config(self, config_id: str) -> dict:
