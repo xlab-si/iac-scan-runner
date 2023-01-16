@@ -87,7 +87,7 @@ $ python3 -m venv .venv && . .venv/bin/activate
 
 ## Usage and examples
 
-This part will show one of the posible deployments and short examples on how to use API calls.
+This part will show one of the possible deployments and short examples on how to use API calls.
 
 Firstly we will clone the [iac scan runner] repository and run the API.
 
