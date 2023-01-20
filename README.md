@@ -81,9 +81,8 @@ $ python3 -m venv .venv && . .venv/bin/activate
 ### Extending the scan workflow with new check tools
 
 At certain point, it might be required to include new check tools within the scan workflow, with aim to provide wider coverage of IaC standards and project types. Therefore, in this subsection, a sequence of required steps for that purpose is identified and described. However, the steps have to be performed manually as it will be described, but it is planned to automatize this procedure in future via API and provide user-friendly interface that will aid the user while importing new tools that will become part of the available catalogue that makes the scan workflow.  Figure 16 depicts the required steps which have to be taken in order to extend the scan workflow with a new tool.
- 
-Figure 16  Scan workflow extension steps
-3.3.3.1.	Step 1 – Adding tool-specific class to checks directory
+
+Step 1 – Adding tool-specific class to checks directory
 First, it is required to add a new tool-specific Python class to the checks directory inside IaC Scan Runner’s source code:
 iac-scan-runner/src/iac_scan_runner/checks/new_tool.py  
 The class of a new tool inherits the existing Check class, which provides generalization of scan workflow tools. Moreover, it is necessary to provide implementation of the following methods:
@@ -91,7 +90,7 @@ The class of a new tool inherits the existing Check class, which provides genera
    2) def run(self, directory: str)
 While the first one aims to provide the necessary tool-specific parameters in order to set it up (such as passwords, client ids and tokens), another one specifies how the tool itself is invoked via API or CLI and its raw output returned.
 
-3.3.3.2.	Step 2 – Adding the check tool class instance within ScanRunner constructor
+Step 2 – Adding the check tool class instance within ScanRunner constructor
 Once the new class derived from Check is added to the IaC Scan Runner’s source code, it is also required to modify the source code of its main class, called ScanRunner. When it comes to modifications of this class, it is required first to import the tool-specific class, create a new check tool-specific class instance and adding it to the dictionary of IaC checks inside def init_checks(self).
 A.	Importing the check tool class
 from iac_scan_runner.checks.tfsec import TfsecCheck
@@ -99,20 +98,26 @@ B.	Creating new instance of check tool object inside init_checks
 """Initiate predefined check objects"""
         new_tool = NewToolCheck() 
 C.	Adding it to self.iac_checks dictionary inside init_checks
-self.iac_checks = {
-new_tool.name: new_tool,
-…
-}
-3.3.3.3.	Step 3 – Adding the check tool to the compatibility matrix inside Compatibility class
+```console
+    self.iac_checks = {
+        new_tool.name: new_tool,
+        …
+    }
+```
+
+Step 3 – Adding the check tool to the compatibility matrix inside Compatibility class
 On the other side, inside file src/iac_scan_runner/compatibility.py, the dictionary which represents compatibility matrix should be extended as well. There are two possible cases: a) new file type should be added as a key, together with list of relevant tools as value b) new tool should be added to the compatibility list for the existing file type.
+```console
     compatibility_matrix = {
         "new_type": ["new_tool_1", "new_tool_2"],
         …
         "old_typeK": ["tool_1", …  "tool_N", "new_tool_3"]
     }
+```
 
-3.3.3.4.	Step – Providing the support for result summarization
+Step 4 – Providing the support for result summarization
 Finally, the last step in sequence of required modifications for scan workflow extension is to modify class ResultsSummary (src/iac_scan_runner/results_summary.py). Precisely, it is required to append a part of the code to its method summarize_outcome that will look for specific strings which are tool-specific and can be used to identify whether the check passed or failed. Inside the loop that traverses the compatible checks, for each new tool the following structure of if-else should be included:
+```console
         if check == "new_tool":
             if outcome.find("Check pass string") > -1:
                 self.outcomes[check]["status"] = "Passed"
@@ -120,9 +125,7 @@ Finally, the last step in sequence of required modifications for scan workflow e
             else:
                 self.outcomes[check]["status"] = "Problems"
                 return "Problems"
- 
-
-
+``` 
 
 ## License
 This work is licensed under the [Apache License 2.0].
