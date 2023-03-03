@@ -196,7 +196,7 @@ class ResultsSummary:
                 return "Passed"
             else:
                 self.outcomes[check]["status"] = "Problems"
-                return "Problems" 
+                return "Problems"
 
         elif check == "yamllint":
             if outcome.find("error") > -1:
@@ -270,82 +270,53 @@ class ResultsSummary:
         visualization ordering: 1) problems detected 2) passed 3) no files scanned
         :param file_name: Name of the generated HTML file containing the page summary
         """
-        html_page = (
-                "<!DOCTYPE html> <html> <style> table, th, td { border:1px solid black;}</style>"
-                + "<body> <h2>Scan results</h2>"
-        )
+        with open("./iac_scan_runner/asset/response.html", "r") as html_template:
+            html = html_template.read()
 
-        summary_header = (
-                "<table style='width:100%'>"
-                + "<tr> <th>Aspect</th> <th>Measure</th>"
-        )
+        html = html.replace("CHANGE_ARCHIVE_NAME", self.outcomes['archive'])
+        html = html.replace("CHANGE_RUN_START_TIME", self.outcomes['time'])
+        html = html.replace("CHANGE_START_TIME", self.outcomes['execution-duration'])
+        if self.outcomes['verdict'] == "Problems":
+            html = html.replace("CHANGE_FINAL_VERDICT", "Issues found")
+        else:
+            hmtl = html.replace("CHANGE_FINAL_VERDICT", "Issues found")
 
-        archive_row = f"<tr> <td>Archive name</td> <td>{self.outcomes['archive']}</td> </tr>"
-        timestamp_row = f"<tr> <td>Run on</td> <td>{self.outcomes['time']}</td> </tr>"
-        duration_row = f"<tr> <td>Time spent (seconds)</td> <td>{self.outcomes['execution-duration']}</td> </tr>"
-        verdict_row = f"<tr> <td>Final verdict</td> <td>{self.outcomes['verdict']}</td> </tr>"
-
-        summary_table = summary_header + archive_row + timestamp_row + duration_row + verdict_row
-
-        html_page = html_page + summary_table
-
-        html_page = (
-                html_page
-                + "<table style='width:100%'>"
-                + "<tr> <th>Scan</th> <th>Status</th> <th>Files</th> <th>Log</th> </tr>"
-        )
-
+        table_content = ""
+        with open("./iac_scan_runner/asset/table_problem.html", "r") as html_template:
+            html_problem = html_template.read()
         for scan in self.outcomes:
+            if scan not in ["uuid", "time", "archive", "execution-duration", "verdict", "project_id"] \
+                    and self.outcomes[scan]["status"] == "Problems":
+                changeable_html = html_problem
+                changeable_html = changeable_html.replace("CHANGE_SCAN", scan)
+                changeable_html = changeable_html.replace("CHANGE_STATUS", "Issue")
+                changeable_html = changeable_html.replace("CHANGE_FILES", self.outcomes[scan]["files"])
+                changeable_html = changeable_html.replace("CHANGE_LOG", self.outcomes[scan]["log"])
+                table_content += changeable_html
 
-            if not (scan == "uuid") and not (scan == "time") and not (scan == "archive") and not (
-                    scan == "execution-duration") and not (scan == "verdict") and not (scan == "project_id") and \
-                    self.outcomes[scan]["status"] == "Problems":
-                html_page = html_page + "<tr>"
-                html_page = html_page + "<td>" + scan + "</td>"
-                html_page = html_page + "<td bgcolor='red'>" + str(self.outcomes[scan]["status"]) + "</td>"
-
-                html_page = html_page + "<td>" + self.outcomes[scan]["files"] + "</td>"
-                html_page = html_page + "<td>" + self.outcomes[scan]["log"] + "</td>"
-                html_page = html_page + "</tr>"
-
+        with open("./iac_scan_runner/asset/table_info.html", "r") as html_template:
+            html_problem = html_template.read()
         for scan in self.outcomes:
-
-            if not (scan == "uuid") and not (scan == "time") and not (scan == "archive") \
-                    and not (scan == "execution-duration") and not (scan == "verdict") and not (scan == "project_id") \
-                    and self.outcomes[scan]["status"] == "Passed":
-                html_page = html_page + "<tr>"
-                html_page = html_page + "<td>" + scan + "</td>"
-                html_page = html_page + "<td bgcolor='green'>" + str(self.outcomes[scan]["status"]) + "</td>"
-
-                html_page = html_page + "<td>" + self.outcomes[scan]["files"] + "</td>"
-                html_page = html_page + "<td>" + self.outcomes[scan]["log"] + "</td>"
-                html_page = html_page + "</tr>"
-
-        for scan in self.outcomes:
-
-            if not (scan == "uuid") and not (scan == "time") and not (scan == "archive") \
-                    and not (scan == "execution-duration") and not (scan == "verdict") and not (scan == "project_id") \
+            if scan not in ["uuid", "time", "archive", "execution-duration", "verdict", "project_id"] \
                     and self.outcomes[scan]["status"] == "Info":
-                html_page = html_page + "<tr>"
-                html_page = html_page + "<td>" + scan + "</td>"
-                html_page = html_page + "<td bgcolor='yellow'>" + str(self.outcomes[scan]["status"]) + "</td>"
+                changeable_html = html_problem
+                changeable_html = changeable_html.replace("CHANGE_SCAN", scan)
+                changeable_html = changeable_html.replace("CHANGE_STATUS", str(self.outcomes[scan]["status"]))
+                changeable_html = changeable_html.replace("CHANGE_FILES", self.outcomes[scan]["files"])
+                changeable_html = changeable_html.replace("CHANGE_LOG", self.outcomes[scan]["log"])
+                table_content += changeable_html
 
-                html_page = html_page + "<td>" + self.outcomes[scan]["files"] + "</td>"
-                html_page = html_page + "<td>" + self.outcomes[scan]["log"] + "</td>"
-                html_page = html_page + "</tr>"
-
+        with open("./iac_scan_runner/asset/table_basic.html", "r") as html_template:
+            html_problem = html_template.read()
         for scan in self.outcomes:
+            if scan not in ["uuid", "time", "archive", "execution-duration", "verdict", "project_id"] \
+                    and self.outcomes[scan]["status"] in ["Passed", "No files"]:
+                changeable_html = html_problem
+                changeable_html = changeable_html.replace("CHANGE_SCAN", scan)
+                changeable_html = changeable_html.replace("CHANGE_STATUS", str(self.outcomes[scan]["status"]))
+                changeable_html = changeable_html.replace("CHANGE_FILES", self.outcomes[scan]["files"])
+                changeable_html = changeable_html.replace("CHANGE_LOG", self.outcomes[scan]["log"])
+                table_content += changeable_html
 
-            if not (scan == "uuid") and not (scan == "time") and not (scan == "archive") \
-                    and not (scan == "execution-duration") and not (scan == "verdict") and not (scan == "project_id") \
-                    and self.outcomes[scan]["status"] == "No files":
-                html_page = html_page + "<tr>"
-                html_page = html_page + "<td>" + scan + "</td>"
-                html_page = html_page + "<td bgcolor='gray'>" + str(self.outcomes[scan]["status"]) + "</td>"
-                html_page = html_page + "<td>" + self.outcomes[scan]["files"] + "</td>"
-                html_page = html_page + "<td>" + self.outcomes[scan]["log"] + "</td>"
-                html_page = html_page + "</tr>"
-
-        html_page = html_page + "</tr></table></body></html>"
-
-        write_html_to_file(file_name, html_page)
+        html = html.replace("CHANGE_TABLE_CONTENT", table_content)
+        write_html_to_file(file_name, html)
