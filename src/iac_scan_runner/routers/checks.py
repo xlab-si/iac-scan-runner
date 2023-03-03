@@ -13,7 +13,7 @@ from iac_scan_runner.object_store import scan_runner
 router = APIRouter(tags=["Checks"])
 
 
-@router.get("/checks", summary="Retrieve and filter checks", responses={200: {}, 400: {"model": str}})
+@router.get("/default/checks", summary="Retrieve and filter checks", responses={200: {}, 400: {"model": str}})
 async def get_checks(keyword: Optional[str] = None, enabled: Optional[bool] = None, configured: Optional[bool] = None,
                      target_entity_type: Optional[CheckTargetEntityType] = None) -> JSONResponse:
     """
@@ -45,7 +45,7 @@ async def get_checks(keyword: Optional[str] = None, enabled: Optional[bool] = No
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))
 
 
-@router.put("/checks/{check_name}/enable", summary="Enable check for running", responses={200: {}, 400: {"model": str}})
+@router.put("/default/checks/{check_name}/enable", summary="Enable check for running", responses={200: {}, 400: {"model": str}})
 async def put_enable_checks(check_name: str, project_id: Optional[str]) -> JSONResponse:
     """
     Enable check for running
@@ -60,7 +60,7 @@ async def put_enable_checks(check_name: str, project_id: Optional[str]) -> JSONR
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))
 
 
-@router.put("/checks/{check_name}/disable", summary="Disable check for running",
+@router.put("/default/checks/{check_name}/disable", summary="Disable check for running",
             responses={200: {}, 400: {"model": str}})
 async def put_disable_checks(check_name: str, project_id: Optional[str]) -> JSONResponse:
     """
@@ -76,7 +76,7 @@ async def put_disable_checks(check_name: str, project_id: Optional[str]) -> JSON
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))
 
 
-@router.put("/checks/{check_name}/configure", summary="Configure check for running",
+@router.put("/default/checks/{check_name}/configure", summary="Configure check for running",
             responses={200: {}, 400: {"model": str}})
 async def put_configure_check(check_name: str,
                               form_data: CheckConfigurationModel = Depends(
@@ -95,7 +95,7 @@ async def put_configure_check(check_name: str,
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))
 
 
-@router.post("/checks/scan", summary="Initiate IaC scan", responses={200: {}, 400: {"model": str}})
+@router.post("/default/scan", summary="Initiate IaC scan", responses={200: {}, 400: {"model": str}})
 async def post_scan(form_data: ScanModel = Depends(ScanModel.as_form),
                     scan_response_type: ScanResponseType = ScanResponseType.json) -> Union[JSONResponse, HTMLResponse]:
     """
