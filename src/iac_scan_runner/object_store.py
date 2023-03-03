@@ -7,10 +7,21 @@ from iac_scan_runner.functionality.scan_runner import ScanRunner
 
 scan_runner = ScanRunner()
 
+tags_metadata = [
+    {
+        "name": "Checks",
+        "description": "***Depricated***",
+    },
+    {
+        "name": "Project",
+    },
+]
+
 app = FastAPI(
     docs_url="/swagger",
     title="IaC Scan Runner REST API",
     description="Service that scans your Infrastructure as Code for common vulnerabilities",
-    version="0.1.9",
-    root_path=os.getenv('ROOT_PATH', "/")
+    version="0.3.0",
+    root_path=os.getenv('ROOT_PATH', "/"),
+    openapi_tags=tags_metadata
 )
