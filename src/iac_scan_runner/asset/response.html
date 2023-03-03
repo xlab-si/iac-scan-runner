@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  .center{
+    text-align: center;
+  }
+
+  .header{
+    display: inline;
+    font-size: 35px;
+  }
+
+  .header h1 {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .logo-container{
+    height: 30px;
+  }
+
+  .logo {
+    display: block;
+    float: right;
+  }
+
+  .styled-table {
+    border-collapse: collapse;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    min-width: 500px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .styled-table thead tr {
+    background-color: #3eb970;
+    color: #ffffff;
+    text-align: left;
+  }
+
+  .styled-table th,
+  .styled-table td {
+      padding: 12px 15px;
+      font-weight: bold;
+      min-width: 100px;
+  }
+  .styled-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+  }
+
+  .styled-table tbody tr:nth-of-type(even) {
+      background-color: #f3f3f3;
+  }
+
+  .styled-table tbody tr:last-of-type {
+      border-bottom: 2px solid #3eb970;
+  }
+
+  .styled-table tbody tr.problem-row {
+    font-weight: bold;
+    color: #0eb178;
+  }
+
+  .styled-table tbody tr.info-row {
+    font-weight: bold;
+    color: #ccdd41;
+  }
+
+  .container{
+    display: flex;
+    justify-content: center;
+    margin: 25px 0;
+  }
+</style>
+</head>
+<body >
+  <div class="logo-container">
+    <img class= "logo" src="https://www.piacere-project.eu/sites/d8piacere/files/PIACERE_logo_original_S_20221019.png">
+  </div>
+  <div class="center header">
+    <h1>IaC Scan Runner results</h1>
+  </div>
+  <div class="container">
+    <table class="styled-table child">
+      <thead>
+        <tr>
+          <th>Aspect</th>
+          <th>Measure</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>Archive name</th>
+          <th>CHANGE_ARCHIVE_NAME</th>
+        </tr>
+        <tr>
+          <th>Run Start Time</th>
+          <th>CHANGE_RUN_START_TIME</th>
+        </tr>
+        <tr>
+          <th>Scan time (seconds)</th>
+          <th>CHANGE_START_TIME</th>
+        </tr>
+        <tr>
+          <th>Final verdict</th>
+          <th>CHANGE_FINAL_VERDICT</th>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <table class="styled-table">
+    <thead>
+        <tr>
+            <th>Scan</th>
+            <th>Status</th>
+            <th>Files</th>
+            <th>log</th>
+        </tr>
+    </thead>
+    <tbody>
+        CHANGE_TABLE_CONTENT
+    </tbody>
+</table>
+</body>
+</html>
