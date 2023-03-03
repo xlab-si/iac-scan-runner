@@ -46,7 +46,7 @@ async def get_checks(keyword: Optional[str] = None, enabled: Optional[bool] = No
 
 
 @router.put("/default/checks/{check_name}/enable", summary="Enable check for running", responses={200: {}, 400: {"model": str}})
-async def put_enable_checks(check_name: str, project_id: Optional[str]) -> JSONResponse:
+async def put_enable_checks(check_name: str) -> JSONResponse:
     """
     Enable check for running
     \f
@@ -55,14 +55,14 @@ async def put_enable_checks(check_name: str, project_id: Optional[str]) -> JSONR
     :return: JSONResponse object (with status code 200 or 400)
     """
     try:
-        return JSONResponse(status_code=status.HTTP_200_OK, content=scan_runner.enable_check(check_name, project_id))
+        return JSONResponse(status_code=status.HTTP_200_OK, content=scan_runner.enable_check(check_name, ""))
     except Exception as e:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))
 
 
 @router.put("/default/checks/{check_name}/disable", summary="Disable check for running",
             responses={200: {}, 400: {"model": str}})
-async def put_disable_checks(check_name: str, project_id: Optional[str]) -> JSONResponse:
+async def put_disable_checks(check_name: str) -> JSONResponse:
     """
     Disable check for running
     \f
@@ -71,7 +71,7 @@ async def put_disable_checks(check_name: str, project_id: Optional[str]) -> JSON
     :return: JSONResponse object (with status code 200 or 400)
     """
     try:
-        return JSONResponse(status_code=status.HTTP_200_OK, content=scan_runner.disable_check(check_name, project_id))
+        return JSONResponse(status_code=status.HTTP_200_OK, content=scan_runner.disable_check(check_name, ""))
     except Exception as e:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))
 
