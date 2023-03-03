@@ -8,7 +8,7 @@ import yaml
 
 from iac_scan_runner.object_store import app
 from iac_scan_runner.object_store import scan_runner
-from iac_scan_runner.routers import openapi as open_api, scan, checks, project
+from iac_scan_runner.routers import openapi as open_api, checks, project
 from iac_scan_runner.routers.openapi import openapi_yaml
 
 cli = typer.Typer(help="IaC Scan Runner CLI", context_settings={"help_option_names": ["-h", "--help"]})
@@ -69,9 +69,8 @@ def run():
 
         # add routers
         app.include_router(open_api.router)
-        app.include_router(project.router)
-        app.include_router(scan.router)
         app.include_router(checks.router)
+        app.include_router(project.router)
 
         # run app
         uvicorn.run(app)
