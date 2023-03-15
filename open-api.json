@@ -1,0 +1,985 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "IaC Scan Runner REST API",
+    "description": "Service that scans your Infrastructure as Code for common vulnerabilities",
+    "version": "0.3.0"
+  },
+  "paths": {
+    "/default/checks": {
+      "get": {
+        "tags": [
+          "Checks"
+        ],
+        "summary": "Retrieve and filter checks",
+        "description": "Retrieve and filter checks\n",
+        "operationId": "get_checks_default_checks_get",
+        "parameters": [
+          {
+            "required": false,
+            "schema": {
+              "title": "Keyword",
+              "type": "string"
+            },
+            "name": "keyword",
+            "in": "query"
+          },
+          {
+            "required": false,
+            "schema": {
+              "title": "Enabled",
+              "type": "boolean"
+            },
+            "name": "enabled",
+            "in": "query"
+          },
+          {
+            "required": false,
+            "schema": {
+              "title": "Configured",
+              "type": "boolean"
+            },
+            "name": "configured",
+            "in": "query"
+          },
+          {
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/CheckTargetEntityType"
+            },
+            "name": "target_entity_type",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response 400 Get Checks Default Checks Get",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/default/checks/{check_name}/enable": {
+      "put": {
+        "tags": [
+          "Checks"
+        ],
+        "summary": "Enable check for running",
+        "description": "Enable check for running\n",
+        "operationId": "put_enable_checks_default_checks__check_name__enable_put",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Check Name",
+              "type": "string"
+            },
+            "name": "check_name",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            },
+            "name": "project_id",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response 400 Put Enable Checks Default Checks  Check Name  Enable Put",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/default/checks/{check_name}/disable": {
+      "put": {
+        "tags": [
+          "Checks"
+        ],
+        "summary": "Disable check for running",
+        "description": "Disable check for running\n",
+        "operationId": "put_disable_checks_default_checks__check_name__disable_put",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Check Name",
+              "type": "string"
+            },
+            "name": "check_name",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            },
+            "name": "project_id",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response 400 Put Disable Checks Default Checks  Check Name  Disable Put",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/default/checks/{check_name}/configure": {
+      "put": {
+        "tags": [
+          "Checks"
+        ],
+        "summary": "Configure check for running",
+        "description": "Configure check for running\n",
+        "operationId": "put_configure_check_default_checks__check_name__configure_put",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Check Name",
+              "type": "string"
+            },
+            "name": "check_name",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_put_configure_check_default_checks__check_name__configure_put"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response 400 Put Configure Check Default Checks  Check Name  Configure Put",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/default/scan": {
+      "post": {
+        "tags": [
+          "Checks"
+        ],
+        "summary": "Initiate IaC scan",
+        "description": "Run IaC scan\n",
+        "operationId": "post_scan_default_scan_post",
+        "parameters": [
+          {
+            "required": false,
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/ScanResponseType"
+                }
+              ],
+              "default": "json"
+            },
+            "name": "scan_response_type",
+            "in": "query"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_post_scan_default_scan_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response 400 Post Scan Default Scan Post",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/project": {
+      "post": {
+        "tags": [
+          "Project"
+        ],
+        "summary": "Generate new scan project for given user as creator",
+        "description": "Create a new project which might contain multiple scan runs\n",
+        "operationId": "post_new_project_project_post",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Creator Id",
+              "type": "string"
+            },
+            "name": "creator_id",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response 400 Post New Project Project Post",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/project/scan": {
+      "post": {
+        "tags": [
+          "Project"
+        ],
+        "summary": "Initiate IaC scan",
+        "description": "Run IaC scan\n",
+        "operationId": "post_scan_project_scan_post",
+        "parameters": [
+          {
+            "required": false,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            },
+            "name": "project_id",
+            "in": "query"
+          },
+          {
+            "required": false,
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/ScanResponseType"
+                }
+              ],
+              "default": "json"
+            },
+            "name": "scan_response_type",
+            "in": "query"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_post_scan_project_scan_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response 400 Post Scan Project Scan Post",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/project/results": {
+      "get": {
+        "tags": [
+          "Project"
+        ],
+        "summary": "Retrieve particular scan result by given uuid",
+        "description": "Retrieve a particular scan result\n",
+        "operationId": "get_scan_result_project_results_get",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Uuid",
+              "type": "string"
+            },
+            "name": "uuid",
+            "in": "query"
+          },
+          {
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            },
+            "name": "project_id",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response 400 Get Scan Result Project Results Get",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/project/results/{uuid}": {
+      "delete": {
+        "tags": [
+          "Project"
+        ],
+        "summary": "Delete particular scan result by given uuid",
+        "description": "Delete a particular scan result\n",
+        "operationId": "delete_scan_result_project_results__uuid__delete",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Uuid",
+              "type": "string"
+            },
+            "name": "uuid",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response 400 Delete Scan Result Project Results  Uuid  Delete",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/project/checks": {
+      "get": {
+        "tags": [
+          "Project"
+        ],
+        "summary": "Retrieve and filter checks",
+        "description": "Retrieve and filter checks\n",
+        "operationId": "get_checks_project_checks_get",
+        "parameters": [
+          {
+            "required": false,
+            "schema": {
+              "title": "Keyword",
+              "type": "string"
+            },
+            "name": "keyword",
+            "in": "query"
+          },
+          {
+            "required": false,
+            "schema": {
+              "title": "Enabled",
+              "type": "boolean"
+            },
+            "name": "enabled",
+            "in": "query"
+          },
+          {
+            "required": false,
+            "schema": {
+              "title": "Configured",
+              "type": "boolean"
+            },
+            "name": "configured",
+            "in": "query"
+          },
+          {
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/CheckTargetEntityType"
+            },
+            "name": "target_entity_type",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response 400 Get Checks Project Checks Get",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/project/checks/{check_name}/enable": {
+      "put": {
+        "tags": [
+          "Project"
+        ],
+        "summary": "Enable execution of particular check for a specific project",
+        "description": "Enable execution of particular check for a specific project\n",
+        "operationId": "put_enable_checks_project_checks__check_name__enable_put",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Check Name",
+              "type": "string"
+            },
+            "name": "check_name",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            },
+            "name": "project_id",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response 400 Put Enable Checks Project Checks  Check Name  Enable Put",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/project/checks/{check_name}/disable": {
+      "put": {
+        "tags": [
+          "Project"
+        ],
+        "summary": "Disable execution of particular check for a specific project",
+        "description": "Disable execution of particular check for a specific project\n",
+        "operationId": "put_disable_checks_project_checks__check_name__disable_put",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Check Name",
+              "type": "string"
+            },
+            "name": "check_name",
+            "in": "path"
+          },
+          {
+            "required": true,
+            "schema": {
+              "title": "Project Id",
+              "type": "string"
+            },
+            "name": "project_id",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response 400 Put Disable Checks Project Checks  Check Name  Disable Put",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/project/checks/{check_name}/configure": {
+      "put": {
+        "tags": [
+          "Project"
+        ],
+        "summary": "Configure execution of particular check for a specific project",
+        "description": "Configure execution of particular check for a specific project\n",
+        "operationId": "put_configure_check_project_checks__check_name__configure_put",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Check Name",
+              "type": "string"
+            },
+            "name": "check_name",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_put_configure_check_project_checks__check_name__configure_put"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Response 400 Put Configure Check Project Checks  Check Name  Configure Put",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Body_post_scan_default_scan_post": {
+        "title": "Body_post_scan_default_scan_post",
+        "type": "object",
+        "properties": {
+          "checks": {
+            "title": "Checks",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of selected checks (by their unique names) to be executed on IaC"
+          },
+          "iac": {
+            "title": "Iac",
+            "type": "string",
+            "description": "IaC file (zip or tar compressed) that will be scanned",
+            "format": "binary"
+          }
+        }
+      },
+      "Body_post_scan_project_scan_post": {
+        "title": "Body_post_scan_project_scan_post",
+        "type": "object",
+        "properties": {
+          "checks": {
+            "title": "Checks",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of selected checks (by their unique names) to be executed on IaC"
+          },
+          "iac": {
+            "title": "Iac",
+            "type": "string",
+            "description": "IaC file (zip or tar compressed) that will be scanned",
+            "format": "binary"
+          }
+        }
+      },
+      "Body_put_configure_check_default_checks__check_name__configure_put": {
+        "title": "Body_put_configure_check_default_checks__check_name__configure_put",
+        "type": "object",
+        "properties": {
+          "config_file": {
+            "title": "Config File",
+            "type": "string",
+            "description": "Check configuration file",
+            "format": "binary"
+          },
+          "secret": {
+            "title": "Secret",
+            "type": "string",
+            "description": "Secret needed for configuration (e.g., API key, token, password, cloud credentials, etc.)",
+            "format": "password",
+            "writeOnly": true
+          }
+        }
+      },
+      "Body_put_configure_check_project_checks__check_name__configure_put": {
+        "title": "Body_put_configure_check_project_checks__check_name__configure_put",
+        "type": "object",
+        "properties": {
+          "config_file": {
+            "title": "Config File",
+            "type": "string",
+            "description": "Check configuration file",
+            "format": "binary"
+          },
+          "secret": {
+            "title": "Secret",
+            "type": "string",
+            "description": "Secret needed for configuration (e.g., API key, token, password, cloud credentials, etc.)",
+            "format": "password",
+            "writeOnly": true
+          }
+        }
+      },
+      "CheckTargetEntityType": {
+        "title": "CheckTargetEntityType",
+        "enum": [
+          "IaC",
+          "component",
+          "IaC and component"
+        ],
+        "type": "string",
+        "description": "An enumeration."
+      },
+      "HTTPValidationError": {
+        "title": "HTTPValidationError",
+        "type": "object",
+        "properties": {
+          "detail": {
+            "title": "Detail",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            }
+          }
+        }
+      },
+      "ScanResponseType": {
+        "title": "ScanResponseType",
+        "enum": [
+          "json",
+          "html"
+        ],
+        "type": "string",
+        "description": "An enumeration."
+      },
+      "ValidationError": {
+        "title": "ValidationError",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "loc": {
+            "title": "Location",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Checks",
+      "description": "***Depricated***"
+    },
+    {
+      "name": "Project"
+    }
+  ]
+}
