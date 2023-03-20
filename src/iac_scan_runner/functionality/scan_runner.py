@@ -177,7 +177,10 @@ class ScanRunner:
             if project_id:
                 project_temp = self.scan_project.load_project(project_id)
                 if project_temp:
-                    self.project_checklist = project_temp["checklist"]
+                    if len(project_temp["checklist"]) == 0:
+                        self.project_checklist = None
+                    else:
+                        self.project_checklist = project_temp["checklist"]
                     config_temp = self.project_config.load_config(project_temp["active_config"])
                     if config_temp:
                         self.parameters = config_temp["parameters"]
