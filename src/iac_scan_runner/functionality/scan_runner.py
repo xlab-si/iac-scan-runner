@@ -417,3 +417,14 @@ class ScanRunner:
             self.project_checklist = check_list
         else:
             self.project_checklist = None
+
+    def set_scan_runner_check(self, check_list):
+        """
+        Set enabled statuses
+        """
+        self.project_checklist = check_list
+        for check in self.iac_checks.values():
+            if check.name in check_list:
+                check.enabled = True
+            else:
+                check.enabled = False
