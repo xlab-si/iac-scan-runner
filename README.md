@@ -77,12 +77,21 @@ $ python3 -m venv .venv && . .venv/bin/activate
 To run locally from source:
 
 ```console
+# Export env variables 
+export MONGODB_CONNECTION_STRING=mongodb://localhost:27017
+export SCAN_PERSISTENCE=enabled
+export USER_MANAGEMENT=enabled
+
+# Setup MongoDB
+$ docker run --name mongodb -p 27017:27017 mongo
+
 # install prerequisites
 $ python3 -m venv .venv && . .venv/bin/activate
 (.venv) $ pip install -r requirements.txt
 (.venv) $ ./install-checks.sh
 # run IaC Scan Runner REST API (add --reload flag to apply code changes on the way)
-(.venv) $ uvicorn src.iac_scan_runner.api:app
+(.venv) $ cd src
+(.venv) $ uvicorn iac_scan_runner.api:app
 ```
 
 ## Usage and examples
@@ -104,56 +113,40 @@ In this example, we will use curl for calling API endpoints.
 
 ```console
 curl -X 'POST' \
-  'http://127.0.0.1:8000/project?creator_id=test' \
+  'http://0.0.0.0/project?creator_id=test' \
   -H 'accept: application/json' \
   -d ''
 ```
+
+project id will be returned to us. For this example project id is 1e7b2a91-2896-40fd-8d53-83db56088026.
 
 2. Now check if project is created by listing all existing projects.
 
 ```console
 curl -X 'GET' \
-  'http://127.0.0.1:8000/project' \
+  'http://0.0.0.0/project/checks?project_id=1e7b2a91-2896-40fd-8d53-83db56088026' \
   -H 'accept: application/json'
 ```
 
-3. For example, lets say that we only want to check if file has any git leaks want to check for potential security
-   leaks in our terraform files. We need to enable git-leaks and tfsec scans.
+3. For example, let say we want to initiate all check expect ansible-lint. Let's disable it.
 
 ```console
 curl -X 'PUT' \
-  'http://127.0.0.1:8000/checks/git-leaks/enable?project_id=df833571-55d0-4396-8d21-a0fa08b44a06' \
-  -H 'accept: application/json'
-```
-
-```console
-curl -X 'PUT' \
-  'http://127.0.0.1:8000/checks/tfsec/enable?project_id=df833571-55d0-4396-8d21-a0fa08b44a06' \
+  'http://0.0.0.0/project/checks/ansible-lint/disable?project_id=1e7b2a91-2896-40fd-8d53-83db56088026' \
   -H 'accept: application/json'
 ```
 
 4. Now when project is configured, we can simply choose files that we want to scan and zip them. For IaC-Scan-Runner to
    work files are expected to be a compressed archives (usually zip files). In this case response type will be json
-   , but it is possible to change it to html.
+   , but it is possible to change it to html.Please change YOUR.zip to path of your file.
 
 ```console
 curl -X 'POST' \
-  'http://127.0.0.1:8000/scan?project_id=df833571-55d0-4396-8d21-a0fa08b44a06&scan_response_type=json' \
+  'http://0.0.0.0/project/scan?project_id=1e7b2a91-2896-40fd-8d53-83db56088026&scan_response_type=json' \
   -H 'accept: application/json' \
   -H 'Content-Type: multipart/form-data' \
   -F 'checks=' \
-  -F 'iac=@example.zip;type=application/zip'
-```
-
-Same can be achieved by calling /scan endpoint and define check list.
-
-```console
-curl -X 'POST' \
-  'http://127.0.0.1:8000/scan?scan_response_type=json' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: multipart/form-data' \
-  -F 'checks=tfsec,git-leaks' \
-  -F 'iac=@example.zip;type=application/zip'
+  -F 'iac=@YOUR.zip;type=application/zip'
 ```
 
 That is it.
