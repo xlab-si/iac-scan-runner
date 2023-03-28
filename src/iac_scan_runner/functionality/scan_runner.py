@@ -56,7 +56,6 @@ class ScanRunner:
         self.compatibility_matrix = Compatibility()
         self.results_summary = ResultsSummary()
         self.archive_name = ""
-        self.project_checklist = None
 
         self.parameters = dict()
 
@@ -66,9 +65,9 @@ class ScanRunner:
             self.persistence_enabled = False
 
         self.results_persistence = ResultsPersistence()
-
         self.scan_project = ScanProject()
         self.project_config = ProjectConfig()
+        self.project_checklist = None
 
         if os.environ.get("USER_MANAGEMENT") == "enabled":
             self.users_enabled = True
@@ -338,7 +337,7 @@ class ScanRunner:
     def disable_check(self, check_name: str, project_id: str) -> str:
         """
         Disables the specified check and makes it unavailable to be used
-        :param check_name: Name of the checkž
+        :param check_name: Name of the check
         :param project_id: Project identification
         :return: String with result for disabling check
         """
@@ -406,3 +405,15 @@ class ScanRunner:
         scan_output = self._run_checks(checks, project_id, scan_response_type)
         self._cleanup_iac_dir()
         return scan_output
+
+    def init_checklist(self):
+        """
+        Initiate list of enabled check lists.
+        """
+        check_list = []
+        if os.environ.get("SCAN_PERSISTENCE") == "enabled":
+            for scan in self.iac_checks.values():
+                check_list.append(scan.name)
+            self.project_checklist = check_list
+        else:
+            self.project_checklist = None
