@@ -77,12 +77,21 @@ $ python3 -m venv .venv && . .venv/bin/activate
 To run locally from source:
 
 ```console
+# Export env variables 
+export MONGODB_CONNECTION_STRING=mongodb://localhost:27017
+export SCAN_PERSISTENCE=enabled
+export USER_MANAGEMENT=enabled
+
+# Setup MongoDB
+$ docker run --name mongodb -p 27017:27017 mongo
+
 # install prerequisites
 $ python3 -m venv .venv && . .venv/bin/activate
 (.venv) $ pip install -r requirements.txt
 (.venv) $ ./install-checks.sh
 # run IaC Scan Runner REST API (add --reload flag to apply code changes on the way)
-(.venv) $ uvicorn src.iac_scan_runner.api:app
+(.venv) $ cd src
+(.venv) $ uvicorn iac_scan_runner.api:app
 ```
 
 ## Usage and examples
