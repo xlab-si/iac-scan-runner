@@ -26,8 +26,9 @@ async def post_new_project(creator_id: str) -> JSONResponse:
     """
     try:
         scan_project = ScanProject()
-
-        pid = scan_project.new_project(creator_id, "")
+        scan_runner.init_checks()
+        scan_runner.init_checklist()
+        pid = scan_project.new_project(creator_id, "", scan_runner.project_checklist)
 
         return JSONResponse(status_code=status.HTTP_200_OK, content=pid)
     except Exception as e:
