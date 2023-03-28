@@ -110,7 +110,7 @@ async def delete_scan_result(uuid: str) -> JSONResponse:
 
 
 @router.get("/checks", summary="Retrieve and filter checks", responses={200: {}, 400: {"model": str}})
-async def get_checks(keyword: Optional[str] = None, enabled: Optional[bool] = None, configured: Optional[bool] = None,
+async def get_checks(project_id:str, keyword: Optional[str] = None, enabled: Optional[bool] = None, configured: Optional[bool] = None,
                      target_entity_type: Optional[CheckTargetEntityType] = None) -> JSONResponse:
     """
     Retrieve and filter checks
@@ -123,6 +123,8 @@ async def get_checks(keyword: Optional[str] = None, enabled: Optional[bool] = No
     """
     try:
         filtered_checks = scan_runner.iac_checks.values()
+        check_list = scan_runner.scan_project.get_project_check_list(project_id)
+        scan_runner.set_scan_runner_check(check_list)
         if keyword is not None:
             filtered_checks = filter(
                 lambda check: keyword.lower() in check.name.lower() or keyword.lower() in check.description.lower(),
