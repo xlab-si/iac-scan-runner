@@ -10,6 +10,7 @@ app.add_middleware(ContentSizeLimitMiddleware, max_content_size=52428800)
 
 # initialize checks
 scan_runner.init_checks()
+scan_runner.init_checklist()
 
 # Include routes
 app.include_router(openapi.router)
