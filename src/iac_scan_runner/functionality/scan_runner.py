@@ -319,6 +319,7 @@ class ScanRunner:
         if project_id and self.users_enabled:
             if check_name in self.iac_checks.keys():
                 self.scan_project.add_check(project_id, check_name)
+                self.iac_checks[check_name].enabled = True
                 active_project = self.scan_project.load_project(project_id)
                 enabled_checks = active_project["checklist"]
             else:
@@ -343,6 +344,7 @@ class ScanRunner:
         """
         if project_id and self.users_enabled:
             self.scan_project.remove_check(project_id, check_name)
+            self.iac_checks[check_name].enabled = False
             active_project = self.scan_project.load_project(project_id)
             enabled_checks = active_project["checklist"]
         else:
