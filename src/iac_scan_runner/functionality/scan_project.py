@@ -46,11 +46,12 @@ class ScanProject:
         if self.mycol is not None:
             self.mycol.insert_one(parse_json(result))
 
-    def new_project(self, creator_id: str, active_config: str):
+    def new_project(self, creator_id: str, active_config: str, check_list: list = []):
 
         """Inserts new project into database
         :param creator_id: Identifier of project creator
-        :param active_config: Identifier of currently active project configuration                
+        :param active_config: Identifier of currently active project configuration
+        :param check_list: list of enabled checks
         """
         project_json = dict()
         project_json["project_id"] = str(uuid.uuid4())
@@ -63,7 +64,7 @@ class ScanProject:
         else:
             project_json["active_config"] = ""
 
-        project_json["checklist"] = []
+        project_json["checklist"] = check_list
 
         if self.connection_problem:
             self.connect_db()
@@ -197,3 +198,11 @@ class ScanProject:
                 self.mycol.find_one_and_update(myquery, new_value, upsert=True)
             except Exception as e:
                 print(str(e))
+
+    def get_project_check_list(self, project_id):
+        """Get project check list
+
+        :param project_id: Identifier of a scan project
+        """
+        query = {"project_id": project_id}
+        return self.mycol.find_one(query, {"checklist": 1, "_id": 0})["checklist"]
