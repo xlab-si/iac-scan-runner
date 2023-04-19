@@ -83,9 +83,10 @@ class ScanProject:
 
         if self.mycol is not None:
             myquery = {"project_id": project_id}
-            mydoc = self.mycol.find(myquery)
-            for x in mydoc:
-                return x
+            mydoc = self.mycol.find_one(myquery)
+            if mydoc is None:
+                raise Exception("Project id does not exist")
+            return mydoc
 
     def set_config(self, project_id: str, config_id: str):
 
@@ -205,4 +206,7 @@ class ScanProject:
         :param project_id: Identifier of a scan project
         """
         query = {"project_id": project_id}
-        return self.mycol.find_one(query, {"checklist": 1, "_id": 0})["checklist"]
+        result = self.mycol.find_one(query, {"checklist": 1, "_id": 0})
+        if result is None:
+            raise Exception("Project id does not exist")
+        return result["checklist"]

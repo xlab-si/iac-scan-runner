@@ -141,8 +141,8 @@ class ResultsPersistence:
 
         if self.mycol is not None:
             myquery = {"project_id": project_id}
-            cursor = self.mycol.find(myquery)
-            output = ""
-            for doc in cursor:
-                output = output + str(doc)
-            return output
+            data = self.mycol.find_one(myquery)
+            if data is None:
+                raise Exception("Project id does not exist or there are no scan results")
+            return data
+
