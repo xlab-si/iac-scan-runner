@@ -192,7 +192,7 @@ class ScanProject:
         if self.mycol is not None:
             current_project = self.load_project(project_id)
             current_list = current_project["checklist"]
-            current_list.remove(check)
+            current_list.remove(check) if check in current_list else None
             myquery = {"project_id": project_id}
             new_value = {"$set": {"checklist": current_list}}
             try:
