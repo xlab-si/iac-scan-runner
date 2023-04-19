@@ -341,6 +341,8 @@ class ScanRunner:
         :param project_id: Project identification
         :return: String with result for disabling check
         """
+        if check_name not in self.iac_checks.keys():
+            raise Exception(f"Nonexistent check: {check_name}")
         if project_id and self.users_enabled:
             self.scan_project.remove_check(project_id, check_name)
             self.iac_checks[check_name].enabled = False
