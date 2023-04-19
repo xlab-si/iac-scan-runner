@@ -2,7 +2,7 @@
 
 Service that scans your Infrastructure as Code for common vulnerabilities.
 
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/xlab-si/iac-scan-runner/Build%20and%20publish?label=ci%2Fcd)](https://github.com/xlab-si/iac-scan-runner/actions)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/xlab-si/iac-scan-runner/ci_cd.yml?branch=main)](https://github.com/xlab-si/iac-scan-runner/actions)
 [![Docker Image Version (latest by date)](https://img.shields.io/docker/v/xscanner/runner?color=blue&label=docker)](https://hub.docker.com/r/xscanner/runner)
 [![PyPI](https://img.shields.io/pypi/v/iac-scan-runner)](https://pypi.org/project/iac-scan-runner/)
 [![Test PyPI](https://img.shields.io/badge/test%20pypi-dev%20version-blueviolet)](https://test.pypi.org/project/iac-scan-runner/)
