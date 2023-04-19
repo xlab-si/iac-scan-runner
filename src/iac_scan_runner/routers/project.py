@@ -36,8 +36,7 @@ async def post_new_project(creator_id: str) -> JSONResponse:
 
 
 @router.post("/scan", summary="Initiate IaC scan", responses={200: {}, 400: {"model": str}})
-async def post_scan(form_data: ScanModel = Depends(ScanModel.as_form),
-                    project_id: Optional[str] = None,
+async def post_scan(project_id: str, form_data: ScanModel = Depends(ScanModel.as_form),
                     scan_response_type: ScanResponseType = ScanResponseType.json) -> Union[JSONResponse, HTMLResponse]:
     """
     Run IaC scan
