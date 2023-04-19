@@ -47,15 +47,7 @@ async def post_scan(project_id: str, form_data: ScanModel = Depends(ScanModel.as
     :return: JSONResponse or HTMLResponse object (with status code 200 or 400)
     """
     try:
-        if not form_data.checks or form_data.checks == ['']:
-            checks = []
-        else:
-            checks = list(set(form_data.checks[0].split(",")))
-
-        if not project_id:
-            project_id = ""
-
-        scan_output = scan_runner.scan_iac(form_data.iac, project_id, checks, scan_response_type)
+        scan_output = scan_runner.scan_iac(form_data.iac, project_id, [], scan_response_type)
         if scan_response_type == ScanResponseType.html:
             return HTMLResponse(status_code=status.HTTP_200_OK, content=scan_output)
         return JSONResponse(status_code=status.HTTP_200_OK, content=scan_output)
@@ -97,7 +89,6 @@ async def delete_scan_result(uuid: str) -> JSONResponse:
     """
     try:
         results_persistence = ResultsPersistence()
-
         result = results_persistence.show_result(uuid)
         if not result is None:
             results_persistence.delete_result(uuid)
@@ -109,11 +100,13 @@ async def delete_scan_result(uuid: str) -> JSONResponse:
 
 
 @router.get("/checks", summary="Retrieve and filter checks", responses={200: {}, 400: {"model": str}})
-async def get_checks(project_id:str, keyword: Optional[str] = None, enabled: Optional[bool] = None, configured: Optional[bool] = None,
+async def get_checks(project_id: str, keyword: Optional[str] = None, enabled: Optional[bool] = None,
+                     configured: Optional[bool] = None,
                      target_entity_type: Optional[CheckTargetEntityType] = None) -> JSONResponse:
     """
     Retrieve and filter checks
     \f
+    :param project_id: Identifier of a project
     :param keyword: substring for filtering
     :param enabled: bool saying whether check is enabled or disabled
     :param configured: bool saying whether check is configured or not
@@ -176,12 +169,13 @@ async def put_disable_checks(check_name: str, project_id: Optional[str]) -> JSON
 
 @router.put("/checks/{check_name}/configure", summary="Configure execution of particular check for a specific project",
             responses={200: {}, 400: {"model": str}})
-async def put_configure_check(check_name: str,
+async def put_configure_check(project_id: str, check_name: str,
                               form_data: CheckConfigurationModel = Depends(
                                   CheckConfigurationModel.as_form)) -> JSONResponse:
     """
     Configure execution of particular check for a specific project
     \f
+    :param project_id: Identifier of a project
     :param check_name: Unique name of check to be configured
     :param form_data: Form data model
     :return: JSONResponse object (with status code 200 or 400)
