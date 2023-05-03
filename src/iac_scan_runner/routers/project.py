@@ -12,7 +12,7 @@ from iac_scan_runner.model.ConfigureCheck import CheckConfigurationModel
 from iac_scan_runner.model.Scan import ScanModel
 from iac_scan_runner.object_store import scan_runner
 
-router = APIRouter(tags=["Project"], prefix="/project")
+router = APIRouter(tags=["Projects"], prefix="/projects")
 
 
 @router.post("", summary="Generate new scan project for given user as creator",
@@ -35,7 +35,7 @@ async def post_new_project(creator_id: str) -> JSONResponse:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))
 
 
-@router.post("/scan", summary="Initiate IaC scan", responses={200: {}, 400: {"model": str}})
+@router.post("/{project_id}/scan", summary="Initiate IaC scan", responses={200: {}, 400: {"model": str}})
 async def post_scan(project_id: str, form_data: ScanModel = Depends(ScanModel.as_form),
                     scan_response_type: ScanResponseType = ScanResponseType.json) -> Union[JSONResponse, HTMLResponse]:
     """
@@ -55,7 +55,7 @@ async def post_scan(project_id: str, form_data: ScanModel = Depends(ScanModel.as
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))
 
 
-@router.get("/results", summary="Retrieve particular scan result by given uuid",
+@router.get("/{project_id}/results", summary="Retrieve particular scan result by given uuid",
             responses={200: {}, 400: {"model": str}})
 async def get_scan_result(uuid: Optional[str], project_id: Optional[str]) -> JSONResponse:
     """
@@ -99,7 +99,7 @@ async def delete_scan_result(uuid: str) -> JSONResponse:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))
 
 
-@router.get("/checks", summary="Retrieve and filter checks", responses={200: {}, 400: {"model": str}})
+@router.get("/{project_id}/checks", summary="Retrieve and filter checks", responses={200: {}, 400: {"model": str}})
 async def get_checks(project_id: str, keyword: Optional[str] = None, enabled: Optional[bool] = None,
                      configured: Optional[bool] = None,
                      target_entity_type: Optional[CheckTargetEntityType] = None) -> JSONResponse:
@@ -135,7 +135,7 @@ async def get_checks(project_id: str, keyword: Optional[str] = None, enabled: Op
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))
 
 
-@router.put("/checks/{check_name}/enable", summary="Enable execution of particular check for a specific project",
+@router.put("/{project_id}/checks/{check_name}/enable", summary="Enable execution of particular check for a specific project",
             responses={200: {}, 400: {"model": str}})
 async def put_enable_checks(check_name: str, project_id: Optional[str]) -> JSONResponse:
     """
@@ -151,9 +151,9 @@ async def put_enable_checks(check_name: str, project_id: Optional[str]) -> JSONR
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))
 
 
-@router.put("/checks/{check_name}/disable", summary="Disable execution of particular check for a specific project",
+@router.put("/{project_id}/checks/{check_name}/disable", summary="Disable execution of particular check for a specific project",
             responses={200: {}, 400: {"model": str}})
-async def put_disable_checks(check_name: str, project_id: Optional[str]) -> JSONResponse:
+async def put_disable_checks(project_id: str, check_name: str) -> JSONResponse:
     """
     Disable execution of particular check for a specific project
     \f
@@ -167,7 +167,7 @@ async def put_disable_checks(check_name: str, project_id: Optional[str]) -> JSON
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))
 
 
-@router.put("/checks/{check_name}/configure", summary="Configure execution of particular check for a specific project",
+@router.put("/{project_id}/checks/{check_name}/configure", summary="Configure execution of particular check for a specific project",
             responses={200: {}, 400: {"model": str}})
 async def put_configure_check(project_id: str, check_name: str,
                               form_data: CheckConfigurationModel = Depends(
