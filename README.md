@@ -120,32 +120,24 @@ curl -X 'POST' \
 
 project id will be returned to us. For this example project id is 1e7b2a91-2896-40fd-8d53-83db56088026.
 
-2. Now check if project is created by listing all existing projects.
 
-```console
-curl -X 'GET' \
-  'http://0.0.0.0/project/checks?project_id=1e7b2a91-2896-40fd-8d53-83db56088026' \
-  -H 'accept: application/json'
-```
-
-3. For example, let say we want to initiate all check expect ansible-lint. Let's disable it.
+2. For example, let say we want to initiate all check expect ansible-lint. Let's disable it.
 
 ```console
 curl -X 'PUT' \
-  'http://0.0.0.0/project/checks/ansible-lint/disable?project_id=1e7b2a91-2896-40fd-8d53-83db56088026' \
+  'http://0.0.0.0:8000/projects/1e7b2a91-2896-40fd-8d53-83db56088026/checks/ansible-lint/disable' \
   -H 'accept: application/json'
 ```
 
-4. Now when project is configured, we can simply choose files that we want to scan and zip them. For IaC-Scan-Runner to
+3. Now when project is configured, we can simply choose files that we want to scan and zip them. For IaC-Scan-Runner to
    work files are expected to be a compressed archives (usually zip files). In this case response type will be json
    , but it is possible to change it to html.Please change YOUR.zip to path of your file.
 
 ```console
 curl -X 'POST' \
-  'http://0.0.0.0/project/scan?project_id=1e7b2a91-2896-40fd-8d53-83db56088026&scan_response_type=json' \
+  'http://0.0.0.0:8000/projects/1e7b2a91-2896-40fd-8d53-83db56088026/scan?scan_response_type=json' \
   -H 'accept: application/json' \
   -H 'Content-Type: multipart/form-data' \
-  -F 'checks=' \
   -F 'iac=@YOUR.zip;type=application/zip'
 ```
 
