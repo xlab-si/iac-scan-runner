@@ -7,7 +7,7 @@ from fastapi.responses import JSONResponse, HTMLResponse
 from iac_scan_runner.enums.check_target_entity_type import CheckTargetEntityType
 from iac_scan_runner.enums.scan_response_type import ScanResponseType
 from iac_scan_runner.model.ConfigureCheck import CheckConfigurationModel
-from iac_scan_runner.model.Scan import ScanModel
+from iac_scan_runner.model.Scan import ScanModel, ScanModelDeprecated
 from iac_scan_runner.object_store import scan_runner
 
 router = APIRouter(tags=["Checks"])
@@ -96,7 +96,7 @@ async def put_configure_check(check_name: str,
 
 
 @router.post("/default/scan", summary="Initiate IaC scan", responses={200: {}, 400: {"model": str}})
-async def post_scan(form_data: ScanModel = Depends(ScanModel.as_form),
+async def post_scan(form_data: ScanModel = Depends(ScanModelDeprecated.as_form),
                     scan_response_type: ScanResponseType = ScanResponseType.json) -> Union[JSONResponse, HTMLResponse]:
     """
     Run IaC scan
