@@ -1,0 +1,12 @@
+[flake8]
+max-line-length = 120
+max-doc-length = 120
+
+exclude = .venv/
+
+# flake8-import-order
+application-import-names = src
+application-package-names =
+import-order-style = pep8
+
+ignore = D100,D104,D107,D205,D301
