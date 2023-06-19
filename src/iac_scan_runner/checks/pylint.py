@@ -23,7 +23,7 @@ class PylintCheck(Check):
 
     def run(self, directory: str) -> CheckOutput:
         if self._config_filename:
-            return run_command(f'{env.PYLINT_CHECK_PATH} --rcfile {env.CONFIG_DIR}/{self._config_filename} .',
+            return run_command(f'{env.PYLINT_CHECK_PATH} --rcfile {env.CONFIG_DIR}/{self._config_filename} *.py',
                                directory)
         else:
-            return run_command(f'{env.PYLINT_CHECK_PATH} .', directory)
+            return run_command(f'{env.PYLINT_CHECK_PATH} *.py', directory)
