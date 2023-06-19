@@ -5,6 +5,7 @@ from iac_scan_runner.interface.check import Check
 from iac_scan_runner.functionality.check_output import CheckOutput
 from iac_scan_runner.enums.check_target_entity_type import CheckTargetEntityType
 from iac_scan_runner.utils import run_command
+from pathlib import Path
 
 
 class ShellCheck(Check):
@@ -17,7 +18,7 @@ class ShellCheck(Check):
         rc = 0
         for filename in listdir(directory):
             if filename.endswith(".sh"):
-                check_output = run_command(f'{env.SHELL_CHECK_PATH} .', directory)
+                check_output = run_command(f'{env.SHELL_CHECK_PATH} {filename}', directory)
                 output += check_output.output + "\n"
                 rc += check_output.rc
         if not output:
