@@ -206,6 +206,14 @@ class ResultsSummary:
                 self.outcomes[check]["status"] = "Passed"
                 return "Passed"
 
+        elif check == "opera-tosca-parser":
+            if outcome.find("Done.") > -1:
+                self.outcomes[check]["status"] = "Passed"
+                return "Passed"
+            else:
+                self.outcomes[check]["status"] = "Problems"
+                return "Problems"
+
         self.outcomes[check]["status"] = "Not fully supported yet"
         return "Not fully supported yet"
 
