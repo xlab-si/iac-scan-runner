@@ -6,7 +6,8 @@ class Compatibility:
     # TODO: This matrix should be revised and extended, it is just a proof of concept here as for now
     compatibility_matrix = {
         "terraform": ["tfsec", "tflint", "terrascan", "git-leaks", "git-secrets", "cloc"],
-        "yaml": ["git-leaks", "yamllint", "git-secrets", "ansible-lint", "steampunk-scanner", "cloc"],
+        "yaml": ["git-leaks", "yamllint", "git-secrets", "ansible-lint", "steampunk-scanner", "cloc",
+                 "opera-tosca-parser"],
         "shell": ["shellcheck", "git-leaks", "git-secrets", "cloc"],
         "python": ["pylint", "bandit", "pyup-safety", "cloc"],
         "java": ["checkstyle", "cloc"],
