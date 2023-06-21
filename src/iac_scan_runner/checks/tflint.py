@@ -10,17 +10,17 @@ from pydantic import SecretStr
 
 class TFLintCheck(Check):
     def __init__(self):
-        super().__init__("tflint", "A Pluggable Terraform Linter", CheckTargetEntityType.iac)
+        super().__init__("tflint", "A Pluggable Terraform Linter", CheckTargetEntityType.IAC)
+        self._config_filename = None
 
-    def configure(self, config_filename: Optional[str], secret: Optional[SecretStr]) -> CheckOutput:
+    def configure(self, config_filename: Optional[str],
+                  secret: Optional[SecretStr]) -> CheckOutput:  # pylint: disable=unused-argument
         if config_filename:
             self._config_filename = config_filename
-            return CheckOutput(f'Check: {self.name} has been configured successfully.', 0)
-        else:
-            raise Exception(f'Check: {self.name} requires you to pass a configuration file.')
+            return CheckOutput(f"Check: {self.name} has been configured successfully.", 0)
+        raise Exception(f"Check: {self.name} requires you to pass a configuration file.")
 
     def run(self, directory: str) -> CheckOutput:
         if self._config_filename:
-            return run_command(f'{env.TFLINT_CHECK_PATH} -c {env.CONFIG_DIR}/{self._config_filename} .', directory)
-        else:
-            return run_command(f'{env.TFLINT_CHECK_PATH} .', directory)
+            return run_command(f"{env.TFLINT_CHECK_PATH} -c {env.CONFIG_DIR}/{self._config_filename} .", directory)
+        return run_command(f"{env.TFLINT_CHECK_PATH} .", directory)

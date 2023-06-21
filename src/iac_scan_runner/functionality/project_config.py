@@ -1,98 +1,65 @@
-import os
 import uuid
+from typing import Dict, Any, Optional
 
-import pymongo
+from pymongo import MongoClient
 
 from iac_scan_runner.utils import parse_json
 
 
 class ProjectConfig:
-    def __init__(self):
-        """
-        Initialize new user config result database, collection and client
-        """
-        self.connect_db()
-
-    def connect_db(self):
-        """
-        Initialize new project collection connection into scan result database
-        """
+    def __init__(self, connection_string: str) -> None:
+        """Initialize new user config result database, collection and client."""
         try:
-            connection_string = os.environ['MONGODB_CONNECTION_STRING']
-
-            if connection_string:
-                self.my_client = pymongo.MongoClient(connection_string)
-
-                # TODO: Extract these names in a separate object or variable
-                self.mydb = self.my_client["scandb"]
-                self.mycol = self.mydb["configs"]
-                self.connection_problem = False
-
-        # TODO: Consider more specific exceptions     
+            self.my_client: MongoClient[Dict[str, Any]] = MongoClient(connection_string)
+            self.mydb = self.my_client["scandb"]
+            self.mycol = self.mydb["configs"]
+            self.connection_problem = False
         except Exception as e:
-            print("Configuration persistence not available, error: {e}")
-            self.my_client = None
-            self.mydb = None
-            self.mycol = None
-            self.connection_problem = True
+            print(f"Configuration persistence not available, error: {e}")
 
-    def insert_config(self, result: dict):
-        """Inserts new config into database
-        :param result: Dictionary holding the project info
+    def insert_config(self, result: Dict[Any, Any]) -> None:
         """
-        if self.connection_problem:
-            self.connect_db()
-        if self.mycol is not None:
-            self.mycol.insert_one(parse_json(result))
+        Insert new config into database.
 
-    def new_config(self, creator_id: str, parameters: dict) -> str:
-        """Inserts new project config into database
+        :param result: Dictionary holding the project information
+        """
+        self.mycol.insert_one(parse_json(result))
+
+    def new_config(self, creator_id: str, parameters: Dict[Any, Any]) -> str:
+        """
+        Insert new project config into database.
+
         :param creator_id: Identifier of project creator
         :param parameters: project configuration parameters
         :return: configuration identifier
         """
-        config_json = dict()
-
-        # TODO: 	Add this names into object
-        config_json["config_id"] = str(uuid.uuid4())
-        config_json["creator_id"] = creator_id
-
+        config_id = str(uuid.uuid4())
+        config_json = {"config_id": config_id, "creator_id": creator_id, "parameters": {}}
         if parameters:
-            config_json["parameters"] = dict()
             config_json["parameters"] = parameters
-        else:
-            config_json["parameters"] = dict()
+        self.mycol.insert_one(parse_json(config_json))
+        return config_id
 
-        if self.connection_problem:
-            self.connect_db()
-        if self.mycol is not None:
-            self.mycol.insert_one(parse_json(config_json))
-            return config_json["config_id"]
+    def load_config(self, config_id: str) -> Optional[Dict[str, Any]]:
+        """
+        Show scan project with given id.
 
-    def load_config(self, config_id: str) -> dict:
-        """Shows scan project with given id
         :param config_id: Identifier of a configuration
         :return: JSON object of project
         """
-        if self.connection_problem:
-            self.connect_db()
-
         if self.mycol is not None:
             myquery = {"config_id": config_id}
-            mydoc = self.mycol.find(myquery)
-            for x in mydoc:
-                return x
+            return self.mycol.find_one(myquery)
+        return None
 
-    def set_parameters(self, config_id: str, parameters: dict):
-        """Changes an active configuration of a given scan project
+    def set_parameters(self, config_id: str, parameters: Dict[Any, Any]) -> None:
+        """
+        Change an active configuration of a given scan project.
+
         :param config_id: Identifier of currently active project configuration that we want to assign
         :param parameters:
         :return: JSON object of user
         """
-
-        if self.connection_problem:
-            self.connect_db()
-
         if self.mycol is not None:
             myquery = {"config_id": config_id}
             new_value = {"$set": {"parameters": parameters}}
@@ -101,27 +68,25 @@ class ProjectConfig:
             except Exception as e:
                 print(f"Could not update project configuration {config_id} error: {e}")
 
-    def delete_config(self, config_id: str):
-        """Deletes the configuration with given id from database
+    def delete_config(self, config_id: str) -> None:
+        """
+        Delete the configuration with given id from database.
+
         :param config_id: Identifier of a project configuration which is about to be deleted
         """
-        if self.connection_problem:
-            self.connect_db()
-
         if self.mycol is not None:
             myquery = {"config_id": config_id}
             self.mycol.delete_one(myquery)
 
     def all_configs(self) -> str:
-        """Shows all the scan project configurations from the database
+        """
+        Show all the scan project configurations from the database.
+
         :return: String of all database records concatenated
         """
-        if self.connection_problem:
-            self.connect_db()
-
+        output = ""
         if self.mycol is not None:
             cursor = self.mycol.find({})
-            output = ""
             for doc in cursor:
                 output = output + str(doc)
-            return output
+        return output

@@ -1,3 +1,4 @@
+import os
 from typing import Optional, Union
 
 from fastapi import APIRouter
@@ -6,6 +7,7 @@ from fastapi.responses import JSONResponse, HTMLResponse
 
 from iac_scan_runner.enums.check_target_entity_type import CheckTargetEntityType
 from iac_scan_runner.enums.scan_response_type import ScanResponseType
+
 from iac_scan_runner.functionality.results_persistence import ResultsPersistence
 from iac_scan_runner.functionality.scan_project import ScanProject
 from iac_scan_runner.model.ConfigureCheck import CheckConfigurationModel
@@ -19,13 +21,15 @@ router = APIRouter(tags=["Projects"], prefix="/projects")
              responses={200: {}, 400: {"model": str}})
 async def post_new_project(creator_id: str) -> JSONResponse:
     """
-    Create a new project which might contain multiple scan runs
+    Create a new project which might contain multiple scan runs.
+
     \f
     :param creator_id: Identifier of a user who created project
     :return: JSONResponse object (with status code 200 or 400)
     """
     try:
-        scan_project = ScanProject()
+        connection_string = os.environ["MONGODB_CONNECTION_STRING"]
+        scan_project = ScanProject(connection_string)
         scan_runner.init_checks()
         scan_runner.init_checklist()
         pid = scan_project.new_project(creator_id, "", scan_runner.project_checklist)
@@ -37,9 +41,10 @@ async def post_new_project(creator_id: str) -> JSONResponse:
 
 @router.post("/{project_id}/scan", summary="Initiate IaC scan", responses={200: {}, 400: {"model": str}})
 async def post_scan(project_id: str, form_data: ScanModel = Depends(ScanModel.as_form),
-                    scan_response_type: ScanResponseType = ScanResponseType.json) -> Union[JSONResponse, HTMLResponse]:
+                    scan_response_type: ScanResponseType = ScanResponseType.JSON) -> Union[JSONResponse, HTMLResponse]:
     """
-    Run IaC scan
+    Run IaC scan.
+
     \f
     :param form_data: Form data model
     :param project_id: Identifier of a project_id to which where scan run belongs
@@ -48,7 +53,7 @@ async def post_scan(project_id: str, form_data: ScanModel = Depends(ScanModel.as
     """
     try:
         scan_output = scan_runner.scan_iac(form_data.iac, project_id, [], scan_response_type)
-        if scan_response_type == ScanResponseType.html:
+        if scan_response_type == ScanResponseType.HTML:
             return HTMLResponse(status_code=status.HTTP_200_OK, content=scan_output)
         return JSONResponse(status_code=status.HTTP_200_OK, content=scan_output)
     except Exception as e:
@@ -59,14 +64,16 @@ async def post_scan(project_id: str, form_data: ScanModel = Depends(ScanModel.as
             responses={200: {}, 400: {"model": str}})
 async def get_scan_result(uuid: Optional[str], project_id: Optional[str]) -> JSONResponse:
     """
-    Retrieve a particular scan result
+    Retrieve a particular scan result.
+
     \f
     :param uuid: Identifier of a saved scan record
     :param project_id: Identifier of a project
     :return: JSONResponse object (with status code 200 or 400)
     """
     try:
-        results_persistence = ResultsPersistence()
+        connection_string = os.environ["MONGODB_CONNECTION_STRING"]
+        results_persistence = ResultsPersistence(connection_string)
         if uuid and project_id:
             result = results_persistence.all_scans_by_project(project_id)
         if uuid and not project_id:
@@ -78,23 +85,20 @@ async def get_scan_result(uuid: Optional[str], project_id: Optional[str]) -> JSO
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))
 
 
-@router.delete("/results/{uuid}", summary="Delete particular scan result by given uuid",
-               responses={200: {}, 400: {"model": str}})
+@router.delete("/results/{uuid}", summary="Delete particular scan result by given uuid")
 async def delete_scan_result(uuid: str) -> JSONResponse:
     """
-    Delete a particular scan result
+    Delete a particular scan result.
+
     \f
     :param uuid: Identifier of a saved scan record
     :return: JSONResponse object (with status code 200 or 400)
     """
     try:
-        results_persistence = ResultsPersistence()
-        result = results_persistence.show_result(uuid)
-        if not result is None:
-            results_persistence.delete_result(uuid)
-            return JSONResponse(status_code=status.HTTP_200_OK, content=f"Deleted scan result {uuid}")
-        else:
-            return JSONResponse(status_code=status.HTTP_200_OK, content=f"No such scan result {uuid}")
+        connection_string = os.environ["MONGODB_CONNECTION_STRING"]
+        results_persistence = ResultsPersistence(connection_string)
+        results_persistence.delete_result(uuid)
+        return JSONResponse(status_code=status.HTTP_200_OK)
     except Exception as e:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))
 
@@ -104,7 +108,8 @@ async def get_checks(project_id: str, keyword: Optional[str] = None, enabled: Op
                      configured: Optional[bool] = None,
                      target_entity_type: Optional[CheckTargetEntityType] = None) -> JSONResponse:
     """
-    Retrieve and filter checks
+    Retrieve and filter checks.
+
     \f
     :param project_id: Identifier of a project
     :param keyword: substring for filtering
@@ -118,9 +123,10 @@ async def get_checks(project_id: str, keyword: Optional[str] = None, enabled: Op
         check_list = scan_runner.scan_project.get_project_check_list(project_id)
         scan_runner.set_scan_runner_check(check_list)
         if keyword is not None:
-            filtered_checks = filter(
-                lambda check: keyword.lower() in check.name.lower() or keyword.lower() in check.description.lower(),
-                filtered_checks)
+            filtered_checks = [
+                check for check in filtered_checks
+                if keyword.lower() in check.name.lower() + check.description.lower()
+            ]
         if enabled is not None:
             filtered_checks = filter(lambda check: check.enabled == enabled, filtered_checks)
         if configured is not None:
@@ -135,11 +141,13 @@ async def get_checks(project_id: str, keyword: Optional[str] = None, enabled: Op
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))
 
 
-@router.put("/{project_id}/checks/{check_name}/enable", summary="Enable execution of particular check for a specific project",
+@router.put("/{project_id}/checks/{check_name}/enable",
+            summary="Enable execution of particular check for a specific project",
             responses={200: {}, 400: {"model": str}})
 async def put_enable_checks(check_name: str, project_id: Optional[str]) -> JSONResponse:
     """
-    Enable execution of particular check for a specific project
+    Enable execution of particular check for a specific project.
+
     \f
     :param check_name: Unique name of check to be enabled
     :param project_id: Identifier of a project
@@ -151,11 +159,13 @@ async def put_enable_checks(check_name: str, project_id: Optional[str]) -> JSONR
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))
 
 
-@router.put("/{project_id}/checks/{check_name}/disable", summary="Disable execution of particular check for a specific project",
+@router.put("/{project_id}/checks/{check_name}/disable",
+            summary="Disable execution of particular check for a specific project",
             responses={200: {}, 400: {"model": str}})
 async def put_disable_checks(project_id: str, check_name: str) -> JSONResponse:
     """
-    Disable execution of particular check for a specific project
+    Disable execution of particular check for a specific project.
+
     \f
     :param check_name: Unique name of check to be disabled
     :param project_id: Identifier of a project
@@ -167,13 +177,15 @@ async def put_disable_checks(project_id: str, check_name: str) -> JSONResponse:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))
 
 
-@router.put("/{project_id}/checks/{check_name}/configure", summary="Configure execution of particular check for a specific project",
+@router.put("/{project_id}/checks/{check_name}/configure",
+            summary="Configure execution of particular check for a specific project",
             responses={200: {}, 400: {"model": str}})
 async def put_configure_check(project_id: str, check_name: str,
                               form_data: CheckConfigurationModel = Depends(
                                   CheckConfigurationModel.as_form)) -> JSONResponse:
     """
-    Configure execution of particular check for a specific project
+    Configure execution of particular check for a specific project.
+
     \f
     :param project_id: Identifier of a project
     :param check_name: Unique name of check to be configured
@@ -182,6 +194,7 @@ async def put_configure_check(project_id: str, check_name: str,
     """
     try:
         return JSONResponse(status_code=status.HTTP_200_OK,
-                            content=scan_runner.configure_check(check_name, form_data.config_file, form_data.secret))
+                            content=scan_runner.configure_check(project_id, check_name, form_data.config_file,
+                                                                form_data.secret))
     except Exception as e:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))

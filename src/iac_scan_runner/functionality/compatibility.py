@@ -1,10 +1,9 @@
 import os
-from typing import List
+from typing import List, Dict
 
 
 class Compatibility:
-    # TODO: This matrix should be revised and extended, it is just a proof of concept here as for now
-    compatibility_matrix = {
+    compatibility_matrix: Dict[str, List[str]] = {
         "terraform": ["tfsec", "tflint", "terrascan", "git-leaks", "git-secrets", "cloc"],
         "yaml": ["git-leaks", "yamllint", "git-secrets", "ansible-lint", "steampunk-scanner", "cloc",
                  "opera-tosca-parser"],
@@ -19,25 +18,25 @@ class Compatibility:
     }
 
     def __init__(self):
-        """
-        Initialize new IaC Compatibility matrix
-        """
-        self.scanned_files = dict()
+        """Initialize new IaC Compatibility matrix."""
+        self.scanned_files = {}
 
     def get_check_list(self, iac_type: str) -> List[str]:
         """
-        Returns the list of available scanner check tools for given type of IaC archive
-        :iac_type: Type of IaC file for which we consider the list of compatible scans        
-        :return: List with names of checks as strings 
+        Return the list of available scanner check tools for given type of IaC archive.
+
+        :param iac_type: Type of IaC file for which we consider the list of compatible scans
+        :return: List with names of checks as strings
         """
         return self.compatibility_matrix[iac_type]
 
     def check_iac_type(self, iac_directory: str) -> List[str]:
-        """Check the type of IaC archive
+        """
+        Check the type of IaC archive.
+
         :param iac_directory: Extracted IaC archive path
         :return: List of specific file types within the given IaC directory
         """
-
         types = []
 
         scanned_terraform = []
@@ -53,7 +52,7 @@ class Compatibility:
         # TODO: List of supported file types should be extended
         # TODO: Remove hardcoded check names
         try:
-            for root, folders, names in os.walk(iac_directory):
+            for root, folders, names in os.walk(iac_directory):  # pylint: disable=unused-variable
                 for f in names:
                     scanned_all.append(f)
                     if (f.find(".tf") > -1) or (f.find(".tftpl") > -1):
@@ -109,13 +108,14 @@ class Compatibility:
 
             return types
         except Exception as e:
-            raise Exception(f"Error when checking directory type: {str(e)}.")
+            raise Exception(f"Error when checking directory type: {str(e)}.") from e
 
     def get_all_compatible_checks(self, iac_directory: str) -> List[str]:
         """
-        Returns the list of available scanner check tools for given type of IaC archive
+        Return the list of available scanner check tools for given type of IaC archive.
+
         :param iac_directory: Extracted IaC archive path
-        :return: List with names of compatible checks as strings 
+        :return: List with names of compatible checks as strings
         """
         checks_list = []
         types_list = self.check_iac_type(iac_directory)

@@ -1,3 +1,4 @@
+# pylint: skip-file
 from abc import ABC, abstractmethod
 from typing import Optional
 
@@ -11,7 +12,8 @@ class Check(ABC):
     def __init__(self, name: str, description: Optional[str] = "",
                  target_entity_type: Optional[CheckTargetEntityType] = None):
         """
-        Initialize new IaC check
+        Initialize new IaC check.
+
         :param name: Name of the check
         :param description: Check description
         :param target_entity_type: CheckTargetEntityType object - IaC, component or both
@@ -23,9 +25,9 @@ class Check(ABC):
         self.configured = True
         self._config_filename = None
 
-    def configure(self, config_filename: Optional[str], secret: Optional[SecretStr]):
+    def configure(self, config_filename: Optional[str], secret: Optional[SecretStr]) -> None:
         """
-        Initiate check configuration (override this method if configuration is needed)
+        Initiate check configuration (override this method if configuration is needed).
 
         :param config_filename: Name of the check configuration file
         :param secret: Secret needed for configuration (e.g. API key, token, password, cloud credentials, etc.)
@@ -35,7 +37,8 @@ class Check(ABC):
     @abstractmethod
     def run(self, directory: str) -> CheckOutput:
         """
-        Initiate check run (this method has to be implemented for every subclass)
+        Initiate check run(this method has to be implemented for every subclass).
+
         :param directory: Target directory where the check will be executed
         :return: CheckOutput object
         """

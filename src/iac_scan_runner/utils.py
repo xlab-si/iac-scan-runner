@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 from os import path
 from shutil import unpack_archive
 from subprocess import check_output, STDOUT, CalledProcessError
@@ -7,43 +8,44 @@ from typing import Optional
 from uuid import uuid4
 from zipfile import is_zipfile
 
-import bson.json_util as json_util
+from bson import json_util
 
 from iac_scan_runner.functionality.check_output import CheckOutput
 
 
 def run_command(command: str, directory: str = ".") -> CheckOutput:
     """
-    Run command with arguments in directory and return the output and return code
+    Run command with arguments in directory and return the output and return code.
+
     :param command: A command to run
     :param directory: Target directory where the command will be executed (default is current dir)
     :return: CheckOutput object
     """
     try:
-        return CheckOutput(check_output(command, cwd=directory, shell=True, stderr=STDOUT).decode('utf-8'), 0)
+        return CheckOutput(check_output(command, cwd=directory, shell=True, stderr=STDOUT).decode("utf-8"), 0)
     except CalledProcessError as e:
         return CheckOutput(str(e.output.decode("utf-8")), e.returncode)
 
 
 def determine_archive_format(archive_path: str) -> str:
     """
-    Figures out the format of the supplied archive file
+    Figure out the format of the supplied archive file.
+
     :param archive_path: Path to the archive file
     :return: String with archive format (zip or tar)
     """
     if is_zipfile(archive_path):
         return "zip"
-    elif is_tarfile(archive_path):
+    if is_tarfile(archive_path):
         return "tar"
-    else:
-        raise Exception(
-            "Unsupported archive format: '{}'. The packaging format should be one of: zip, tar.".format(archive_path)
-        )
+    raise Exception(
+        f"Unsupported archive format: '{archive_path}'. The packaging format should be one of: zip, tar.")
 
 
 def generate_random_pathname(prefix: str = "", suffix: str = "") -> str:
     """
-    Creates a unique random pathname and select last 6 characters
+    Create a unique random pathname and select last 6 characters.
+
     :param prefix: Pathname prefix
     :param suffix: Pathname suffix
     :return: String with random pathname
@@ -51,13 +53,13 @@ def generate_random_pathname(prefix: str = "", suffix: str = "") -> str:
     pathname = prefix + str(uuid4().hex)[-6:] + suffix
     if path.exists(pathname):
         return generate_random_pathname(prefix)
-    else:
-        return pathname
+    return pathname
 
 
 def unpack_archive_to_dir(archive_path: str, output_dir: Optional[str]) -> str:
     """
-    Unpacks archive to a specified directory
+    Unpack archive to a specified directory.
+
     :param archive_path: Path to the archive file
     :param output_dir: Directory where IaC will be unpacked to
     :return: String output dir name
@@ -70,61 +72,83 @@ def unpack_archive_to_dir(archive_path: str, output_dir: Optional[str]) -> str:
         unpack_archive(archive_path, output_dir, iac_format)
         return output_dir
     except Exception as e:
-        raise Exception(f"Nonexistent check: {str(e)}")
+        raise Exception(f"Nonexistent check: {str(e)}") from e
 
 
-def write_string_to_file(check_name: str, dir_name: str, output_value: str):
+def write_string_to_file(check_name: str, dir_name: str, output_value: str) -> None:
     """
-    Writes string to given file inside specified directory
+    Write string to given file inside specified directory.
+
     :param check_name: Name of the check
     :param dir_name: Directory name
     :param output_value: Content written to given file
     """
     file_name = dir_name + "/" + check_name + ".txt"
     try:
-        with open(file_name, "w") as text_file:
+        with open(file_name, "w", encoding="utf-8") as text_file:
             text_file.write(output_value)
     except Exception as e:
-        raise Exception(f"Error while writing string to file: {str(e)}.")
+        raise Exception(f"Error while writing string to file: {str(e)}.") from e
 
 
-def write_html_to_file(file_name: str, output_value: str):
+def write_html_to_file(file_name: str, output_value: str) -> None:
     """
-    Writes string to given file inside specified directory
+    Write string to given file inside specified directory.
+
     :param file_name: File name
     :param output_value: Content written to given file
     """
     file_name = "../outputs/generated_html/" + file_name + ".html"
     try:
-        with open(file_name, "w") as text_file:
+        with open(file_name, "w", encoding="utf-8") as text_file:
             text_file.write(output_value)
     except Exception as e:
-        raise Exception(f"Error storing HTML to file: {str(e)}.")
+        raise Exception(f"Error storing HTML to file: {str(e)}.") from e
 
 
 def file_to_string(file_path: str) -> str:
     """
-    Reads the file given by path and returns its contents as string output
+    Read the file given by path and returns its contents as string output.
+
     :param file_path: Path of the file
     :return output: Content read from file in form of a string
     """
     output = ""
     try:
-        with open(file_path, "r") as text_file:
+        with open(file_path, "r", encoding="utf-8") as text_file:
             output = str(text_file.read())
-    # TODO: Narrow exceptions for this one and similar functions        
     except Exception as e:
-        raise Exception(f"Error while reading file: {str(e)}.")
+        raise Exception(f"Error while reading file: {str(e)}.") from e
     return output
 
 
 def parse_json(data):
     """
-    Converts bson to dictionary
+    Convert bson to dictionary.
+
     :param data: json
     :return: dictionary
     """
     try:
-        return json.loads(json_util.dumps(data))
+        parsed_data = json.loads(json_util.dumps(data))
     except Exception as e:
         print(f"Could not parse JSON, error: {e}")
+    return parsed_data
+
+
+def days_passed(time_stamp: str) -> int:
+    """
+    Calculate how many days have passed between today and given timestamp.
+
+    :param time_stamp: Timestamp in format %m/%d/%Y, %H:%M:%S given as string
+    :return: Integer which denotes the number of days passed
+    """
+    time1 = datetime.strptime(time_stamp, "%m/%d/%Y, %H:%M:%S")
+    time2 = datetime.now()  # current date and time
+    delta = time2 - time1
+    string_delta = str(delta)
+
+    if string_delta.find("days") > -1:
+        days = string_delta.split(" ")
+        return int(days[0])
+    return 0
