@@ -1,5 +1,5 @@
-import uvicorn
-from content_size_limit_asgi import ContentSizeLimitMiddleware
+import uvicorn  # type: ignore
+from content_size_limit_asgi import ContentSizeLimitMiddleware  # type: ignore
 
 from iac_scan_runner.object_store import app
 from iac_scan_runner.object_store import scan_runner

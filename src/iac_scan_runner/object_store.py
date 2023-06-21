@@ -22,6 +22,6 @@ app = FastAPI(
     title="IaC Scan Runner REST API",
     description="Service that scans your Infrastructure as Code for common vulnerabilities",
     version="0.4.0",
-    root_path=os.getenv('ROOT_PATH', "/"),
+    root_path=os.getenv("ROOT_PATH", "/"),
     openapi_tags=tags_metadata
 )

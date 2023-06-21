@@ -12,22 +12,22 @@ from pydantic import SecretStr
 class HadolintCheck(Check):
     def __init__(self):
         super().__init__("hadolint", "Dockerfile linter, validate inline bash, written in Haskell",
-                         CheckTargetEntityType.iac)
+                         CheckTargetEntityType.IAC)
+        self._config_filename = None
 
-    def configure(self, config_filename: Optional[str], secret: Optional[SecretStr]) -> CheckOutput:
+    def configure(self, config_filename: Optional[str],
+                  secret: Optional[SecretStr]) -> CheckOutput:  # pylint: disable=unused-argument
         if config_filename:
             self._config_filename = config_filename
-            return CheckOutput(f'Check: {self.name} has been configured successfully.', 0)
-        else:
-            raise Exception(f'Check: {self.name} requires you to pass a configuration file.')
+            return CheckOutput(f"Check: {self.name} has been configured successfully.", 0)
+        raise Exception(f"Check: {self.name} requires you to pass a configuration file.")
 
     def run(self, directory: str) -> CheckOutput:
         for filename in listdir(directory):
             if filename == "Dockerfile":
                 if self._config_filename:
                     return run_command(
-                        f'{env.HADOLINT_CHECK_PATH} -c {env.CONFIG_DIR}/{self._config_filename} Dockerfile',
+                        f"{env.HADOLINT_CHECK_PATH} -c {env.CONFIG_DIR}/{self._config_filename} Dockerfile",
                         directory)
-                else:
-                    return run_command(f'{env.HADOLINT_CHECK_PATH} Dockerfile', directory)
+                return run_command(f"{env.HADOLINT_CHECK_PATH} Dockerfile", directory)
         return CheckOutput("There is no Dockerfile to check.", 0)

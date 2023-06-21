@@ -5,17 +5,17 @@ from pydantic import BaseModel
 
 
 class ScanModel(BaseModel):
-    """
-    Scan model
-    """
+    """Scan model."""
+
     iac: UploadFile
 
     @classmethod
     def as_form(cls,
                 iac: UploadFile = File(default=None,
-                                       description='IaC file (zip or tar compressed) that will be scanned')):
+                                       description='IaC file (zip or tar compressed) that will be scanned')) -> \
+            "ScanModel":
         """
-        Converts model to form_data structure for FastAPI
+        Convert model to form_data structure for FastAPI.
 
         :param iac: zip file of documents to be scanned
         """
@@ -23,9 +23,8 @@ class ScanModel(BaseModel):
 
 
 class ScanModelDeprecated(BaseModel):
-    """
-    Deprecated Scan model
-    """
+    """Deprecated Scan model."""
+
     iac: UploadFile
     checks: Optional[List[str]]
 
@@ -35,9 +34,10 @@ class ScanModelDeprecated(BaseModel):
                                                    description='List of selected checks (by their unique names) to '
                                                                'be executed on IaC'),
                 iac: UploadFile = File(default=None,
-                                       description='IaC file (zip or tar compressed) that will be scanned')):
+                                       description='IaC file (zip or tar compressed) that will be scanned')) \
+            -> "ScanModelDeprecated":
         """
-        Converts model to form_data structure for FastAPI
+        Convert model to form_data structure for FastAPI.
 
         :param iac: zip file of documents to be scanned
         :param checks: List of checks wished to be performed

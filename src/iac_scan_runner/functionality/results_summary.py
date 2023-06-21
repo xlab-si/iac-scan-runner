@@ -1,6 +1,7 @@
 import json
 import re
 from datetime import datetime
+from typing import List, Dict
 
 from iac_scan_runner.utils import write_html_to_file
 
@@ -8,31 +9,37 @@ from iac_scan_runner.utils import write_html_to_file
 class ResultsSummary:
     def __init__(self):
         """
-        Initialize new IaC Compatibility matrix
+        Initialize new IaC Compatibility matrix.
+
         :param matrix: dictionary of available checks for given IaC type
         """
-        self.outcomes = dict()
+        self.outcomes = {}
 
     def get_check_outcome(self, check_name: str) -> str:
         """
-        Returns the list of available scanner check tools for given type of IaC archive
-        :return: list object conatining string names of checks 
+        Return the list of available scanner check tools for given type of IaC archive.
+
+        :return: list object conatining string names of checks
         """
         return self.outcomes[check_name]["status"]
 
-    def set_check_outcome(self, check_name: str, outcome: str, file_list: str):
+    def set_check_outcome(self, check_name: str, outcome: str) -> None:
         """
-        Sets the outcome and list of scanned files for specific scanning tool
+        Set the outcome and list of scanned files for specific scanning tool.
+
         :param check_name: Name of a scan tool
         :param outcome: Scan verdict - passed, failed or no files scanned
-        :param file_list: List of files that were scanned using the particular tool        
+        :param file_list: List of files that were scanned using the particular tool
         """
         self.outcomes[check_name] = {}
         self.outcomes[check_name]["status"] = outcome
         self.outcomes[check_name]["files"] = outcome
 
-    def summarize_outcome(self, check: str, outcome: str, scanned_files: dict, compatibility_matrix: dict) -> str:
-        """Summarize the check result to True/False depending on the return tool output
+    def summarize_outcome(self, check: str, outcome: str, scanned_files: Dict["str", List[str]],
+                          compatibility_matrix: Dict["str", List[str]]) -> str:
+        """
+        Summarize the check result to True/False depending on the return tool output.
+
         :param check: Name of the considered check of interest
         :param outcome: String representing either the check passed, failed or no files were scanned
         :param scanned_files: List of files scanned by particular check tool
@@ -43,9 +50,9 @@ class ResultsSummary:
         self.outcomes[check]["log"] = outcome
 
         file_list = ""
-        for t in compatibility_matrix:
-            if check in compatibility_matrix[t]:
-                file_list = str(scanned_files[t])
+        for item in compatibility_matrix:
+            if check in compatibility_matrix[item]:
+                file_list = str(scanned_files[item])
 
         self.outcomes[check]["files"] = file_list
 
@@ -53,173 +60,155 @@ class ResultsSummary:
         # TODO: The check names hould not be hardcoded but replaced with parametrized values instead
         # TODO: Extract "Passed" and "Problems" into an Enum object and use them
         if check == "tfsec":
-            outcome = re.sub(r'\[[0-9]*m', '', outcome)
-            outcome = outcome.replace("\u001b", ' ')
-            outcome = outcome.replace("\n", ' ')
+            outcome = re.sub(r"\[[0-9]*m", "", outcome)
+            outcome = outcome.replace("\u001b", " ")
+            outcome = outcome.replace("\n", " ")
 
             self.outcomes[check]["log"] = outcome
 
             if outcome.find("No problems detected!") > -1:
                 self.outcomes[check]["status"] = "Passed"
                 return "Passed"
-            else:
-                self.outcomes[check]["status"] = "Problems"
-                return "Problems"
+            self.outcomes[check]["status"] = "Problems"
+            return "Problems"
 
-        elif check == "git-leaks":
+        if check == "git-leaks":
             if outcome.find("No leaks found") > -1:
                 self.outcomes[check]["status"] = "Passed"
                 return "Passed"
-            else:
-                self.outcomes[check]["status"] = "Problems"
-                return "Problems"
+            self.outcomes[check]["status"] = "Problems"
+            return "Problems"
 
-        elif check == "git-secrets":
+        if check == "git-secrets":
             if outcome == "":
                 self.outcomes[check]["status"] = "Passed"
                 return "Passed"
-            else:
-                self.outcomes[check]["status"] = "Problems"
-                return "Problems"
+            self.outcomes[check]["status"] = "Problems"
+            return "Problems"
 
-        elif check == "terrascan":
+        if check == "terrascan":
             if outcome == "":
                 self.outcomes[check]["status"] = "Passed"
                 return "Passed"
-            else:
-                self.outcomes[check]["status"] = "Problems"
-                return "Problems"
+            self.outcomes[check]["status"] = "Problems"
+            return "Problems"
 
-        elif check == "steampunk-scanner":
+        if check == "steampunk-scanner":
             if outcome == "":
                 self.outcomes[check]["status"] = "Passed"
                 return "Passed"
-            else:
-                self.outcomes[check]["status"] = "Problems"
-                return "Problems"
+            self.outcomes[check]["status"] = "Problems"
+            return "Problems"
 
-        elif check == "tflint":
+        if check == "tflint":
             if outcome == "":
                 self.outcomes[check]["status"] = "Passed"
                 return "Passed"
-            else:
-                self.outcomes[check]["status"] = "Problems"
-                return "Problems"
+            self.outcomes[check]["status"] = "Problems"
+            return "Problems"
 
-        elif check == "htmlhint":
+        if check == "htmlhint":
             if outcome.find("no errors") > -1:
                 self.outcomes[check]["status"] = "Passed"
                 return "Passed"
-            else:
-                self.outcomes[check]["status"] = "Problems"
-                return "Problems"
+            self.outcomes[check]["status"] = "Problems"
+            return "Problems"
 
-        elif check == "checkstyle":
+        if check == "checkstyle":
             if outcome == "":
                 self.outcomes[check]["status"] = "Passed"
                 return "Passed"
-            else:
-                self.outcomes[check]["status"] = "Problems"
-                return "Problems"
+            self.outcomes[check]["status"] = "Problems"
+            return "Problems"
 
-        elif check == "shellcheck":
+        if check == "shellcheck":
             if outcome == "":
                 self.outcomes[check]["status"] = "Passed"
                 return "Passed"
-            else:
-                self.outcomes[check]["status"] = "Problems"
-                return "Problems"
+            self.outcomes[check]["status"] = "Problems"
+            return "Problems"
 
-        elif check == "es-lint":
+        if check == "es-lint":
             if outcome.find("wrong") > -1:
                 self.outcomes[check]["status"] = "Problems"
                 return "Passed"
-            else:
-                self.outcomes[check]["status"] = "Passed"
-                return "Problems"
+            self.outcomes[check]["status"] = "Passed"
+            return "Problems"
 
-        elif check == "ts-lint":
+        if check == "ts-lint":
             if outcome.find("wrong") > -1:
                 self.outcomes[check]["status"] = "Problems"
                 return "Passed"
-            else:
-                self.outcomes[check]["status"] = "Passed"
-                return "Problems"
+            self.outcomes[check]["status"] = "Passed"
+            return "Problems"
 
-        elif check == "pylint":
+        if check == "pylint":
             if outcome.find("no problems") > -1:
                 self.outcomes[check]["status"] = "Passed"
                 return "Passed"
-            else:
-                self.outcomes[check]["status"] = "Problems"
-                return "Problems"
+            self.outcomes[check]["status"] = "Problems"
+            return "Problems"
 
-        elif check == "bandit":
+        if check == "bandit":
             if outcome.find("No issues identified.") > -1:
                 self.outcomes[check]["status"] = "Passed"
                 return "Passed"
-            else:
-                self.outcomes[check]["status"] = "Problems"
-                return "Problems"
+            self.outcomes[check]["status"] = "Problems"
+            return "Problems"
 
-        elif check == "hadolint":
+        if check == "hadolint":
             if outcome == "":
                 self.outcomes[check]["status"] = "Passed"
                 return "Passed"
-            else:
-                self.outcomes[check]["status"] = "Problems"
-                return "Problems"
+            self.outcomes[check]["status"] = "Problems"
+            return "Problems"
 
-        elif check == "terrascan":
+        if check == "terrascan":
             if outcome == "":
                 self.outcomes[check]["status"] = "Passed"
                 return "Passed"
-            else:
-                self.outcomes[check]["status"] = "Problems"
-                return "Problems"
+            self.outcomes[check]["status"] = "Problems"
+            return "Problems"
 
-        elif check == "steampunk-scanner":
+        if check == "steampunk-scanner":
             if outcome.find("ERROR") > -1:
                 self.outcomes[check]["status"] = "Problems"
                 return "Problems"
-            else:
-                self.outcomes[check]["status"] = "Passed"
-                return "Passed"
+            self.outcomes[check]["status"] = "Passed"
+            return "Passed"
 
-        elif check == "cloc":
+        if check == "cloc":
             self.outcomes[check]["status"] = "Info"
             return "Info"
 
-        elif check == "ansible-lint":
+        if check == "ansible-lint":
             if outcome == "":
                 self.outcomes[check]["status"] = "Passed"
                 return "Passed"
-            else:
-                self.outcomes[check]["status"] = "Problems"
-                return "Problems"
+            self.outcomes[check]["status"] = "Problems"
+            return "Problems"
 
-        elif check == "yamllint":
+        if check == "yamllint":
             if outcome.find("error") > -1:
                 self.outcomes[check]["status"] = "Problems"
                 return "Problems"
-            else:
-                self.outcomes[check]["status"] = "Passed"
-                return "Passed"
+            self.outcomes[check]["status"] = "Passed"
+            return "Passed"
 
-        elif check == "opera-tosca-parser":
+        if check == "opera-tosca-parser":
             if outcome.find("Done.") > -1:
                 self.outcomes[check]["status"] = "Passed"
                 return "Passed"
-            else:
-                self.outcomes[check]["status"] = "Problems"
-                return "Problems"
+            self.outcomes[check]["status"] = "Problems"
+            return "Problems"
 
         self.outcomes[check]["status"] = "Not fully supported yet"
         return "Not fully supported yet"
 
-    def summarize_no_files(self, check: str):
+    def summarize_no_files(self, check: str) -> None:
         """
-        Sets the outcome of the selected check to "no files" case
+        Set the outcome of the selected check to "no files" case.
+
         :param check: Name of the considered check of interest
         """
         # TODO: Fields should be extracted into new Python object, probably extending the existing CheckOutput
@@ -229,31 +218,27 @@ class ResultsSummary:
         self.outcomes[check]["files"] = ""
 
     def show_outcomes(self):
-        """
-        Prints out current summary of the performed checks containing the log and list of scanned files
-        """
+        """Print out current summary of the performed checks containing the log and list of scanned files."""
         print(self.outcomes)
 
-    def dump_outcomes(self, file_name: str):
+    def dump_outcomes(self, file_name: str) -> None:
         """
-        Summarizes scan results into JSON file
+        Summarize scan results into JSON file.
+
         :param file_name: Name of the generated JSON file containing the scan summary
         """
         # TODO: Replace hardcoded path with parameter
         file_path = "../outputs/json_dumps/" + file_name + ".json"
 
         try:
-            with open(file_path, "w") as fp:
-                json.dump(self.outcomes, fp)
+            with open(file_path, "w", encoding="utf-8") as file:
+                json.dump(self.outcomes, file)
         except Exception as e:
-            raise Exception(f"Error dumping json of scan results: {str(e)}.")
+            raise Exception(f"Error dumping json of scan results: {str(e)}.") from e
 
     def is_check(self, check: str) -> bool:
         fields = ["uuid", "time", "problems", "passed", "total", "execution-duration", "project_id", "archive"]
-        if not (check in fields):
-            return True
-        else:
-            return False
+        return bool(check not in fields)
 
     def evaluate_verdict(self) -> str:
         for check in self.outcomes:
@@ -272,25 +257,25 @@ class ResultsSummary:
         self.outcomes["execution-duration"] = str(round(duration, 3))
         self.evaluate_verdict()
 
-    def generate_html_prioritized(self, file_name: str):
+    def generate_html_prioritized(self, file_name: str) -> None:
         """
-        Summarizes scan results (status, list of scanned files and scan tool log) into HTML file with the following
-        visualization ordering: 1) problems detected 2) passed 3) no files scanned
+        Summarize scan results.
+
         :param file_name: Name of the generated HTML file containing the page summary
         """
-        with open("./iac_scan_runner/asset/response.html", "r") as html_template:
+        with open("./iac_scan_runner/asset/response.html", "r", encoding="utf-8") as html_template:
             html = html_template.read()
 
-        html = html.replace("CHANGE_ARCHIVE_NAME", self.outcomes['archive'])
-        html = html.replace("CHANGE_RUN_START_TIME", self.outcomes['time'])
-        html = html.replace("CHANGE_START_TIME", self.outcomes['execution-duration'])
-        if self.outcomes['verdict'] == "Problems":
+        html = html.replace("CHANGE_ARCHIVE_NAME", self.outcomes["archive"])
+        html = html.replace("CHANGE_RUN_START_TIME", self.outcomes["time"])
+        html = html.replace("CHANGE_START_TIME", self.outcomes["execution-duration"])
+        if self.outcomes["verdict"] == "Problems":
             html = html.replace("CHANGE_FINAL_VERDICT", "Issues found")
         else:
-            hmtl = html.replace("CHANGE_FINAL_VERDICT", "Issues found")
+            html = html.replace("CHANGE_FINAL_VERDICT", "No issues found")  # noqa: F841
 
         table_content = ""
-        with open("./iac_scan_runner/asset/table_problem.html", "r") as html_template:
+        with open("./iac_scan_runner/asset/table_problem.html", "r", encoding="utf-8") as html_template:
             html_problem = html_template.read()
         for scan in self.outcomes:
             if scan not in ["uuid", "time", "archive", "execution-duration", "verdict", "project_id"] \
@@ -302,7 +287,7 @@ class ResultsSummary:
                 changeable_html = changeable_html.replace("CHANGE_LOG", self.outcomes[scan]["log"])
                 table_content += changeable_html
 
-        with open("./iac_scan_runner/asset/table_info.html", "r") as html_template:
+        with open("./iac_scan_runner/asset/table_info.html", "r", encoding="utf-8") as html_template:
             html_problem = html_template.read()
         for scan in self.outcomes:
             if scan not in ["uuid", "time", "archive", "execution-duration", "verdict", "project_id"] \
@@ -314,7 +299,7 @@ class ResultsSummary:
                 changeable_html = changeable_html.replace("CHANGE_LOG", self.outcomes[scan]["log"])
                 table_content += changeable_html
 
-        with open("./iac_scan_runner/asset/table_basic.html", "r") as html_template:
+        with open("./iac_scan_runner/asset/table_basic.html", "r", encoding="utf-8") as html_template:
             html_problem = html_template.read()
         for scan in self.outcomes:
             if scan not in ["uuid", "time", "archive", "execution-duration", "verdict", "project_id"] \

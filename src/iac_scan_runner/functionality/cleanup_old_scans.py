@@ -1,13 +1,14 @@
+import os
 import time
 
-import schedule
+import schedule  # type: ignore
 
-from results_persistence import ResultsPersistence
+from iac_scan_runner.functionality.results_persistence import ResultsPersistence
 
 
 def periodic_clean_job():
-    persistence_manager = ResultsPersistence()
-
+    connection_string = os.environ["MONGODB_CONNECTION_STRING"]
+    persistence_manager = ResultsPersistence(connection_string)
     cursor = persistence_manager.mycol.find({})
     for doc in cursor:
         doc_uuid = doc["uuid"]

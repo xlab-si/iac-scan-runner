@@ -8,7 +8,7 @@ from iac_scan_runner.utils import run_command
 class OperaToscaParserCheck(Check):
     def __init__(self):
         super().__init__("opera-tosca-parser", "xOpera TOSCA parser can validate TOSCA YAML templates and CSARs",
-                         CheckTargetEntityType.iac)
+                         CheckTargetEntityType.IAC)
 
     def run(self, directory: str) -> CheckOutput:
-        return run_command(f'{env.OPERA_TOSCA_PARSER_CHECK_PATH} parse .', directory)
+        return run_command(f"{env.OPERA_TOSCA_PARSER_CHECK_PATH} parse .", directory)

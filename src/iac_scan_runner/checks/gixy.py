@@ -11,21 +11,21 @@ from pydantic import SecretStr
 
 class GixyCheck(Check):
     def __init__(self):
-        super().__init__("gixy", "Gixy is a tool to analyze Nginx configuration", CheckTargetEntityType.iac)
+        super().__init__("gixy", "Gixy is a tool to analyze Nginx configuration", CheckTargetEntityType.IAC)
+        self._config_filename = None
 
-    def configure(self, config_filename: Optional[str], secret: Optional[SecretStr]) -> CheckOutput:
+    def configure(self, config_filename: Optional[str],
+                  secret: Optional[SecretStr]) -> CheckOutput:  # pylint: disable=unused-argument
         if config_filename:
             self._config_filename = config_filename
-            return CheckOutput(f'Check: {self.name} has been configured successfully.', 0)
-        else:
-            raise Exception(f'Check: {self.name} requires you to pass a configuration file.')
+            return CheckOutput(f"Check: {self.name} has been configured successfully.", 0)
+        raise Exception(f"Check: {self.name} requires you to pass a configuration file.")
 
     def run(self, directory: str) -> CheckOutput:
         for filename in listdir(directory):
             if filename == "nginx.conf":
                 if self._config_filename:
-                    return run_command(f'{env.GIXY_CHECK_PATH} -c {env.CONFIG_DIR}/{self._config_filename} {filename}',
+                    return run_command(f"{env.GIXY_CHECK_PATH} -c {env.CONFIG_DIR}/{self._config_filename} {filename}",
                                        directory)
-                else:
-                    return run_command(f'{env.GIXY_CHECK_PATH} {filename}', directory)
+                return run_command(f"{env.GIXY_CHECK_PATH} {filename}", directory)
         return CheckOutput("There is no nginx.conf file to check.", 0)
