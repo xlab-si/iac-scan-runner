@@ -7,6 +7,7 @@ from iac_scan_runner.functionality.results_persistence import ResultsPersistence
 
 
 def periodic_clean_job():
+    """Periodic cleanup of scan results."""
     connection_string = os.environ["MONGODB_CONNECTION_STRING"]
     persistence_manager = ResultsPersistence(connection_string)
     cursor = persistence_manager.mycol.find({})

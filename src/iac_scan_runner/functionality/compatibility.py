@@ -3,6 +3,8 @@ from typing import List, Dict
 
 
 class Compatibility:
+    """Compatibility matrix class object."""
+
     compatibility_matrix: Dict[str, List[str]] = {
         "terraform": ["tfsec", "tflint", "terrascan", "git-leaks", "git-secrets", "cloc"],
         "yaml": ["git-leaks", "yamllint", "git-secrets", "ansible-lint", "steampunk-scanner", "cloc",

@@ -7,6 +7,8 @@ from iac_scan_runner.utils import parse_json
 
 
 class ProjectConfig:
+    """Project config class object."""
+
     def __init__(self, connection_string: str) -> None:
         """Initialize new user config result database, collection and client."""
         try:

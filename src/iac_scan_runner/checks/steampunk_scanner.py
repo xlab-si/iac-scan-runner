@@ -1,15 +1,17 @@
 import os
 from typing import Optional
 
+from pydantic import SecretStr
 import iac_scan_runner.vars as env
 from iac_scan_runner.interface.check import Check
 from iac_scan_runner.functionality.check_output import CheckOutput
 from iac_scan_runner.enums.check_target_entity_type import CheckTargetEntityType
 from iac_scan_runner.utils import run_command
-from pydantic import SecretStr
 
 
 class SteampunkScannerCheck(Check):
+    """Steampunk Spotter check class object."""
+
     def __init__(self):
         super().__init__("steampunk-scanner", "A quality scanner for Ansible tasks, playbooks, roles and collections",
                          CheckTargetEntityType.ALL)
@@ -19,6 +21,7 @@ class SteampunkScannerCheck(Check):
 
     def configure(self, config_filename: Optional[str],  # pylint: disable=unused-argument
                   secret: Optional[SecretStr]) -> CheckOutput:
+        """Set configuration."""
         if secret:
             try:
                 if ":" not in secret.get_secret_value():
@@ -34,4 +37,5 @@ class SteampunkScannerCheck(Check):
         raise Exception(f"Check: {self.name} requires you to pass username:password string as secret.")
 
     def run(self, directory: str) -> CheckOutput:
+        """Run check."""
         return run_command(f"{env.STEAMPUNK_SCANNER_CHECK_PATH} scan .", directory)

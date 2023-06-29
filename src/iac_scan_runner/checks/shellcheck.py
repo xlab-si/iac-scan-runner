@@ -8,11 +8,14 @@ from iac_scan_runner.utils import run_command
 
 
 class ShellCheck(Check):
+    """Shellcheck check class object."""
+
     def __init__(self):
         super().__init__("shellcheck", "ShellCheck - a static analysis tool for shell scripts",
                          CheckTargetEntityType.IAC)
 
     def run(self, directory: str) -> CheckOutput:
+        """Run check."""
         output = ""
         cnt = 0
         for filename in listdir(directory):

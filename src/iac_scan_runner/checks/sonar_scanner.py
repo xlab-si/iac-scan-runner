@@ -10,6 +10,8 @@ from iac_scan_runner.utils import run_command
 
 
 class SonarScannerCheck(Check):
+    """Sonar scanner class object."""
+
     def __init__(self):
         super().__init__("sonar-scanner", "Official scanner used to run code analysis on SonarQube and SonarCloud",
                          CheckTargetEntityType.ALL)
@@ -19,6 +21,7 @@ class SonarScannerCheck(Check):
         self._config_filename = None
 
     def configure(self, config_filename: Optional[str], secret: Optional[SecretStr]) -> CheckOutput:
+        """Set configuration."""
         if config_filename:
             self._config_filename = config_filename
             if secret:
@@ -27,6 +30,7 @@ class SonarScannerCheck(Check):
         raise Exception(f"Check: {self.name} requires you to pass a configuration file and an optional user token.")
 
     def run(self, directory: str) -> CheckOutput:
+        """Run check."""
         copyfile(f"{env.CONFIG_DIR}/{self._config_filename}", f"{directory}/sonar-project.properties")
         if self._user_token:
             return run_command(f"{env.SONAR_SCANNER_CHECK_PATH} -Dsonar.login={self._user_token.get_secret_value()}",

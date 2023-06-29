@@ -15,6 +15,8 @@ cli = typer.Typer(help="IaC Scan Runner CLI", context_settings={"help_option_nam
 
 
 class OpenApiFormat(str, Enum):
+    """Open API format class object."""
+
     JSON = "json"
     YAML = "yaml"
 

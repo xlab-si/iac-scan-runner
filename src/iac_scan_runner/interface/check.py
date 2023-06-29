@@ -9,6 +9,8 @@ from iac_scan_runner.enums.check_target_entity_type import CheckTargetEntityType
 
 
 class Check(ABC):
+    """Check interface class."""
+
     def __init__(self, name: str, description: Optional[str] = "",
                  target_entity_type: Optional[CheckTargetEntityType] = None):
         """
@@ -37,7 +39,7 @@ class Check(ABC):
     @abstractmethod
     def run(self, directory: str) -> CheckOutput:
         """
-        Initiate check run(this method has to be implemented for every subclass).
+        Initiate check (this method has to be implemented for every subclass).
 
         :param directory: Target directory where the check will be executed
         :return: CheckOutput object

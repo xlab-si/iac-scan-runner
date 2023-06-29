@@ -10,6 +10,8 @@ from iac_scan_runner.utils import run_command
 
 
 class StyleLintCheck(Check):
+    """StyleLint class object."""
+
     def __init__(self):
         super().__init__("stylelint", "A mighty, modern linter that helps you avoid errors and enforce conventions in "
                                       "your styles", CheckTargetEntityType.IAC)
@@ -17,12 +19,14 @@ class StyleLintCheck(Check):
 
     def configure(self, config_filename: Optional[str],
                   secret: Optional[SecretStr]) -> CheckOutput:  # pylint: disable=unused-argument
+        """Set configuration."""
         if config_filename:
             self._config_filename = config_filename
             return CheckOutput(f"Check: {self.name} has been configured successfully.", 0)
         raise Exception(f"Check: {self.name} requires you to pass a configuration file.")
 
     def run(self, directory: str) -> CheckOutput:
+        """Run check."""
         output = ""
         cnt = 0
         for filename in listdir(directory):
