@@ -3,6 +3,8 @@ from typing import Dict, Any
 
 
 class CheckOutput:
+    """Checkoutput class object."""
+
     def __init__(self, output: str, rc: int):
         """
         Initialize new IaC check output.

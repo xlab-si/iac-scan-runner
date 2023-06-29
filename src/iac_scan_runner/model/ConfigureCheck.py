@@ -7,7 +7,7 @@ from pydantic import BaseModel, SecretStr
 class CheckConfigurationModel(BaseModel):
     """Check configuration model."""
 
-    config_file: UploadFile
+    config_file: Optional[UploadFile]
     secret: Optional[SecretStr]
 
     @classmethod

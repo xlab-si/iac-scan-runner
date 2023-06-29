@@ -6,9 +6,12 @@ from iac_scan_runner.utils import run_command
 
 
 class GitSecretsCheck(Check):
+    """Gitsecrets check class object."""
+
     def __init__(self):
         super().__init__("git-secrets", "Prevents you from committing secrets and credentials into git repositories",
                          CheckTargetEntityType.IAC)
 
     def run(self, directory: str) -> CheckOutput:
+        """Run check."""
         return run_command(f"{env.GIT_SECRETS_CHECK_PATH} --scan -r .", directory)

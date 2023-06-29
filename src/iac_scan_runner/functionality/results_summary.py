@@ -7,6 +7,8 @@ from iac_scan_runner.utils import write_html_to_file
 
 
 class ResultsSummary:
+    """Scan result summary class object."""
+
     def __init__(self):
         """
         Initialize new IaC Compatibility matrix.
@@ -237,10 +239,12 @@ class ResultsSummary:
             raise Exception(f"Error dumping json of scan results: {str(e)}.") from e
 
     def is_check(self, check: str) -> bool:
+        """Check if iac check."""
         fields = ["uuid", "time", "problems", "passed", "total", "execution-duration", "project_id", "archive"]
         return bool(check not in fields)
 
     def evaluate_verdict(self) -> str:
+        """Set outcome verdict."""
         for check in self.outcomes:
             is_tool = self.is_check(check)
             if is_tool:
@@ -251,6 +255,7 @@ class ResultsSummary:
         return "Passed"
 
     def set_result(self, random_uuid, archive_name, duration):
+        """Set outcome results."""
         self.outcomes["uuid"] = random_uuid
         self.outcomes["archive"] = archive_name
         self.outcomes["time"] = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
