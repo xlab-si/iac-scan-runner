@@ -2,7 +2,7 @@ wheel==0.37.1
 fastapi==0.74.1
 uvicorn[standard]==0.17.5
 python-multipart==0.0.5
-pydantic==1.9.0
+pydantic==1.10.9
 content-size-limit-asgi==0.1.5
 PyYAML==6.0
 typer==0.7.0

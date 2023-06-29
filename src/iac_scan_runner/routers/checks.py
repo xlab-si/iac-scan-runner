@@ -93,7 +93,8 @@ async def put_configure_check(check_name: str,
     """
     try:
         return JSONResponse(status_code=status.HTTP_200_OK,
-                            content=scan_runner.configure_check(check_name, form_data.config_file, form_data.secret))
+                            content=scan_runner.configure_check("", check_name, form_data.config_file,
+                                                                form_data.secret))
     except Exception as e:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))
 
