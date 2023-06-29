@@ -7,7 +7,7 @@ class Compatibility:
 
     compatibility_matrix: Dict[str, List[str]] = {
         "terraform": ["tfsec", "tflint", "terrascan", "git-leaks", "git-secrets", "cloc"],
-        "yaml": ["git-leaks", "yamllint", "git-secrets", "ansible-lint", "steampunk-scanner", "cloc",
+        "yaml": ["git-leaks", "yamllint", "git-secrets", "ansible-lint", "steampunk-spotter", "cloc",
                  "opera-tosca-parser"],
         "shell": ["shellcheck", "git-leaks", "git-secrets", "cloc"],
         "python": ["pylint", "bandit", "pyup-safety", "cloc"],

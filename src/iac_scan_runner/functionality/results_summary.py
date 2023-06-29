@@ -50,7 +50,6 @@ class ResultsSummary:
         """
         self.outcomes[check] = {}
         self.outcomes[check]["log"] = outcome
-
         file_list = ""
         for item in compatibility_matrix:
             if check in compatibility_matrix[item]:
@@ -172,12 +171,14 @@ class ResultsSummary:
             self.outcomes[check]["status"] = "Problems"
             return "Problems"
 
-        if check == "steampunk-scanner":
-            if outcome.find("ERROR") > -1:
-                self.outcomes[check]["status"] = "Problems"
-                return "Problems"
-            self.outcomes[check]["status"] = "Passed"
-            return "Passed"
+        if check == "steampunk-spotter":
+            outcome = re.sub(r"\x1b+\[\d+m", "", outcome)
+            self.outcomes[check]["log"] = outcome
+            if outcome.find("SUCCESS") > -1:
+                self.outcomes[check]["status"] = "Passed"
+                return "Passed"
+            self.outcomes[check]["status"] = "Problems"
+            return "Problems"
 
         if check == "cloc":
             self.outcomes[check]["status"] = "Info"

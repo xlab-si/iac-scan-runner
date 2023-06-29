@@ -35,7 +35,7 @@ export CLOC_CHECK_PATH="${NODE_MODULES_DIR}/.bin/cloc"
 export CHECKSTYLE_CHECK_PATH="${TOOLS_DIR}/checkstyle.jar"
 export SONAR_SCANNER_CHECK_PATH="${TOOLS_DIR}/sonar-scanner/bin/sonar-scanner"
 export SNYK_CHECK_PATH="${NODE_MODULES_DIR}/.bin/snyk"
-export STEAMPUNK_SCANNER_CHECK_PATH="${VIRTUALENV_DIR}/bin/steampunk-scanner/"
+export STEAMPUNK_SPOTTER_CHECK_PATH="${VIRTUALENV_DIR}/bin/spotter/"
 
 # urls for installation of check tools
 checkStyleUrl='https://github.com/checkstyle/checkstyle/releases/download/checkstyle-8.13/checkstyle-8.13-all.jar'
@@ -102,7 +102,7 @@ installRequiredNpmModulesIfNot() {
 
 installPythonModules() {
   pip install opera-tosca-parser==0.1.1 pylint==2.13.7 gixy==0.1.20 ansible-lint==6.0.2 yamllint==1.26.3 \
-              bandit==1.7.4 safety==1.10.3 steampunk-scanner==0.3.3
+              bandit==1.7.4 safety==1.10.3 steampunk-spotter==2.0.3
 }
 
 installGitLeaksIfNot() {

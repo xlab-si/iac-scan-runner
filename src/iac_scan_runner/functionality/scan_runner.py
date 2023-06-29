@@ -27,14 +27,13 @@ from iac_scan_runner.checks.pyup_safety import PyUpSafetyCheck
 from iac_scan_runner.checks.shellcheck import ShellCheck
 from iac_scan_runner.checks.snyk import SnykCheck
 from iac_scan_runner.checks.sonar_scanner import SonarScannerCheck
-from iac_scan_runner.checks.steampunk_scanner import SteampunkScannerCheck
+from iac_scan_runner.checks.steampunk_spotter import SteampunkSpotterCheck
 from iac_scan_runner.checks.stylelint import StyleLintCheck
 from iac_scan_runner.checks.terrascan import TerrascanCheck
 from iac_scan_runner.checks.tflint import TFLintCheck
 from iac_scan_runner.checks.tfsec import TfsecCheck
 from iac_scan_runner.checks.ts_lint import TSLintCheck
 from iac_scan_runner.checks.yamllint import YamlLintCheck
-from iac_scan_runner.functionality.check_output import CheckOutput
 from iac_scan_runner.functionality.compatibility import Compatibility
 from iac_scan_runner.functionality.project_config import ProjectConfig
 from iac_scan_runner.functionality.results_persistence import ResultsPersistence
@@ -77,7 +76,7 @@ class ScanRunner:
         """Initiate predefined check objects."""
         opera_tosca_parser = OperaToscaParserCheck()
         ansible_lint = AnsibleLintCheck()
-        steampunk_scanner = SteampunkScannerCheck()
+        spotter = SteampunkSpotterCheck()
         tflint = TFLintCheck()
         tfsec = TfsecCheck()
         terrascan = TerrascanCheck()
@@ -103,7 +102,7 @@ class ScanRunner:
         self.iac_checks = {
             opera_tosca_parser.name: opera_tosca_parser,
             ansible_lint.name: ansible_lint,
-            steampunk_scanner.name: steampunk_scanner,
+            spotter.name: spotter,
             tflint.name: tflint,
             tfsec.name: tfsec,
             terrascan.name: terrascan,
@@ -254,7 +253,7 @@ class ScanRunner:
             if check.enabled:
                 check.enabled = False
             else:
-                raise Exception(f"Check: {check_name} is already enabled.")
+                raise Exception(f"Check: {check_name} is already disabled.")
 
         return f"Check: {check_name} is now disabled and cannot be used."
 
@@ -269,28 +268,26 @@ class ScanRunner:
         :param secret: Secret needed for configuration (e.g. API key, token, password etc.)
         :return: String with check configuration output
         """
-        check_output = CheckOutput()
         if project_id:
-            pass
-        else:
-            if check_name in self.iac_checks.keys():
-                check = self.iac_checks[check_name]
-                if check.enabled:
-                    config_filename_local = None
-                    if config_file:
-                        config_filename_local = generate_random_pathname("", "-" + config_file.filename)
-                        with open(
-                                f"{env.CONFIG_DIR}/{config_filename_local}", "wb+"
-                        ) as config_file_local:
-                            config_file_local.write(config_file.file.read())
-                            config_file_local.close()
-                    check_output = check.configure(config_filename_local, secret)
-                    check.configured = True
+            return ""
 
-                raise Exception(f"Check: {check_name} is disabled. You need to enable it first.")
-            raise Exception(f"Nonexistent check: {check_name}")
-
-        return check_output
+        if check_name in self.iac_checks.keys():
+            check = self.iac_checks[check_name]
+            if check.enabled:
+                config_filename_local = None
+                if config_file:
+                    file_extension = config_file.filename.split(".")[1]
+                    config_filename_local = f"{check.name}.{file_extension}"
+                    with open(
+                            f"{env.CONFIG_DIR}/{config_filename_local}", "wb+"
+                    ) as config_file_local:
+                        config_file_local.write(config_file.file.read())
+                        config_file_local.close()
+                check_output = check.configure(config_filename_local, secret)
+                check.configured = True
+                return check_output.output
+            raise Exception(f"Check: {check_name} is disabled. You need to enable it first.")
+        raise Exception(f"Nonexistent check: {check_name}")
 
     def scan_iac(
             self, iac_file: UploadFile, project_id: str, checks: List[str], scan_response_type: ScanResponseType
