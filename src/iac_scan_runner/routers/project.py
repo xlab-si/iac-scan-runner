@@ -1,3 +1,4 @@
+import json
 import os
 from typing import Optional, Union
 
@@ -74,13 +75,8 @@ async def get_scan_result(uuid: Optional[str], project_id: Optional[str]) -> JSO
     try:
         connection_string = os.environ["MONGODB_CONNECTION_STRING"]
         results_persistence = ResultsPersistence(connection_string)
-        if uuid and project_id:
-            result = results_persistence.all_scans_by_project(project_id)
-        if uuid and not project_id:
-            result = results_persistence.show_result(uuid)
-        else:
-            result = results_persistence.show_all()
-        return JSONResponse(status_code=status.HTTP_200_OK, content=result)
+        result = results_persistence.get_scan_result(project_id, uuid)
+        return JSONResponse(status_code=status.HTTP_200_OK, content=json.dumps(result))
     except Exception as e:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content=str(e))
 

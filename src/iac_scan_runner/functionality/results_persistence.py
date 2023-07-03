@@ -90,17 +90,18 @@ class ResultsPersistence:
                 if age > 14:  # TODO: Add environment variable instead of constant
                     self.delete_result(doc_uuid)
 
-    def all_scans_by_project(self, project_id: str) -> Optional[Dict[str, Any]]:
+    def get_scan_result(self, project_id: str, result_id: str) -> Optional[Dict[str, Any]]:
         """
         Show all the scan results from the database that belong to a particular project given by id.
 
         :param project_id: Identifier of project where scan results belongs
+        :param result_id: Identifier of scan result
         :return: All scan results for given project identifier
         """
         data = None
         if self.mycol is not None:
-            myquery = {"project_id": project_id}
-            data = self.mycol.find_one(myquery)
+            myquery = {"project_id": project_id, "uuid": result_id}
+            data = self.mycol.find_one(myquery, {"_id": 0})
             if data is None:
-                raise Exception("Project id does not exist or there are no scan results")
+                raise Exception("Project id or uuid does not exist or there are no scan results")
         return data
