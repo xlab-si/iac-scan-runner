@@ -187,17 +187,17 @@ class ScanRunner:
                     write_string_to_file(iac_check.name, dir_name, "No files to scan")
                     self.results_summary.summarize_no_files(iac_check.name)
 
-        if project_id != "":
-            if self.persistence_enabled:
-                self.results_summary.outcomes["project_id"] = project_id
-            if self.results_persistence.connection_problem is False and self.persistence_enabled:
-                self.results_persistence.insert_result(self.results_summary.outcomes)
-
         end_time = time.time()
         duration = end_time - start_time
         self.results_summary.set_result(random_uuid, self.archive_name, duration)
         self.results_summary.dump_outcomes(random_uuid)
         self.results_summary.generate_html_prioritized(random_uuid)
+
+        if project_id != "":
+            if self.persistence_enabled:
+                self.results_summary.outcomes["project_id"] = project_id
+            if self.results_persistence.connection_problem is False and self.persistence_enabled:
+                self.results_persistence.insert_result(self.results_summary.outcomes)
 
         if scan_response_type == ScanResponseType.JSON:
             scan_output = json.loads(file_to_string(f"../outputs/json_dumps/{random_uuid}.json"))
