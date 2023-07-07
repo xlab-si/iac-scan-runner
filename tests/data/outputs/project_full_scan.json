@@ -1,0 +1,127 @@
+{
+    "opera-tosca-parser": {
+        "log": "Parsing TOSCA CSAR or service template...\nWhen CSAR metadata is not present, the single root level YAML file must contain metadata: Missing required service template metadata.\n",
+        "files": "['test.yaml']",
+        "status": "Problems"
+    },
+    "ansible-lint": {
+        "log": "",
+        "files": "['test.yaml']",
+        "status": "Passed"
+    },
+    "steampunk-spotter": {
+        "log": "Spotter took 0.188 s to scan your input.\nIt resulted in 0 error(s), 0 warning(s) and 0 hint(s).\nOverall status: SUCCESS\n",
+        "files": "['test.yaml']",
+        "status": "Passed"
+    },
+    "tflint": {
+        "log": "",
+        "files": "['test.tf']",
+        "status": "Passed"
+    },
+    "tfsec": {
+        "log": "        Result 1          [ aws-ec2-enforce-http-token-imds ]  [   HIGH   ]  Resource 'aws_instance.app_server' is missing `metadata_options` block - it is required with `http_tokens` set to `required` to make Instance Metadata Service more secure.    /home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.tf:16-23             13  |      region  = \"us-west-2\"           14  |    }           15  |               16  |     resource \"aws_instance\" \"app_server\" {             17  |       ami           = \"ami-830c94e3\"             18  |       instance_type = \"t2.micro\"             19  |                  20  |       tags = {             21  |         Name = \"ExampleAppServerInstance\"             22  |       }             23  |     }             24  |            Legacy ID:    AWS079       Impact:       Instance metadata service can be interacted with freely       Resolution:   Enable HTTP token requirement for IMDS        More Info:       - https://tfsec.dev/docs/aws/ec2/enforce-http-token-imds#aws/ec2        - https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance#metadata-options        - https://aws.amazon.com/blogs/security/defense-in-depth-open-firewalls-reverse-proxies-ssrf-vulnerabilities-ec2-instance-metadata-service         times    ------------------------------------------      disk i/o              298.862µs      parsing HCL           5.521µs      evaluating values     52.987µs      running checks        548.635µs       counts    ------------------------------------------      files loaded          1      blocks                3      evaluated blocks      3      modules               0      module blocks         0      ignored checks        0       results    ------------------------------------------      critical              0      high                  1      medium                0      low                   0        1 potential problems detected.   ",
+        "files": "['test.tf']",
+        "status": "Problems"
+    },
+    "terrascan": {
+        "log": "\n\nScan Errors -\n\n\tIaC Type            :\tarm\n\tDirectory           :\t/home/lukawernig/iac-scan/iac-scan-runner/src/42cada\n\tError Message       :\tARM files not found in the directory /home/lukawernig/iac-scan/iac-scan-runner/src/42cada\n\t\n\t-----------------------------------------------------------------------\n\t\n\tIaC Type            :\tcft\n\tDirectory           :\t/home/lukawernig/iac-scan/iac-scan-runner/src/42cada\n\tError Message       :\terror while loading iac file '/home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.yaml', err: error while unmarshalling yaml, error yaml: unmarshal errors:\n  line 2: cannot unmarshal !!seq into map[interface {}]interface {}\n\t\n\t-----------------------------------------------------------------------\n\t\n\tIaC Type            :\tkustomize\n\tDirectory           :\t/home/lukawernig/iac-scan/iac-scan-runner/src/42cada\n\tError Message       :\tkustomization.y(a)ml file not found in the directory /home/lukawernig/iac-scan/iac-scan-runner/src/42cada\n\t\n\t-----------------------------------------------------------------------\n\t\n\tIaC Type            :\thelm\n\tDirectory           :\t/home/lukawernig/iac-scan/iac-scan-runner/src/42cada\n\tError Message       :\tno helm charts found in directory /home/lukawernig/iac-scan/iac-scan-runner/src/42cada\n\t\n\t-----------------------------------------------------------------------\n\t\n\n\nViolation Details -\n    \n\tDescription    :\tEC2 instances should disable IMDS or require IMDSv2 as this can be related to the weaponization phase of kill chain\n\tFile           :\ttest.tf\n\tModule Name    :\troot\n\tPlan Root      :\t./\n\tLine           :\t16\n\tSeverity       :\tMEDIUM\n\t\n\t-----------------------------------------------------------------------\n\t\n\tDescription    :\tEnsure that detailed monitoring is enabled for EC2 instances.\n\tFile           :\ttest.tf\n\tModule Name    :\troot\n\tPlan Root      :\t./\n\tLine           :\t16\n\tSeverity       :\tHIGH\n\t\n\t-----------------------------------------------------------------------\n\t\n\tDescription    :\tEnsure that your AWS application is not deployed within the default Virtual Private Cloud in order to follow security best practices\n\tFile           :\ttest.tf\n\tModule Name    :\troot\n\tPlan Root      :\t./\n\tLine           :\t16\n\tSeverity       :\tMEDIUM\n\t\n\t-----------------------------------------------------------------------\n\t\n\nScan Summary -\n\n\tFile/Folder         :\t/home/lukawernig/iac-scan/iac-scan-runner/src/42cada\n\tIaC Type            :\tdocker,terraform\n\tScanned At          :\t2023-07-17 13:01:10.448598474 +0000 UTC\n\tPolicies Validated  :\t29\n\tViolated Policies   :\t3\n\tLow                 :\t0\n\tMedium              :\t2\n\tHigh                :\t1\n\t\n\n",
+        "files": "['test.tf']",
+        "status": "Problems"
+    },
+    "yamllint": {
+        "log": "./test.yaml\n  21:3      error    wrong indentation: expected 4 but found 2  (indentation)\n  28:21     error    no new line character at the end of file  (new-line-at-end-of-file)\n\n",
+        "files": "['test.yaml']",
+        "status": "Problems"
+    },
+    "pylint": {
+        "log": "************* Module test\ntest.py:18:0: C0304: Final newline missing (missing-final-newline)\ntest.py:1:0: C0114: Missing module docstring (missing-module-docstring)\ntest.py:4:14: C0103: Argument name \"x\" doesn't conform to snake_case naming style (invalid-name)\ntest.py:4:0: C0116: Missing function or method docstring (missing-function-docstring)\ntest.py:8:10: E0602: Undefined variable 'randInt' (undefined-variable)\ntest.py:9:16: E0602: Undefined variable 'randInt' (undefined-variable)\ntest.py:11:0: C0103: Constant name \"a\" doesn't conform to UPPER_CASE naming style (invalid-name)\ntest.py:12:0: C0103: Constant name \"string\" doesn't conform to UPPER_CASE naming style (invalid-name)\ntest.py:1:0: W0611: Unused import random (unused-import)\n\n------------------------------------------------------------------\nYour code has been rated at 0.00/10 (previous run: 0.00/10, +0.00)\n\n",
+        "files": "['test.py']",
+        "status": "Problems"
+    },
+    "bandit": {
+        "log": "[main]\tINFO\tprofile include tests: None\n[main]\tINFO\tprofile exclude tests: None\n[main]\tINFO\tcli include tests: None\n[main]\tINFO\tcli exclude tests: None\n[main]\tINFO\trunning on Python 3.10.6\nRun started:2023-07-17 13:01:11.127160\n\nTest results:\n\tNo issues identified.\n\nCode scanned:\n\tTotal lines of code: 14\n\tTotal lines skipped (#nosec): 0\n\tTotal potential issues skipped due to specifically being disabled (e.g., #nosec BXXX): 0\n\nRun metrics:\n\tTotal issues (by severity):\n\t\tUndefined: 0\n\t\tLow: 0\n\t\tMedium: 0\n\t\tHigh: 0\n\tTotal issues (by confidence):\n\t\tUndefined: 0\n\t\tLow: 0\n\t\tMedium: 0\n\t\tHigh: 0\nFiles skipped (0):\n",
+        "files": "['test.py']",
+        "status": "Passed"
+    },
+    "pyup-safety": {
+        "log": "There is no requirements.txt to check.",
+        "files": "['test.py']",
+        "status": "Not fully supported yet"
+    },
+    "git-leaks": {
+        "log": "time=\"2023-07-17T15:01:11+02:00\" level=info msg=\"scan time: 50 microseconds\"\ntime=\"2023-07-17T15:01:11+02:00\" level=info msg=\"commits scanned: 0\"\ntime=\"2023-07-17T15:01:11+02:00\" level=info msg=\"No leaks found\"\n",
+        "files": "['test.md', 'nginx.conf', 'test.css', 'test.yaml', 'test.sh', 'test.tf', 'test.py', 'test.js', 'Dockerfile', 'test.html', 'test.java', 'test.ts']",
+        "status": "Passed"
+    },
+    "git-secrets": {
+        "log": "",
+        "files": "['test.md', 'nginx.conf', 'test.css', 'test.yaml', 'test.sh', 'test.tf', 'test.py', 'test.js', 'Dockerfile', 'test.html', 'test.java', 'test.ts']",
+        "status": "Passed"
+    },
+    "markdown-lint": {
+        "status": "No files",
+        "log": "",
+        "files": ""
+    },
+    "hadolint": {
+        "log": "",
+        "files": "['Dockerfile']",
+        "status": "Passed"
+    },
+    "gixy": {
+        "status": "No files",
+        "log": "",
+        "files": ""
+    },
+    "shellcheck": {
+        "log": "\nIn test.sh line 3:\nwhile [[ -n $1 ]]; \n^-- SC1057: Did you forget the 'do' for this loop?\n^-- SC1073: Couldn't parse this while loop. Fix to allow more checks.\n\n\nIn test.sh line 14:\ndone\n^-- SC1058: Expected 'do'.\n    ^-- SC1072: Unexpected keyword/token. Fix any mentioned problems and try again.\n\n\n",
+        "files": "['test.sh']",
+        "status": "Problems"
+    },
+    "es-lint": {
+        "log": "\nOops! Something went wrong! :(\n\nESLint: 8.44.0\n\n/home/lukawernig/iac-scan/iac-scan-runner/node_modules/@typescript-eslint/eslint-plugin/dist/rules/adjacent-overload-signatures.js:66\n                    const name = member.id?.name ?? null;\n                                           ^\n\nSyntaxError: Unexpected token '.'\n    at wrapSafe (internal/modules/cjs/loader.js:915:16)\n    at Module._compile (internal/modules/cjs/loader.js:963:27)\n    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1027:10)\n    at Module.load (internal/modules/cjs/loader.js:863:32)\n    at Function.Module._load (internal/modules/cjs/loader.js:708:14)\n    at Module.require (internal/modules/cjs/loader.js:887:19)\n    at require (internal/modules/cjs/helpers.js:74:18)\n    at Object.<anonymous> (/home/lukawernig/iac-scan/iac-scan-runner/node_modules/@typescript-eslint/eslint-plugin/dist/rules/index.js:6:56)\n    at Module._compile (internal/modules/cjs/loader.js:999:30)\n    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1027:10)\n",
+        "files": "['test.js']",
+        "status": "Problems"
+    },
+    "ts-lint": {
+        "log": "\nOops! Something went wrong! :(\n\nESLint: 8.44.0\n\n/home/lukawernig/iac-scan/iac-scan-runner/node_modules/@typescript-eslint/eslint-plugin/dist/rules/adjacent-overload-signatures.js:66\n                    const name = member.id?.name ?? null;\n                                           ^\n\nSyntaxError: Unexpected token '.'\n    at wrapSafe (internal/modules/cjs/loader.js:915:16)\n    at Module._compile (internal/modules/cjs/loader.js:963:27)\n    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1027:10)\n    at Module.load (internal/modules/cjs/loader.js:863:32)\n    at Function.Module._load (internal/modules/cjs/loader.js:708:14)\n    at Module.require (internal/modules/cjs/loader.js:887:19)\n    at require (internal/modules/cjs/helpers.js:74:18)\n    at Object.<anonymous> (/home/lukawernig/iac-scan/iac-scan-runner/node_modules/@typescript-eslint/eslint-plugin/dist/rules/index.js:6:56)\n    at Module._compile (internal/modules/cjs/loader.js:999:30)\n    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1027:10)\n",
+        "files": "['test.js']",
+        "status": "Problems"
+    },
+    "htmlhint": {
+        "log": "\n   /home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.html\n\u001b[37m      L8 |\u001b[90m</head>\u001b[39m\n\u001b[37m          ^ \u001b[31mTag must be paired, no start tag: [ </head> ] (tag-pair)\u001b[39m\n\nScanned 1 files, found 1 errors in 1 files (12 ms)\n",
+        "files": "['test.html']",
+        "status": "Problems"
+    },
+    "stylelint": {
+        "status": "No files",
+        "log": "",
+        "files": ""
+    },
+    "cloc": {
+        "log": "      12 text files.\nclassified 11 files\r      11 unique files.                              \n       1 file ignored.\n\ngithub.com/AlDanial/cloc v 1.92  T=0.02 s (640.9 files/s, 17771.7 lines/s)\n-------------------------------------------------------------------------------\nLanguage                     files          blank        comment           code\n-------------------------------------------------------------------------------\nJava                             1             13             13             42\nMarkdown                         1              9              0             32\nTypeScript                       1              8              0             27\nCSS                              1              5              5             25\nYAML                             1              3              0             25\nHCL                              1              4              0             19\nHTML                             1              5              0             15\nJavaScript                       1              0              0             15\nPython                           1              4              0             14\nBourne Shell                     1              4              3              9\nDockerfile                       1              0              0              6\n-------------------------------------------------------------------------------\nSUM:                            11             55             21            229\n-------------------------------------------------------------------------------\n",
+        "files": "['test.md', 'nginx.conf', 'test.css', 'test.yaml', 'test.sh', 'test.tf', 'test.py', 'test.js', 'Dockerfile', 'test.html', 'test.java', 'test.ts']",
+        "status": "Info"
+    },
+    "checkstyle": {
+        "log": "Starting audit...\n[ERROR] /home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.java:1: File does not end with a newline. [NewlineAtEndOfFile]\n[ERROR] /home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.java:1: Missing a Javadoc comment. [JavadocType]\n[ERROR] /home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.java:1: Missing package-info.java file. [JavadocPackage]\n[ERROR] /home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.java:1:14: Name 'test' must match pattern '^[A-Z][a-zA-Z0-9]*$'. [TypeName]\n[ERROR] /home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.java:2:5: Class 'test' looks like designed for extension (can be subclassed), but the method 'sort' does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class 'test' final or making the method 'sort' static/final/abstract/empty, or adding allowed annotation for the method. [DesignForExtension]\n[ERROR] /home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.java:2:5: Missing a Javadoc comment. [JavadocMethod]\n[ERROR] /home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.java:2:22: Parameter arr should be final. [FinalParameters]\n[ERROR] /home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.java:2:29: Array brackets at illegal position. [ArrayTypeStyle]\n[ERROR] /home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.java:3:13: Name 'N' must match pattern '^[a-z][a-zA-Z0-9]*$'. [LocalVariableName]\n[ERROR] /home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.java:6: 'for' construct must use '{}'s. [NeedBraces]\n[ERROR] /home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.java:23:5: Class 'test' looks like designed for extension (can be subclassed), but the method 'heapify' does not have javadoc that explains how to do that safely. If class is not designed for extension consider making the class 'test' final or making the method 'heapify' static/final/abstract/empty, or adding allowed annotation for the method. [DesignForExtension]\n[ERROR] /home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.java:23:5: Missing a Javadoc comment. [JavadocMethod]\n[ERROR] /home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.java:23:18: Parameter arr should be final. [FinalParameters]\n[ERROR] /home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.java:23:25: Array brackets at illegal position. [ArrayTypeStyle]\n[ERROR] /home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.java:23:29: Parameter N should be final. [FinalParameters]\n[ERROR] /home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.java:23:33: Name 'N' must match pattern '^[a-z][a-zA-Z0-9]*$'. [ParameterName]\n[ERROR] /home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.java:23:36: Parameter i should be final. [FinalParameters]\n[ERROR] /home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.java:29: 'if' construct must use '{}'s. [NeedBraces]\n[ERROR] /home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.java:33: 'if' construct must use '{}'s. [NeedBraces]\n[ERROR] /home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.java:48:5: Missing a Javadoc comment. [JavadocMethod]\n[ERROR] /home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.java:48:28: Parameter arr should be final. [FinalParameters]\n[ERROR] /home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.java:48:35: Array brackets at illegal position. [ArrayTypeStyle]\n[ERROR] /home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.java:49:13: Name 'N' must match pattern '^[a-z][a-zA-Z0-9]*$'. [LocalVariableName]\n[ERROR] /home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.java:51: 'for' construct must use '{}'s. [NeedBraces]\n[ERROR] /home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.java:57:5: Missing a Javadoc comment. [JavadocMethod]\n[ERROR] /home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.java:57:29: Parameter args should be final. [FinalParameters]\n[ERROR] /home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.java:57:40: Array brackets at illegal position. [ArrayTypeStyle]\n[ERROR] /home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.java:58:16: Array brackets at illegal position. [ArrayTypeStyle]\n[ERROR] /home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.java:58:22: '{' is followed by whitespace. [NoWhitespaceAfter]\n[ERROR] /home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.java:58:23: '12' is a magic number. [MagicNumber]\n[ERROR] /home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.java:58:27: '11' is a magic number. [MagicNumber]\n[ERROR] /home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.java:58:31: '13' is a magic number. [MagicNumber]\n[ERROR] /home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.java:58:35: '5' is a magic number. [MagicNumber]\n[ERROR] /home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.java:58:38: '6' is a magic number. [MagicNumber]\n[ERROR] /home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.java:58:41: '7' is a magic number. [MagicNumber]\n[ERROR] /home/lukawernig/iac-scan/iac-scan-runner/src/42cada/test.java:59:13: Name 'N' must match pattern '^[a-z][a-zA-Z0-9]*$'. [LocalVariableName]\nAudit done.\nCheckstyle ends with 36 errors.\n\n",
+        "files": "['test.java']",
+        "status": "Problems"
+    },
+    "snyk": {
+        "status": "No files",
+        "log": "",
+        "files": ""
+    },
+    "sonar-scanner": {
+        "status": "No files",
+        "log": "",
+        "files": ""
+    },
+    "uuid": "fd4e6004-a046-4ded-b789-46d37261b6db",
+    "archive": "data_2.zip",
+    "time": "07/17/2023, 15:01:12",
+    "execution-duration": "6.059",
+    "verdict": "Problems"
+}
