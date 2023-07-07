@@ -1,0 +1,170 @@
+[
+    {
+        "name": "opera-tosca-parser",
+        "description": "xOpera TOSCA parser can validate TOSCA YAML templates and CSARs",
+        "enabled": true,
+        "configured": true,
+        "target_entity_type": "IaC"
+    },
+    {
+        "name": "ansible-lint",
+        "description": "Ansible Lint is a command-line tool for linting playbooks, roles and collections aimed towards any Ansible users",
+        "enabled": true,
+        "configured": true,
+        "target_entity_type": "IaC"
+    },
+    {
+        "name": "steampunk-spotter",
+        "description": "provides an Ansible Playbook Scanning Tool that analyzes and offers recommendationsfor your Ansible Playbooks.",
+        "enabled": true,
+        "configured": false,
+        "target_entity_type": "IaC and component"
+    },
+    {
+        "name": "tflint",
+        "description": "A Pluggable Terraform Linter",
+        "enabled": true,
+        "configured": true,
+        "target_entity_type": "IaC"
+    },
+    {
+        "name": "tfsec",
+        "description": "Security scanner for your Terraform code",
+        "enabled": true,
+        "configured": true,
+        "target_entity_type": "IaC"
+    },
+    {
+        "name": "terrascan",
+        "description": "Terrascan is a static code analyzer for IaC (defaults to scanning Terraform)",
+        "enabled": true,
+        "configured": true,
+        "target_entity_type": "IaC"
+    },
+    {
+        "name": "yamllint",
+        "description": "A linter for YAML files that checks for syntax validity, key repetition and cosmetic problems such as lines length, trailing spaces, indentation, etc.",
+        "enabled": true,
+        "configured": true,
+        "target_entity_type": "IaC"
+    },
+    {
+        "name": "pylint",
+        "description": "Pylint is a Python static code analysis tool that checks for errors in Python code, tries to enforce a coding standard and looks for code smells",
+        "enabled": true,
+        "configured": true,
+        "target_entity_type": "IaC"
+    },
+    {
+        "name": "bandit",
+        "description": "Bandit is a tool designed to find common security issues in Python code",
+        "enabled": true,
+        "configured": true,
+        "target_entity_type": "IaC"
+    },
+    {
+        "name": "pyup-safety",
+        "description": "Safety is a PyUp CLI tool that checks your installed Python dependencies for known security vulnerabilities",
+        "enabled": true,
+        "configured": true,
+        "target_entity_type": "component"
+    },
+    {
+        "name": "git-leaks",
+        "description": "Gitleaks is a SAST tool for detecting hardcoded secrets like passwords, API keys, and tokens in Git repos",
+        "enabled": true,
+        "configured": true,
+        "target_entity_type": "IaC"
+    },
+    {
+        "name": "git-secrets",
+        "description": "Prevents you from committing secrets and credentials into git repositories",
+        "enabled": true,
+        "configured": true,
+        "target_entity_type": "IaC"
+    },
+    {
+        "name": "markdown-lint",
+        "description": "A tool to check markdown files and flag style issues",
+        "enabled": true,
+        "configured": true,
+        "target_entity_type": "IaC"
+    },
+    {
+        "name": "hadolint",
+        "description": "Dockerfile linter, validate inline bash, written in Haskell",
+        "enabled": true,
+        "configured": true,
+        "target_entity_type": "IaC"
+    },
+    {
+        "name": "gixy",
+        "description": "Gixy is a tool to analyze Nginx configuration",
+        "enabled": true,
+        "configured": true,
+        "target_entity_type": "IaC"
+    },
+    {
+        "name": "shellcheck",
+        "description": "ShellCheck - a static analysis tool for shell scripts",
+        "enabled": true,
+        "configured": true,
+        "target_entity_type": "IaC"
+    },
+    {
+        "name": "es-lint",
+        "description": "ESLint is a tool for identifying and reporting on patterns found in ECMAScript/JavaScript code",
+        "enabled": true,
+        "configured": true,
+        "target_entity_type": "IaC"
+    },
+    {
+        "name": "ts-lint",
+        "description": "TypeScript ESLint enables ESLint to support TypeScript",
+        "enabled": true,
+        "configured": true,
+        "target_entity_type": "IaC"
+    },
+    {
+        "name": "htmlhint",
+        "description": "The static code analysis tool you need for your HTML",
+        "enabled": true,
+        "configured": true,
+        "target_entity_type": "IaC"
+    },
+    {
+        "name": "stylelint",
+        "description": "A mighty, modern linter that helps you avoid errors and enforce conventions in your styles",
+        "enabled": true,
+        "configured": true,
+        "target_entity_type": "IaC"
+    },
+    {
+        "name": "cloc",
+        "description": "Counts blank lines, comment lines, and physical lines of source code in many programming languages",
+        "enabled": true,
+        "configured": true,
+        "target_entity_type": "IaC"
+    },
+    {
+        "name": "checkstyle",
+        "description": "Checkstyle is a tool for checking Java source code for adherence to a Code Standard or set of validation rules (best practices)",
+        "enabled": true,
+        "configured": true,
+        "target_entity_type": "IaC"
+    },
+    {
+        "name": "snyk",
+        "description": "Snyk helps you find, fix and monitor known vulnerabilities in open source",
+        "enabled": true,
+        "configured": false,
+        "target_entity_type": "IaC and component"
+    },
+    {
+        "name": "sonar-scanner",
+        "description": "Official scanner used to run code analysis on SonarQube and SonarCloud",
+        "enabled": true,
+        "configured": false,
+        "target_entity_type": "IaC and component"
+    }
+]
