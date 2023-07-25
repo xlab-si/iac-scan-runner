@@ -21,7 +21,7 @@ class SnykCheck(Check):
                   secret: Optional[SecretStr]) -> CheckOutput:  # pylint: disable=unused-argument
         """Set configuration."""
         if secret:
-            check_output = run_command(f"snyk auth {secret.get_secret_value()}")
+            check_output = run_command(f"{env.SNYK_CHECK_PATH} auth {secret.get_secret_value()}")
             if check_output.rc == 0:
                 return check_output
             raise Exception(check_output.output)
