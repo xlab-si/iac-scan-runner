@@ -67,8 +67,8 @@ removeDir() {
 }
 
 downloadCheckStyleJarIfNot() {
-  if [ ! -f "$CHECK_STYLE_PATH" ]; then
-    wget ${checkStyleUrl} -O "${CHECK_STYLE_PATH}"
+  if [ ! -f "$CHECKSTYLE_CHECK_PATH" ]; then
+    wget ${checkStyleUrl} -O "${CHECKSTYLE_CHECK_PATH}"
   fi
 }
 
