@@ -26,5 +26,6 @@ class TFLintCheck(Check):
     def run(self, directory: str) -> CheckOutput:
         """Run check."""
         if self._config_filename:
-            return run_command(f"{env.TFLINT_CHECK_PATH} -c {env.CONFIG_DIR}/{self._config_filename} --filter=.", directory)
+            return run_command(f"{env.TFLINT_CHECK_PATH} -c {env.CONFIG_DIR}/{self._config_filename} --filter=.",
+                               directory)
         return run_command(f"{env.TFLINT_CHECK_PATH} --filter=.", directory)
