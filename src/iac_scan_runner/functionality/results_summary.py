@@ -94,13 +94,6 @@ class ResultsSummary:
             self.outcomes[check]["status"] = "Problems"
             return "Problems"
 
-        if check == "steampunk-scanner":
-            if outcome == "":
-                self.outcomes[check]["status"] = "Passed"
-                return "Passed"
-            self.outcomes[check]["status"] = "Problems"
-            return "Problems"
-
         if check == "tflint":
             if outcome == "":
                 self.outcomes[check]["status"] = "Passed"
