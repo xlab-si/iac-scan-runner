@@ -19,6 +19,10 @@ run_linters() {
 
 }
 
+run_unit_tests() {
+    pytest tests/unit
+}
+
 run_help() {
     cat <<EOF
 usage:
