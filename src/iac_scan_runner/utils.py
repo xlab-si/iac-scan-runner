@@ -11,6 +11,7 @@ from zipfile import is_zipfile
 from bson import json_util
 
 from iac_scan_runner.functionality.check_output import CheckOutput
+import iac_scan_runner.vars as env
 
 
 def run_command(command: str, directory: str = ".") -> CheckOutput:
@@ -98,7 +99,7 @@ def write_html_to_file(file_name: str, output_value: str) -> None:
     :param file_name: File name
     :param output_value: Content written to given file
     """
-    file_name = "../outputs/generated_html/" + file_name + ".html"
+    file_name = f"{env.ROOT_DIR}/outputs/generated_html/" + file_name + ".html"
     try:
         with open(file_name, "w", encoding="utf-8") as text_file:
             text_file.write(output_value)

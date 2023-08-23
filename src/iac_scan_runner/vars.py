@@ -1,7 +1,7 @@
 import os
 
 # vars for paths to directories
-ROOT_DIR = os.getenv("ROOT_DIR", os.path.normpath(os.getcwd() + os.sep + os.pardir))
+ROOT_DIR = os.getenv("ROOT_DIR", os.path.normpath(os.getcwd()))
 VIRTUALENV_DIR = os.getenv("VIRTUALENV_DIR", f"{ROOT_DIR}/.venv")
 TOOLS_DIR = os.getenv("TOOLS_DIR", f"{ROOT_DIR}/tools")
 CONFIG_DIR = os.getenv("CONFIG_DIR", f"{ROOT_DIR}/config")
