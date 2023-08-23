@@ -90,8 +90,7 @@ $ python3 -m venv .venv && . .venv/bin/activate
 (.venv) $ pip install -r requirements.txt
 (.venv) $ ./install-checks.sh
 # run IaC Scan Runner REST API (add --reload flag to apply code changes on the way)
-(.venv) $ cd src
-(.venv) $ uvicorn iac_scan_runner.api:app
+(.venv) $ uvicorn src.iac_scan_runner.api:app
 ```
 
 ## Usage and examples

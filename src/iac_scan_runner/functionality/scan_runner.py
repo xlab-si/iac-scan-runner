@@ -162,7 +162,7 @@ class ScanRunner:
         start_time = time.time()
         random_uuid = str(uuid.uuid4())
 
-        dir_name = "../outputs/logs/scan_run_" + random_uuid
+        dir_name = "outputs/logs/scan_run_" + random_uuid
         os.mkdir(dir_name)
 
         self.results_summary.outcomes = {}
@@ -199,9 +199,9 @@ class ScanRunner:
                 self.results_persistence.insert_result(self.results_summary.outcomes)
 
         if scan_response_type == ScanResponseType.JSON:
-            scan_output = json.loads(file_to_string(f"../outputs/json_dumps/{random_uuid}.json"))
+            scan_output = json.loads(file_to_string(f"{env.ROOT_DIR}/outputs/json_dumps/{random_uuid}.json"))
         else:
-            scan_output = file_to_string(f"../outputs/generated_html/{random_uuid}.html")
+            scan_output = file_to_string(f"{env.ROOT_DIR}/outputs/generated_html/{random_uuid}.html")
 
         return scan_output
 
