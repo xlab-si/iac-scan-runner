@@ -32,3 +32,6 @@ CHECKSTYLE_CHECK_PATH = os.getenv("CHECKSTYLE_CHECK_PATH", f"{TOOLS_DIR}/checkst
 SONAR_SCANNER_CHECK_PATH = os.getenv("SONAR_SCANNER_CHECK_PATH", f"{TOOLS_DIR}/sonar-scanner/bin/sonar-scanner")
 SNYK_CHECK_PATH = os.getenv("SNYK_CHECK_PATH", f"{NODE_MODULES_DIR}/.bin/snyk")
 STEAMPUNK_SPOTTER_CHECK_PATH = os.getenv("STEAMPUNK_SPOTTER_CHECK_PATH", f"{VIRTUALENV_DIR}/bin/spotter")
+
+# vars for backend
+SERVER_HOST = os.getenv("SERVER_HOST", "http://127.0.0.1:8000")
