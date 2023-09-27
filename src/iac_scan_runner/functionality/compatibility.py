@@ -19,6 +19,7 @@ class Compatibility:
         "css": ["stylelint", "cloc"],
         "nginx": ["gixy", "cloc"],
         "common": ["git-leaks", "git-secrets", "cloc"],
+        "package": ["snyk", "sonar-scanner"],
         "other": []
     }
 
@@ -55,6 +56,7 @@ class Compatibility:
         scanned_markdown = []        
         scanned_css = []
         scanned_nginx = []
+        scanned_package = []
         scanned_other = []
         scanned_all = []
         # TODO: List of supported file types should be extended
@@ -107,6 +109,10 @@ class Compatibility:
                         types.append("nginx")
                         scanned_nginx.append(f)
 
+                    elif "node_modules" in folders and not len(scanned_package):
+                        types.append("package")
+                        scanned_package.append("node_modules")
+
                     else:
                         types.append("other")
                         scanned_other.append(f)
@@ -123,7 +129,8 @@ class Compatibility:
             self.scanned_files["docker"] = str(scanned_docker)
             self.scanned_files["markdown"] = str(scanned_markdown)    
             self.scanned_files["css"] = str(scanned_css)    
-            self.scanned_files["nginx"] = str(scanned_nginx)                
+            self.scanned_files["nginx"] = str(scanned_nginx)
+            self.scanned_files["package"] = str(scanned_package)          
             self.scanned_files["other"] = str(scanned_other)
             self.scanned_files["common"] = str(scanned_all)
 
