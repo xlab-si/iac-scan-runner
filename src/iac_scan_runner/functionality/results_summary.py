@@ -298,11 +298,23 @@ class ResultsSummary:
                 changeable_html = changeable_html.replace("CHANGE_LOG", self.outcomes[scan]["log"])
                 table_content += changeable_html
 
+        with open("src/iac_scan_runner/asset/table_passed.html", "r", encoding="utf-8") as html_template:
+            html_problem = html_template.read()
+        for scan in self.outcomes:
+            if scan not in ["uuid", "time", "archive", "execution-duration", "verdict", "project_id"] \
+                    and self.outcomes[scan]["status"] in ["Passed"]:
+                changeable_html = html_problem
+                changeable_html = changeable_html.replace("CHANGE_SCAN", scan)
+                changeable_html = changeable_html.replace("CHANGE_STATUS", str(self.outcomes[scan]["status"]))
+                changeable_html = changeable_html.replace("CHANGE_FILES", self.outcomes[scan]["files"])
+                changeable_html = changeable_html.replace("CHANGE_LOG", self.outcomes[scan]["log"])
+                table_content += changeable_html
+
         with open("src/iac_scan_runner/asset/table_basic.html", "r", encoding="utf-8") as html_template:
             html_problem = html_template.read()
         for scan in self.outcomes:
             if scan not in ["uuid", "time", "archive", "execution-duration", "verdict", "project_id"] \
-                    and self.outcomes[scan]["status"] in ["Passed", "No files"]:
+                    and self.outcomes[scan]["status"] in ["No files"]:
                 changeable_html = html_problem
                 changeable_html = changeable_html.replace("CHANGE_SCAN", scan)
                 changeable_html = changeable_html.replace("CHANGE_STATUS", str(self.outcomes[scan]["status"]))
