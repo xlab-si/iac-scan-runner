@@ -162,7 +162,7 @@ class ScanRunner:
         start_time = time.time()
         random_uuid = str(uuid.uuid4())
 
-        dir_name = "outputs/logs/scan_run_" + random_uuid
+        dir_name = f"../outputs/logs/scan_run_" + random_uuid
         os.mkdir(dir_name)
 
         self.results_summary.outcomes = {}

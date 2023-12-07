@@ -262,7 +262,7 @@ class ResultsSummary:
 
         :param file_name: Name of the generated HTML file containing the page summary
         """
-        with open("src/iac_scan_runner/asset/response.html", "r", encoding="utf-8") as html_template:
+        with open(f"{env.SRC_DIR}/iac_scan_runner/asset/response.html", "r", encoding="utf-8") as html_template:
             html = html_template.read()
 
         html = html.replace("CHANGE_ARCHIVE_NAME", self.outcomes["archive"])
@@ -274,7 +274,7 @@ class ResultsSummary:
             html = html.replace("CHANGE_FINAL_VERDICT", "No issues found")  # noqa: F841
 
         table_content = ""
-        with open("src/iac_scan_runner/asset/table_problem.html", "r", encoding="utf-8") as html_template:
+        with open(f"{env.SRC_DIR}/iac_scan_runner/asset/table_problem.html", "r", encoding="utf-8") as html_template:
             html_problem = html_template.read()
         for scan in self.outcomes:
             if scan not in ["uuid", "time", "archive", "execution-duration", "verdict", "project_id"] \
@@ -286,7 +286,7 @@ class ResultsSummary:
                 changeable_html = changeable_html.replace("CHANGE_LOG", self.outcomes[scan]["log"])
                 table_content += changeable_html
 
-        with open("src/iac_scan_runner/asset/table_info.html", "r", encoding="utf-8") as html_template:
+        with open(f"{env.SRC_DIR}/iac_scan_runner/asset/table_info.html", "r", encoding="utf-8") as html_template:
             html_problem = html_template.read()
         for scan in self.outcomes:
             if scan not in ["uuid", "time", "archive", "execution-duration", "verdict", "project_id"] \
@@ -298,7 +298,7 @@ class ResultsSummary:
                 changeable_html = changeable_html.replace("CHANGE_LOG", self.outcomes[scan]["log"])
                 table_content += changeable_html
 
-        with open("src/iac_scan_runner/asset/table_passed.html", "r", encoding="utf-8") as html_template:
+        with open(f"{env.SRC_DIR}/iac_scan_runner/asset/table_passed.html", "r", encoding="utf-8") as html_template:
             html_problem = html_template.read()
         for scan in self.outcomes:
             if scan not in ["uuid", "time", "archive", "execution-duration", "verdict", "project_id"] \
@@ -310,7 +310,7 @@ class ResultsSummary:
                 changeable_html = changeable_html.replace("CHANGE_LOG", self.outcomes[scan]["log"])
                 table_content += changeable_html
 
-        with open("src/iac_scan_runner/asset/table_basic.html", "r", encoding="utf-8") as html_template:
+        with open(f"{env.SRC_DIR}/iac_scan_runner/asset/table_basic.html", "r", encoding="utf-8") as html_template:
             html_problem = html_template.read()
         for scan in self.outcomes:
             if scan not in ["uuid", "time", "archive", "execution-duration", "verdict", "project_id"] \
