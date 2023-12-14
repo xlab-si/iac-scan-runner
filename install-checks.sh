@@ -102,7 +102,7 @@ installRequiredNpmModulesIfNot() {
 
 installPythonModules() {
   pip install opera-tosca-parser==0.1.1 pylint==2.13.7 gixy==0.1.20 ansible-lint==6.0.2 yamllint==1.26.3 \
-              bandit==1.7.4 safety==1.10.3 steampunk-spotter==2.0.3
+              bandit==1.7.4 safety==1.10.3 git+https://gitlab.com/xlab-steampunk/steampunk-spotter-client/spotter-cli.git@1c5caf8af3d571467cebd95c4abe7a51264e8873
 }
 
 installGitLeaksIfNot() {
